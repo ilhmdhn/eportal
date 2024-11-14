@@ -31,7 +31,7 @@ class CustomFont{
   }
 
   static TextStyle activityTitle() {
-    return GoogleFonts.poppins(fontSize: 14, color: Colors.blue.shade900);
+    return GoogleFonts.dancingScript(fontSize: 16, fontWeight: FontWeight.w600 ,color: Colors.blue.shade900);
   }
 
   static TextStyle headingTiga() {

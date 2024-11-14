@@ -4,6 +4,7 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _DashboardPageState extends State<DashboardPage> {
   final notificationDialog = NotificationDialog();
   bool biometricState = false;
   bool darkMode = false;
+  List<String> getPhotos = DummyData.getImage();
 
   @override
   Widget build(BuildContext context) {
@@ -433,8 +435,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       height: 21,
                     ),
                     Container(
-                      height: ScreenSize.setHeightPercent(context, 20),
                       width: double.maxFinite,
+
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
@@ -450,21 +452,46 @@ class _DashboardPageState extends State<DashboardPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                'Activity',
+                                'Gallery Activities',
                                 style: CustomFont.activityTitle(),
                               ),
-                              Text(
-                                'View More',
-                                style: CustomFont.activityTitle(),
-                              )
+                              // Text(
+                              //   'View More',
+                              //   style: CustomFont.activityTitle(),
+                              // ),
                             ],
-                          )
+                          ),
+                          const SizedBox(height: 8,),
+                          CarouselSlider.builder(
+                          itemCount: getPhotos.length,
+                          options: CarouselOptions(
+                            initialPage: 0,
+                            // enlargeCenterPage: true,
+                            height: ScreenSize.setHeightPercent(context, 20),
+                            enlargeFactor: 0.3,
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            autoPlay: true,
+                            aspectRatio: 16/9,
+                          ),
+                          itemBuilder: (BuildContext ctxCarousel, int index,int pvIndex) {
+                          return ClipRRect(
+                              borderRadius: BorderRadius.circular(9),                                
+                            child: Image.network(getPhotos[index]),
+                          );
+                          },),
+                                                    const SizedBox(
+                            height: 12,
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(
                       height: 12,
-                    )
+                    ),
+                    SizedBox(
+                      width: ScreenSize.setWidthPercent(context, 50),
+                      child: Image.asset('assets/image/hp_group.png')),
+                    const SizedBox(height: 20,)
                   ],
                 ),
               ),
