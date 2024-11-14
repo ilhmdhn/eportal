@@ -1,10 +1,15 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class DashboardPage extends StatefulWidget {
   static const nameRoute = '/dashboard';
@@ -20,10 +25,64 @@ class _DashboardPageState extends State<DashboardPage> {
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(
-          child: Column(
-            children: [
-              ElevatedButton(onPressed: () {}, child: Text('Menu')),
-            ],
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ClipOval(
+                          child: SizedBox.fromSize(
+                            size: const Size.fromRadius(24),
+                            child: Image.network(
+                              'https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid',
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 6,
+                        ),
+                        Flexible(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              AutoSizeText(
+                                'Mohammad Ferry Julyo',
+                                style: CustomFont.drawerName(),
+                                overflow: TextOverflow.clip,
+                                maxLines: 2,
+                              ),
+                              AutoSizeText(
+                                'View Profile',
+                                style: CustomFont.drawerViewProfile(),
+                                overflow: TextOverflow.clip,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                                  
+                  ],
+                ),
+                Container(
+                  child: Row(
+                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Icon(Icons.logout, size: 36, color: Colors.red,),
+                      Text("Keluar", style: CustomFont.headingDua(),),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
         backgroundColor: CustomColor.background(),
@@ -79,12 +138,12 @@ class _DashboardPageState extends State<DashboardPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             AutoSizeText(
-                                              'Muhammad Ferry Julyo',
+                                              'Mohammad Ferry Julyo',
                                               style: CustomFont.dashboardName(),
                                               overflow: TextOverflow.clip,
                                             ),
                                             AutoSizeText(
-                                              'Eksekutif Programmer Ngebug',
+                                              'Eksekutif Programmer',
                                               style: CustomFont
                                                   .dashboardPosition(),
                                               overflow: TextOverflow.clip,
@@ -97,6 +156,49 @@ class _DashboardPageState extends State<DashboardPage> {
                                   const SizedBox(
                                     height: 6,
                                   ),
+                                  Expanded(
+                                    child: Container(
+                                      padding: EdgeInsets.all(8),
+                                      width: double.maxFinite,
+                                      height: 30,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          DefaultTextStyle(
+                                            style: CustomFont.dashboardPosition(),
+                                            child: AnimatedTextKit(
+                                              repeatForever: true,
+                                              animatedTexts: [
+                                                RotateAnimatedText(
+                                                    'Absen Hari ini'),
+                                                RotateAnimatedText(
+                                                    'Jam masuk: 08:15'),
+                                                RotateAnimatedText(
+                                                    'Kedatangan: 07:53'),
+                                              ],
+                                              onTap: () {
+                                                print("Tap Event");
+                                              },
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 6,
+                                          ),
+                                          Animate(
+                                            onPlay: (controller) => controller.repeat(period: Duration(seconds: 3),),
+                                            effects: [FadeEffect()],
+                                            child:  SizedBox(
+                                                  height: 26,
+                                                  width: 26,
+                                                  child: Image.asset(
+                                                      'assets/icon/checkin.png')),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(height: ScreenSize.setHeightPercent(context, 3),)
                                 ],
                               ),
                             ),
@@ -106,8 +208,10 @@ class _DashboardPageState extends State<DashboardPage> {
                               left: 0,
                               right: 0,
                               child: Container(
-                                padding: EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 4),
-                                height: ScreenSize.setHeightPercent(context, 23),
+                                padding: EdgeInsets.only(
+                                    left: 8, right: 8, bottom: 8, top: 4),
+                                height:
+                                    ScreenSize.setHeightPercent(context, 23),
                                 margin: EdgeInsets.symmetric(horizontal: 20),
                                 width: double.maxFinite,
                                 decoration: BoxDecoration(
@@ -118,25 +222,43 @@ class _DashboardPageState extends State<DashboardPage> {
                                     ],
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(20)),
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                child: Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    AutoSizeText('Pengumuman',
+                                        style: CustomFont.announcement()),
+                                    Expanded(
+                                        child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: AutoSizeText(
+                                        "Jadwal senam hari jum'at minggu ini group A. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled",
+                                        style: CustomFont.headingEmpat(),
+                                        minFontSize: 14,
+                                        textAlign: TextAlign.justify,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 3,
+                                      ),
+                                    )),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        AutoSizeText('Pengumuman', style: CustomFont.announcement()),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: AutoSizeText("Jadwal senam hari jum'at group A. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled", style: CustomFont.headingEmpat(), minFontSize: 14, textAlign: TextAlign.justify, overflow: TextOverflow.ellipsis, maxLines: 3,),
-                                          )),
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.end,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            SizedBox(height: 61, width: 61, child: Image.asset('assets/icon/announcement.png')),
-                                            AutoSizeText('12 November 2024', style: CustomFont.announcementDate(),)
-                                          ],
+                                        SizedBox(
+                                            height: 61,
+                                            width: 61,
+                                            child: Image.asset(
+                                                'assets/icon/announcement.png')),
+                                        AutoSizeText(
+                                          '12 November 2024',
+                                          style: CustomFont.announcementDate(),
                                         )
                                       ],
-                                    ),
+                                    )
+                                  ],
+                                ),
                               )),
                         ],
                       ),
@@ -149,11 +271,10 @@ class _DashboardPageState extends State<DashboardPage> {
                       height: ScreenSize.setHeightPercent(context, 36),
                       width: double.maxFinite,
                       decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                          BoxShadow(
-                              blurRadius: 1, color: Colors.grey.shade400)
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(blurRadius: 1, color: Colors.grey.shade400)
                         ],
                       ),
                       child: Column(
@@ -173,24 +294,25 @@ class _DashboardPageState extends State<DashboardPage> {
                             children: [
                               Flexible(
                                 flex: 1,
-                                child: AddOnButton.textImageButton(
+                                child: AddOnButton.textImageButton(context,
                                     'assets/icon/attendance.png', 'Absensi'),
                               ),
                               Flexible(
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
+                                    context,
                                     'assets/icon/location_attendance.png',
                                     'Absensi GPS'),
                               ),
                               Flexible(
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
-                                    'assets/icon/cuti.png', 'Cuti'),
+                                    context, 'assets/icon/cuti.png', 'Cuti'),
                               ),
                               Flexible(
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
-                                    'assets/icon/ijin.png', 'Ijin'),
+                                    context, 'assets/icon/ijin.png', 'Ijin'),
                               ),
                             ],
                           ),
@@ -199,44 +321,47 @@ class _DashboardPageState extends State<DashboardPage> {
                             children: [
                               Flexible(
                                 flex: 1,
-                                child: AddOnButton.textImageButton(
+                                child: AddOnButton.textImageButton(context,
                                     'assets/icon/overtime.png', 'Lembur'),
                               ),
                               Flexible(
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
+                                    context,
                                     'assets/icon/attendance.png',
                                     'Libur Pengganti'),
                               ),
                               Flexible(
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
-                                    'assets/icon/opd.png', 'OPD'),
+                                    context, 'assets/icon/opd.png', 'OPD'),
                               ),
                               Flexible(
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
-                                    'assets/icon/bpd.png', 'BPD'),
+                                    context, 'assets/icon/bpd.png', 'BPD'),
                               ),
                             ],
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              AddOnButton.textImageButton(
+                              AddOnButton.textImageButton(context,
                                   'assets/icon/salary.png', 'Slip Gaji'),
                               AddOnButton.textImageButton(
-                                  'assets/icon/ssp.png', 'SSP'),
-                              AddOnButton.textImageButton(
+                                  context, 'assets/icon/ssp.png', 'SSP'),
+                              AddOnButton.textImageButton(context,
                                   'assets/icon/calendar.png', 'Jadwal Kerja'),
-                              AddOnButton.textImageButton(
+                              AddOnButton.textImageButton(context,
                                   'assets/icon/other.png', 'Lain lain'),
                             ],
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 21,),
+                    const SizedBox(
+                      height: 21,
+                    ),
                     Container(
                       height: ScreenSize.setHeightPercent(context, 20),
                       width: double.maxFinite,
@@ -244,7 +369,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                         borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(blurRadius: 1, color: Colors.grey.shade400)
                         ],
@@ -254,15 +379,22 @@ class _DashboardPageState extends State<DashboardPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text('Activity', style: CustomFont.activityTitle(),),
-                              Text('View More', style: CustomFont.activityTitle(),
+                              Text(
+                                'Activity',
+                                style: CustomFont.activityTitle(),
+                              ),
+                              Text(
+                                'View More',
+                                style: CustomFont.activityTitle(),
                               )
                             ],
                           )
                         ],
                       ),
                     ),
-                    const SizedBox(height: 12,)
+                    const SizedBox(
+                      height: 12,
+                    )
                   ],
                 ),
               ),
@@ -288,10 +420,7 @@ class _DashboardPageState extends State<DashboardPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: Badge.count(
                         count: 3,
-                        child: Icon(
-                          Icons.notifications,
-                          color: Colors.white
-                        )),
+                        child: const Icon(Icons.notifications, color: Colors.white)),
                   )
                 ],
               ),

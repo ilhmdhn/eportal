@@ -1,14 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class AddOnButton{
-  static Widget textImageButton(String assets, String name){
+  static Widget textImageButton(BuildContext ctx ,String assets, String name){
     return Container(
+      width: ScreenSize.setWidthPercent(ctx, 20),
+      // width: 56,
       // color: Colors.amber,
-      width: 56,
-      height: 81,
+      height: ScreenSize.setHeightPercent(ctx, 10),
       child: Column(
         children: [
           Container(
@@ -21,7 +24,7 @@ class AddOnButton{
             ),
             child: Image.asset(assets),
           ),
-          AutoSizeText(name, style: CustomFont.standartFont(), minFontSize: 5, maxLines: 2, textAlign: TextAlign.center,)
+          Expanded(child: AutoSizeText(name, style: CustomFont.standartFont(), minFontSize: 3, maxLines: 2, textAlign: TextAlign.center))
         ],
       ),
     );

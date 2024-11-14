@@ -10,6 +10,12 @@ class CustomFont{
   static TextStyle dashboardName() {
     return GoogleFonts.poppins(fontSize: 19, color: CustomColor.fontSecondary(), fontWeight:  FontWeight.w500);
   }
+
+  static TextStyle drawerName() {
+    return GoogleFonts.poppins(
+        fontSize: 17,
+        color: CustomColor.fontStandart());
+  }
   
   static TextStyle headingDua() {
     return GoogleFonts.poppins(
@@ -42,5 +48,10 @@ class CustomFont{
 
   static TextStyle dashboardPosition() {
     return GoogleFonts.poppins(fontSize: 16, color: CustomColor.fontSecondary());
+  }
+
+  static TextStyle drawerViewProfile() {
+    return GoogleFonts.poppins(
+        fontSize: 14, color: Colors.blue.shade900);
   }
 }
