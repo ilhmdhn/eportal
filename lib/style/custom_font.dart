@@ -7,6 +7,10 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 12, color: CustomColor.fontStandart());
   }
 
+  static TextStyle notifDetail() {
+    return GoogleFonts.poppins(fontSize: 14, color: CustomColor.fontStandart());
+  }
+
   static TextStyle dashboardName() {
     return GoogleFonts.poppins(fontSize: 19, color: CustomColor.fontSecondary(), fontWeight:  FontWeight.w500);
   }
@@ -31,11 +35,11 @@ class CustomFont{
   }
 
   static TextStyle headingTiga() {
-    return GoogleFonts.poppins(fontSize: 16, color: CustomColor.fontStandart());
+    return GoogleFonts.poppins(fontSize: 18, color: CustomColor.fontStandart());
   }
 
   static TextStyle headingEmpat() {
-    return GoogleFonts.poppins(fontSize: 14, color: CustomColor.fontStandart());
+    return GoogleFonts.poppins(fontSize: 14, color: Colors.black);
   }
 
   static TextStyle announcement() {

@@ -2,6 +2,7 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/page/add_on/button.dart';
+import 'package:eportal/page/dialog/view_notif_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,68 +21,137 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  final notificationDialog = NotificationDialog();
+  bool biometricState = false;
+  bool darkMode = false;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(
           backgroundColor: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipOval(
-                          child: SizedBox.fromSize(
-                            size: const Size.fromRadius(24),
-                            child: Image.network(
-                              'https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid',
-                              fit: BoxFit.cover,
+          child: Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    children: [
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ClipOval(
+                            child: SizedBox.fromSize(
+                              size: const Size.fromRadius(24),
+                              child: Image.network(
+                                'https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid',
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          width: 6,
-                        ),
-                        Flexible(
-                          child: Column(
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Flexible(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AutoSizeText(
+                                  'Mohammad Ferry Julyo',
+                                  style: CustomFont.drawerName(),
+                                  overflow: TextOverflow.clip,
+                                  maxLines: 2,
+                                ),
+                                AutoSizeText(
+                                  'View Profile',
+                                  style: CustomFont.drawerViewProfile(),
+                                  overflow: TextOverflow.clip,
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      Container(
+                        color: Colors.grey.shade400,
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        height: 1,
+                        width: double.infinity,
+                      ),
+                      InkWell(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              AutoSizeText(
-                                'Mohammad Ferry Julyo',
-                                style: CustomFont.drawerName(),
-                                overflow: TextOverflow.clip,
-                                maxLines: 2,
-                              ),
-                              AutoSizeText(
-                                'View Profile',
-                                style: CustomFont.drawerViewProfile(),
-                                overflow: TextOverflow.clip,
-                              ),
+                              AutoSizeText('Autentikasi Biometrik', style: CustomFont.headingEmpat(),),
+                              SizedBox(
+                                height: 36,
+                                width: 36,
+                                child: Checkbox(value: biometricState,
+                                activeColor: Colors.blue,
+                                onChanged: (value){
+                                  setState(() {
+                                    biometricState = value??false;
+                                  });
+                                }),
+                              )
                             ],
                           ),
-                        )
-                      ],
-                    ),
-                                  
-                  ],
-                ),
-                Container(
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Icon(Icons.logout, size: 36, color: Colors.red,),
-                      Text("Keluar", style: CustomFont.headingDua(),),
+                        ),
+                      Container(
+                        color: Colors.grey.shade400,
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        height: 1,
+                        width: double.infinity,
+                      ),
+                      InkWell(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AutoSizeText(
+                              'Mode Gelap',
+                              style: CustomFont.headingEmpat(),
+                            ),
+                            SizedBox(
+                              height: 36,
+                              child: Transform.scale(
+                                scale: 0.75,
+                                child: Switch(
+                                    value: darkMode,
+                                    activeColor: Colors.blue.shade800,
+                                    inactiveTrackColor: Colors.grey.shade300,
+                                    activeTrackColor: CustomColor.secondaryColor(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        darkMode = value;
+                                      });
+                                    }),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: Colors.grey.shade400,
+                        margin: EdgeInsets.symmetric(vertical: 10),
+                        height: 1,
+                        width: double.infinity,
+                      ),         
                     ],
                   ),
-                )
-              ],
+                  Container(
+                    child: Row(
+                      children: [
+                        const Icon(Icons.logout, size: 36, color: Colors.red,),
+                        Text("Keluar", style: CustomFont.headingTiga(),),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ),
@@ -186,8 +256,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                             width: 6,
                                           ),
                                           Animate(
-                                            onPlay: (controller) => controller.repeat(period: Duration(seconds: 3),),
-                                            effects: [FadeEffect()],
+                                            onPlay: (controller) => controller.repeat(period: const Duration(seconds: 3),),
+                                            effects: const [FadeEffect()],
                                             child:  SizedBox(
                                                   height: 26,
                                                   width: 26,
@@ -416,11 +486,16 @@ class _DashboardPageState extends State<DashboardPage> {
                           color: Colors.white,
                         ));
                   }),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Badge.count(
-                        count: 3,
-                        child: const Icon(Icons.notifications, color: Colors.white)),
+                  InkWell(
+                    onTap: (){
+                      notificationDialog.showNotificationOverlay(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Badge.count(
+                          count: 3,
+                          child: const Icon(Icons.notifications, color: Colors.white)),
+                    ),
                   )
                 ],
               ),
