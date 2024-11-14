@@ -476,7 +476,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           itemBuilder: (BuildContext ctxCarousel, int index,int pvIndex) {
                           return ClipRRect(
                               borderRadius: BorderRadius.circular(9),                                
-                            child: Image.network(getPhotos[index]),
+                            // child: Image.network(getPhotos[index]),
+                            child: Container(color: Colors.white,),
                           );
                           },),
                                                     const SizedBox(
