@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class NotificationStyle{
   static void info(BuildContext ctx, title, body){
     ElegantNotification.success(
-      title: Text(title, style: CustomFont.headingDua(), maxLines: 1,),
+      title: AutoSizeText(title, style: CustomFont.headingDua(), maxLines: 1),
       description: AutoSizeText(body, style: CustomFont.standartFont(), minFontSize: 12),
       // icon: Icon(
       //   Icons.check,

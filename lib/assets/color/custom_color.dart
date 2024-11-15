@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class CustomColor{
   static Color primary(){
-    return hexToColor('#50ADE6');
+    return hexToColor('#1C7CD4');
   }
 
   static Color secondaryColor() {
-    return hexToColor('#99C7EC');
+    return hexToColor('#53A3DC');
   }
 
   static Color background() {

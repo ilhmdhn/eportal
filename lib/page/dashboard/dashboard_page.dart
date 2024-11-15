@@ -5,13 +5,11 @@ import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
+import 'package:eportal/util/optimizer.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class DashboardPage extends StatefulWidget {
   static const nameRoute = '/dashboard';
@@ -80,7 +78,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                       Container(
                         color: Colors.grey.shade400,
-                        margin: EdgeInsets.symmetric(vertical: 10),
+                        margin: const EdgeInsets.symmetric(vertical: 10),
                         height: 1,
                         width: double.infinity,
                       ),
@@ -138,20 +136,39 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                       Container(
                         color: Colors.grey.shade400,
-                        margin: EdgeInsets.symmetric(vertical: 10),
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        height: 1,
+                        width: double.infinity,
+                      ),
+                      InkWell(
+                        onTap: (){
+                          Optimizer().requestIgnoreBatteryOptimization();
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            AutoSizeText(
+                              'Optimalkan',
+                              style: CustomFont.headingEmpat(),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        color: Colors.grey.shade400,
+                        margin: const EdgeInsets.symmetric(vertical: 10),
                         height: 1,
                         width: double.infinity,
                       ),         
+                    
                     ],
                   ),
-                  Container(
-                    child: Row(
+                  Row(
                       children: [
                         const Icon(Icons.logout, size: 36, color: Colors.red,),
                         Text("Keluar", style: CustomFont.headingTiga(),),
                       ],
                     ),
-                  )
                 ],
               ),
             ),
@@ -230,42 +247,53 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                   Expanded(
                                     child: Container(
-                                      padding: EdgeInsets.all(8),
+                                      padding: const EdgeInsets.all(8),
                                       width: double.maxFinite,
                                       height: 30,
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        mainAxisSize: MainAxisSize.min,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisSize: MainAxisSize.max,
                                         children: [
-                                          DefaultTextStyle(
-                                            style: CustomFont.dashboardPosition(),
-                                            child: AnimatedTextKit(
-                                              repeatForever: true,
-                                              animatedTexts: [
-                                                RotateAnimatedText(
-                                                    'Absen Hari ini'),
-                                                RotateAnimatedText(
-                                                    'Jam masuk: 08:15'),
-                                                RotateAnimatedText(
-                                                    'Kedatangan: 07:53'),
+                                          const Expanded(flex: 1 ,child: SizedBox()),
+                                          Expanded(
+                                            flex: 2,
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                DefaultTextStyle(
+                                                  style: CustomFont.dashboardPosition(),
+                                                  child: AnimatedTextKit(
+                                                    repeatForever: true,
+                                                    animatedTexts: [
+                                                      RotateAnimatedText(
+                                                          'Absen Hari ini'),
+                                                      RotateAnimatedText(
+                                                          'Jam masuk: 08:15'),
+                                                      RotateAnimatedText(
+                                                          'Datang: 07:53'),
+                                                    ],
+                                                    onTap: () {
+                                                      print("Tap Event");
+                                                    },
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 6,),
+                                                Animate(
+                                                  onPlay: (controller) =>
+                                                      controller.repeat(
+                                                    period: const Duration(
+                                                        seconds: 3),
+                                                  ),
+                                                  effects: const [FadeEffect()],
+                                                  child: SizedBox(
+                                                      height: 26,
+                                                      width: 26,
+                                                      child: Image.asset(
+                                                          'assets/icon/checkin.png')),
+                                                ),
                                               ],
-                                              onTap: () {
-                                                print("Tap Event");
-                                              },
                                             ),
                                           ),
-                                          const SizedBox(
-                                            width: 6,
-                                          ),
-                                          Animate(
-                                            onPlay: (controller) => controller.repeat(period: const Duration(seconds: 3),),
-                                            effects: const [FadeEffect()],
-                                            child:  SizedBox(
-                                                  height: 26,
-                                                  width: 26,
-                                                  child: Image.asset(
-                                                      'assets/icon/checkin.png')),
-                                          )
                                         ],
                                       ),
                                     ),
@@ -400,7 +428,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
                                     context,
-                                    'assets/icon/attendance.png',
+                                    'assets/icon/holiday_exchange.png',
                                     'Libur Pengganti'),
                               ),
                               Flexible(
@@ -425,7 +453,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               AddOnButton.textImageButton(context,
                                   'assets/icon/calendar.png', 'Jadwal Kerja'),
                               AddOnButton.textImageButton(context,
-                                  'assets/icon/other.png', 'Lain lain'),
+                                  'assets/icon/more.png', 'Lain lain'),
                             ],
                           ),
                         ],
@@ -476,8 +504,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           itemBuilder: (BuildContext ctxCarousel, int index,int pvIndex) {
                           return ClipRRect(
                               borderRadius: BorderRadius.circular(9),                                
-                            // child: Image.network(getPhotos[index]),
-                            child: Container(color: Colors.white,),
+                            child: Image.network(getPhotos[index]),
+                            // child: Container(color: Colors.white,),
                           );
                           },),
                                                     const SizedBox(
