@@ -1,4 +1,6 @@
 import 'package:eportal/page/dashboard/dashboard_page.dart';
+import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
+import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/optimizer.dart';
@@ -21,22 +23,25 @@ void main() async{
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // This widget is the root of your application.
+  
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey,
-      title: 'ePortal',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return SafeArea(
+      child: MaterialApp(
+        navigatorKey: navigatorKey,
+        title: 'ePortal',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        debugShowCheckedModeBanner: false,
+        initialRoute: DashboardPage.nameRoute,
+        routes: {
+          DashboardPage.nameRoute: (context) => const DashboardPage(),
+          GpsAttendancePage.nameRoute: (context) => const GpsAttendancePage(),
+          PermissionPage.nameRoute: (context) => const PermissionPage()
+        },
       ),
-      debugShowCheckedModeBanner: false,
-      initialRoute: DashboardPage.nameRoute,
-      routes: {
-        DashboardPage.nameRoute: (context) => const DashboardPage()
-      },
     );
   }
 }

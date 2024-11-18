@@ -39,6 +39,14 @@ class CustomFont{
   }
 
   static TextStyle headingEmpat() {
+    return GoogleFonts.poppins(fontSize: 16, color: Colors.black);
+  }
+
+  static TextStyle headingEmpatBold() {
+    return GoogleFonts.poppins(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600);
+  }
+
+    static TextStyle headingLima() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black);
   }
 

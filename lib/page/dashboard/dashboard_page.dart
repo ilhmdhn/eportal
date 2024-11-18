@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
+import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/optimizer.dart';
@@ -142,13 +143,14 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                       InkWell(
                         onTap: (){
-                          Optimizer().requestIgnoreBatteryOptimization();
+                          Navigator.popAndPushNamed(context, PermissionPage.nameRoute);
+                          // Optimizer().requestIgnoreBatteryOptimization();
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             AutoSizeText(
-                              'Optimalkan',
+                              'Permission',
                               style: CustomFont.headingEmpat(),
                             ),
                           ],
@@ -177,6 +179,19 @@ class _DashboardPageState extends State<DashboardPage> {
         backgroundColor: CustomColor.background(),
         body: Stack(
           children: [
+            Positioned(
+                bottom: 0,
+                right: 0,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                        width: ScreenSize.setWidthPercent(context, 50),
+                        child: AspectRatio(
+                            aspectRatio: 1 / 1,
+                            child: Image.asset('assets/image/joe.png')))
+                  ],
+                )),
             Positioned(
               top: 0,
               left: 0,
@@ -504,8 +519,8 @@ class _DashboardPageState extends State<DashboardPage> {
                           itemBuilder: (BuildContext ctxCarousel, int index,int pvIndex) {
                           return ClipRRect(
                               borderRadius: BorderRadius.circular(9),                                
-                            child: Image.network(getPhotos[index]),
-                            // child: Container(color: Colors.white,),
+                            // child: Image.network(getPhotos[index]),
+                            child: Container(color: Colors.white,),
                           );
                           },),
                                                     const SizedBox(
@@ -555,7 +570,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   )
                 ],
               ),
-            ),
+            )
           ],
         ),
       ),
