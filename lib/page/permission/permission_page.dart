@@ -76,12 +76,12 @@ class PermissionPage extends StatefulWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Container(
-            margin: EdgeInsets.all(12),
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 21),
+            margin: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 21),
             width: double.maxFinite,
             decoration: BoxDecoration(
               color: Colors.white,
-              boxShadow: [BoxShadow(
+              boxShadow: const [BoxShadow(
                 blurRadius: 0.3,
               )],
               // border: Border.all(width: 0.7, color: Colors.grey),
@@ -154,7 +154,7 @@ class PermissionPage extends StatefulWidget {
                       Container(
                         height: 1.4,
                         color: Colors.grey,
-                        margin: EdgeInsets.symmetric(vertical: 6),
+                        margin: const EdgeInsets.symmetric(vertical: 6),
                       ),
                       InkWell(
                         onTap: () async {
@@ -223,7 +223,7 @@ class PermissionPage extends StatefulWidget {
                       Container(
                         height: 1.4,
                         color: Colors.grey,
-                        margin: EdgeInsets.symmetric(vertical: 6),
+                        margin: const EdgeInsets.symmetric(vertical: 6),
                       ),
                       InkWell(
                         onTap: () async {
@@ -292,7 +292,7 @@ class PermissionPage extends StatefulWidget {
                       Container(
                         height: 1.4,
                         color: Colors.grey,
-                        margin: EdgeInsets.symmetric(vertical: 6),
+                        margin: const EdgeInsets.symmetric(vertical: 6),
                       ),
                       InkWell(
                         onTap: () async{
@@ -366,7 +366,7 @@ class PermissionPage extends StatefulWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
+              SizedBox(
                 width: ScreenSize.setWidthPercent(context, 50),
                 child: AspectRatio(
                   aspectRatio: 1/1,

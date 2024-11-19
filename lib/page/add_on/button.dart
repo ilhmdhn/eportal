@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 
 class AddOnButton{
   static Widget textImageButton(BuildContext ctx ,String assets, String name){
-    return Container(
+    return SizedBox(
       width: ScreenSize.setWidthPercent(ctx, 20),
       // width: 56,
       // color: Colors.amber,

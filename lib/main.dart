@@ -1,12 +1,13 @@
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
+import 'package:eportal/provider/location_provider.dart';
 import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/notification.dart';
-import 'package:eportal/util/optimizer.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -18,7 +19,10 @@ void main() async{
     createNotif(message.data['Title'], message.data['Body']);
   });
   FirebaseTools.getToken();
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (_) => LocationProvider(),
+    child: const MyApp(),
+    ));
 }
 
 class MyApp extends StatelessWidget {

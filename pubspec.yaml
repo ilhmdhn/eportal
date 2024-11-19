@@ -39,8 +39,12 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_animate: ^4.5.0
+  flutter_map: ^7.0.2
   google_fonts: ^6.2.1
+  latlong2: ^0.9.1
+  location: ^7.0.1
   permission_handler: ^11.3.1
+  provider: ^6.1.2
 
 dev_dependencies:
   flutter_lints: ^3.0.0
@@ -60,6 +64,7 @@ flutter:
   assets:
     - assets/icon/
     - assets/image/
+    - assets/json/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see

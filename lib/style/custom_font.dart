@@ -46,7 +46,7 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600);
   }
 
-    static TextStyle headingLima() {
+  static TextStyle headingLima() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black);
   }
 
@@ -58,8 +58,16 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 16, color: Colors.blue.shade900);
   }
 
+  static TextStyle urLocation() {
+    return GoogleFonts.poppins(fontSize: 17, color: Colors.blue.shade900, fontWeight: FontWeight.w500);
+  }
+
   static TextStyle dashboardPosition() {
     return GoogleFonts.poppins(fontSize: 16, color: CustomColor.fontSecondary());
+  }
+
+  static TextStyle buttonSecondary(){
+    return GoogleFonts.poppins(fontSize: 19, fontWeight: FontWeight.w500, color: CustomColor.fontSecondary());
   }
 
   static TextStyle drawerViewProfile() {

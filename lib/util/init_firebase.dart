@@ -5,7 +5,7 @@ class FirebaseTools{
     final fcmToken = await FirebaseMessaging.instance.getToken();
 
   FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
-      print('TOKEN REFRESH ${fcmToken}');
+      print('TOKEN REFRESH $fcmToken');
     }).onError((err) {
       print('FAIL GENERATE NEW TOKEN'+err);
     });

@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
+import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
@@ -104,7 +105,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         ),
                       Container(
                         color: Colors.grey.shade400,
-                        margin: EdgeInsets.symmetric(vertical: 10),
+                        margin: const EdgeInsets.symmetric(vertical: 10),
                         height: 1,
                         width: double.infinity,
                       ),
@@ -143,7 +144,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       ),
                       InkWell(
                         onTap: (){
-                          Navigator.popAndPushNamed(context, PermissionPage.nameRoute);
+                          Navigator.pushNamed(context, PermissionPage.nameRoute);
                           // Optimizer().requestIgnoreBatteryOptimization();
                         },
                         child: Row(
@@ -185,7 +186,7 @@ class _DashboardPageState extends State<DashboardPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Container(
+                    SizedBox(
                         width: ScreenSize.setWidthPercent(context, 50),
                         child: AspectRatio(
                             aspectRatio: 1 / 1,
@@ -323,11 +324,11 @@ class _DashboardPageState extends State<DashboardPage> {
                               left: 0,
                               right: 0,
                               child: Container(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                     left: 8, right: 8, bottom: 8, top: 4),
                                 height:
                                     ScreenSize.setHeightPercent(context, 23),
-                                margin: EdgeInsets.symmetric(horizontal: 20),
+                                margin: const EdgeInsets.symmetric(horizontal: 20),
                                 width: double.maxFinite,
                                 decoration: BoxDecoration(
                                     boxShadow: [
@@ -414,10 +415,15 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                               Flexible(
                                 flex: 1,
-                                child: AddOnButton.textImageButton(
-                                    context,
-                                    'assets/icon/location_attendance.png',
-                                    'Absensi GPS'),
+                                child: InkWell(
+                                  onTap: (){
+                                    Navigator.pushNamed(context, GpsAttendancePage.nameRoute);
+                                  },
+                                  child: AddOnButton.textImageButton(
+                                      context,
+                                      'assets/icon/location_attendance.png',
+                                      'Absensi GPS'),
+                                ),
                               ),
                               Flexible(
                                 flex: 1,
