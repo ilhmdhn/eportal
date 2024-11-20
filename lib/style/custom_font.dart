@@ -62,6 +62,16 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 17, color: Colors.blue.shade900, fontWeight: FontWeight.w500);
   }
 
+  static TextStyle locationAccuration() {
+    return GoogleFonts.poppins(
+        fontSize: 14, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle location() {
+    return GoogleFonts.poppins(
+        fontSize: 21, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
+  }
+
   static TextStyle dashboardPosition() {
     return GoogleFonts.poppins(fontSize: 16, color: CustomColor.fontSecondary());
   }

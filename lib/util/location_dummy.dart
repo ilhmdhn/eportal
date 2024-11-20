@@ -6,12 +6,14 @@ class Location {
   final String name;
   final double outletLat;
   final double outletLong;
+  double distance;
 
   Location({
     required this.brand,
     required this.name,
     required this.outletLat,
     required this.outletLong,
+    this.distance = 0
   });
 
   // Factory method untuk parsing JSON
