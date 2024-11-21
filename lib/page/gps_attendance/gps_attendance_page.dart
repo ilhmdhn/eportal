@@ -14,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class GpsAttendancePage extends StatefulWidget {
   static const nameRoute = '/gps-attendance';
@@ -29,7 +28,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
   List<String> nameOutletList = [];
   final _mapController = MapController();
   double _currentZoom = 18.0;
-  final Distance distance = Distance();
+  final Distance distance = const Distance();
   Location nearest = Location(brand: '1', name: 'Happy Puppy', outletLat: 0, outletLong: 0);
   List<Location> locations = [];
   List<Marker> markerz = [];
@@ -247,95 +246,139 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20))
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              AutoSizeText(nearest.distance>100?'Outlet terdekat':'Lokasimu saat ini', style: CustomFont.urLocation()),
-                              AutoSizeText('Akurasi ${(locationProvider.currentLocation?.accuracy ?? 0).toStringAsFixed(2)}m', style: CustomFont.locationAccuration()),
-                            ],
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 24,),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AutoSizeText(nearest.distance>50?'Outlet terdekat':'Kamu berada di', style: CustomFont.urLocation()),
+                                AutoSizeText('Akurasi ${(locationProvider.currentLocation?.accuracy ?? 0).toStringAsFixed(2)}m', style: CustomFont.locationAccuration()),
+                              ],
+                            ),
                           ),
                           Expanded(
                             child: Column(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             mainAxisSize: MainAxisSize.max,crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  AutoSizeText(
-                                    nearest.brand == '1'
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AutoSizeText(
+                                      nearest.brand == '1'
                                         ? 'Happup'
-                                        : nearest.brand == '2'
-                                            ? 'Happy Puppy'
-                                            : nearest.brand == '3'
-                                                ? 'QQ'
-                                                : nearest.brand == '4'
-                                                    ? 'Suka - Suka'
-                                                    : nearest.brand == '2'
-                                                        ? 'Blackhole'
-                                                        : 'Office',
-                                    style: CustomFont.headingDuaBold(),
-                                    maxLines: 1,
-                                    minFontSize: 6,
-                                  ),
-                                  AutoSizeText(nearest.name, style: CustomFont.headingTiga()),
-                                  AutoSizeText('Jarak: ${Calculate.meterToUp(nearest.distance)}', style: CustomFont.headingEmpat(),),
-                                ],
+                                          : nearest.brand == '2'
+                                        ? 'Happy Puppy'
+                                          : nearest.brand == '3'
+                                        ? 'QQ'
+                                          : nearest.brand == '4'
+                                        ? 'Suka - Suka'
+                                          : nearest.brand == '2'
+                                        ? 'Blackhole'
+                                          : 'Office',
+                                      style: CustomFont.headingDuaBold(),
+                                      maxLines: 1,
+                                      minFontSize: 6,
+                                    ),
+                                    AutoSizeText(nearest.name, style: CustomFont.headingTiga()),
+                                    AutoSizeText('Jarak: ${Calculate.meterToUp(nearest.distance)}', style: CustomFont.headingEmpat(),),
+                                  ],
+                                ),
                               ),
                               
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('Lihat lokasi outlet lain', style: CustomFont.headingLima()),
+                                  Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 24,),
+                                    child: Text('Lihat lokasi outlet lain', style: CustomFont.headingEmpat()),
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    margin: EdgeInsets.symmetric(horizontal: 24),
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
                                   SizedBox(
                                     child: DropdownSearch<Location>(
-                                      items: (filter, InfiniteScrollProps) => locations,
+                                      decoratorProps: const DropDownDecoratorProps(
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none
+                                        )
+                                      ),
+                                      items: (filter, a) => locations,
                                       // mode: Mode.form,
                                       itemAsString: (Location? location)=> '${location?.name} ${location?.distance}m',
                                       popupProps: PopupProps.menu(
                                         title: Container(
                                           color: Colors.white,
+                                          height: 36,
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                             children: [
-                                              SizedBox(),
-                                              Text('Nearest Outlet'),
+                                              const SizedBox(
+                                                    height: 26,
+                                                    width: 26,
+                                                  ),
+                                              Text('Nearest Outlet', style: CustomFont.headingTiga(),),
                                               InkWell(
-                                                child: Icon(Icons.close),
+                                                onTap: (){
+                                                  Navigator.pop(context);
+                                                },
+                                                child: const SizedBox(
+                                                  height: 26,
+                                                  width: 26,
+                                                  child: Icon(Icons.close)),
                                               ),
                                             ],
                                           )),
                                         itemBuilder: (ctx, item, isDisable, isSelected){
                                           return Container(
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
-                                              borderRadius: BorderRadius.circular(20)
+                                              color:  isSelected? Colors.amber: Colors.white,
                                             ),
                                             child: Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                SizedBox(
-                                                  height: 36,
-                                                  child: item.brand == '1'? SizedBox(
-                                                    child: Image.asset('assets/image/happup.png'))
-                                                      : item.brand == '2'
-                                                        ? Image.asset('assets/image/happy_puppy.png')
-                                                      : item.brand == '3'
-                                                        ? Image.asset('assets/image/qq.png')
-                                                      : item.brand =='4'
-                                                        ? Image.asset('assets/image/suka_suka.png')
-                                                      : item.brand == '5'
-                                                        ? Image.asset('assets/image/blackhole.png')
-                                                      : const SizedBox(),
+                                                Padding(
+                                                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 26,
+                                                        child: item.brand == '1'? SizedBox(
+                                                          child: Image.asset('assets/image/happup.png'))
+                                                            : item.brand == '2'
+                                                              ? Image.asset('assets/image/happy_puppy.png')
+                                                            : item.brand == '3'
+                                                              ? Image.asset('assets/image/qq.png')
+                                                            : item.brand =='4'
+                                                              ? Image.asset('assets/image/suka_suka.png')
+                                                            : item.brand == '5'
+                                                              ? Image.asset('assets/image/blackhole.png')
+                                                            : const SizedBox(),
+                                                      ),
+                                                      AutoSizeText(item.name, style: CustomFont.headingEmpatBold(),),
+                                                      Text('Jarak :${Calculate.meterToUp(item.distance)}', style: CustomFont.headingEmpat(),),
+                                                    ],
+                                                  ),
                                                 ),
-                                                AutoSizeText(item.name),
-                                                Text(Calculate.meterToUp(item.distance)),
+                                                Container(
+                                                  height: 1,
+                                                  width: double.infinity,
+                                                  color: Colors.grey,
+                                                )
                                               ],
                                             ),
                                           );
@@ -343,6 +386,9 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                       ),
                                       dropdownBuilder: (context, selectedItem) {
                                         return Container(
+                                          margin: const EdgeInsets.symmetric(
+                                            horizontal: 24,
+                                          ),
                                           decoration: const BoxDecoration(
                                             color: Colors.white
                                           ),
@@ -385,18 +431,30 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                       },
                                     ),
                                   ),
+                                  Container(
+                                    width: double.infinity,
+                                    margin:
+                                        EdgeInsets.symmetric(horizontal: 24),
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
                                   const SizedBox(height: 12,)
                                 ],
                               ),
                             ],
-                                                    ),
+                            ),
                           ),
-                          InkWell(onTap: (){
-                          }, child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(vertical: 9),
-                            decoration: CustomContainer.buttonPrimary(),
-                            child: Center(child: AutoSizeText('Absen', style: CustomFont.buttonSecondary()))))
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                          ),
+                            child: InkWell(onTap: (){
+                            }, child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(vertical: 9),
+                              decoration: CustomContainer.buttonPrimary(),
+                              child: Center(child: AutoSizeText('Absen', style: CustomFont.buttonSecondary())))),
+                          )
                         ],
                       ),
                     )
