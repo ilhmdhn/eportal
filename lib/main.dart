@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -23,6 +24,7 @@ void main() async{
   
   FirebaseTools.getToken();
   await SharedPreferencesData.initialize();
+  await dotenv.load(fileName: ".env");
   runApp(ChangeNotifierProvider(
     create: (_) => LocationProvider(),
     child: const MyApp(),

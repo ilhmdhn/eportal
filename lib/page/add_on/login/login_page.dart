@@ -1,8 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/key/decoder.dart';
+import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +18,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  TextEditingController tfUser = TextEditingController();
+  TextEditingController tfPass = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
             left: 0,
             right: 0,
             child: Container(
-              margin: const EdgeInsets.only(top: 20),
+              margin: const EdgeInsets.only(top: 60),
               padding: EdgeInsets.symmetric(horizontal:  ScreenSize.setWidthPercent(context, 15.5)),
               child: Image.asset('assets/image/hp_group.png'),
             )),
@@ -55,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
                         // TextField untuk E-Mail atau NIK Pegawai
                         TextField(
                           cursorHeight: 16,
+                          controller: tfUser,
                           style: CustomFont.headingEmpat(),
                           decoration: InputDecoration(
                             hintText: 'E-Mail/ NIK Pegawai',
@@ -89,6 +95,7 @@ class _LoginPageState extends State<LoginPage> {
                         // TextField untuk Password
                         TextField(
                           cursorHeight: 16,
+                          controller: tfPass,
                           style: CustomFont.headingEmpat(),
                           obscureText:
                               true, // Untuk menyembunyikan teks password
@@ -125,8 +132,21 @@ class _LoginPageState extends State<LoginPage> {
                           children: [
                             Expanded(
                               child: InkWell(
-                                onTap: () {
-                                  // Logika login
+                                onTap: () async{
+                                  final user = tfUser.text.trim(); 
+                                  final pass = tfPass.text.trim();
+                                  if(isNullOrEmpty(user) && isNullOrEmpty(pass)){
+                                    print('user/ password kosong');
+                                  }else{
+                                    final loginRequest = await NetworkRequest.login(user, pass);
+                                    if(loginRequest.state == true){
+                                      if(context.mounted){
+                                        Navigator.pushNamedAndRemoveUntil(context, DashboardPage.nameRoute, (_)=>false);
+                                      }
+                                    }else{
+                                      print('Gagal login '+loginRequest.message.toString());
+                                    }
+                                  }
                                 },
                                 child: Container(
                                   padding:
