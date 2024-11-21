@@ -26,6 +26,10 @@ class CustomFont{
         fontSize: 19, color: CustomColor.fontStandart());
   }
 
+  static TextStyle headingDuaBold() {
+    return GoogleFonts.poppins(fontSize: 20, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
+  }
+
   static TextStyle menuTitle() {
     return GoogleFonts.poppins(fontSize: 17, color: Colors.blue.shade900);
   }
@@ -34,8 +38,34 @@ class CustomFont{
     return GoogleFonts.dancingScript(fontSize: 16, fontWeight: FontWeight.w600 ,color: Colors.blue.shade900);
   }
 
+  static TextStyle titleLogin() {
+    return GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w600, color: CustomColor.secondaryColor());
+  }
+
+  static TextStyle forgotPassword() {
+    return GoogleFonts.poppins(
+        fontSize: 17,
+        fontWeight: FontWeight.w600,
+        color: CustomColor.secondaryColor());
+  }
+
   static TextStyle headingTiga() {
     return GoogleFonts.poppins(fontSize: 18, color: CustomColor.fontStandart());
+  }
+
+  static TextStyle headingEmpatColorful() {
+    return GoogleFonts.poppins(fontSize: 16, color: CustomColor.secondaryColor());
+  }
+
+  static TextStyle headingTigaBold() {
+    return GoogleFonts.poppins(fontSize: 18, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
+  }
+
+  static TextStyle headingTigaBoldSecondary() {
+    return GoogleFonts.poppins(
+        fontSize: 18,
+        color: Colors.white,
+        fontWeight: FontWeight.w700);
   }
 
   static TextStyle headingEmpat() {

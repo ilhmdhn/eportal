@@ -1,3 +1,4 @@
+import 'package:eportal/page/add_on/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
@@ -39,8 +40,9 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         debugShowCheckedModeBanner: false,
-        initialRoute: DashboardPage.nameRoute,
+        initialRoute: LoginPage.nameRoute,
         routes: {
+          LoginPage.nameRoute: (context) => const LoginPage(),
           DashboardPage.nameRoute: (context) => const DashboardPage(),
           GpsAttendancePage.nameRoute: (context) => const GpsAttendancePage(),
           PermissionPage.nameRoute: (context) => const PermissionPage()

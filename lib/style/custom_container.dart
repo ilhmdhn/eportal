@@ -14,4 +14,11 @@ class CustomContainer{
       color: CustomColor.primary()
     );
   }
+
+  static buttonSecondary() {
+    return BoxDecoration(
+        borderRadius: BorderRadius.circular(16), 
+        color: CustomColor.secondaryColor()
+    );
+  }
 }

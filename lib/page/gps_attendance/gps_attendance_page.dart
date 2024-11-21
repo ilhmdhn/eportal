@@ -90,7 +90,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
           currentDistance = dstnc;
         }
       });
-  
+      locations.sort((a, b) => a.distance.compareTo(b.distance));
   }
 
   @override
@@ -198,12 +198,13 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                                InkWell(
+                                const SizedBox(),
+                                /*InkWell(
                                 onTap: () {
                                   Navigator.pop(context);
                                 },
                                 child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(20),
                                         color: CustomColor.primary(),
@@ -213,7 +214,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                       Icons.arrow_back,
                                       color: Colors.white,
                                     )),
-                              ),
+                              ),*/
                             InkWell(
                               onTap: (){
                                 _mapController.move(currentLocation, 18);
@@ -251,84 +252,146 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  AutoSizeText('Lokasimu saat ini', style: CustomFont.urLocation()),
-                                    AutoSizeText(
-                                        'Akurasi ${(locationProvider.currentLocation?.accuracy ?? 0).toStringAsFixed(2)}m',
-                                        style: CustomFont.locationAccuration()),
-                                ],
-                              ),
-                              const SizedBox(height: 12,),
-                              AutoSizeText(nearest.name + nearest.distance.toString(),
-                                style: CustomFont.location()),
+                              AutoSizeText(nearest.distance>100?'Outlet terdekat':'Lokasimu saat ini', style: CustomFont.urLocation()),
+                              AutoSizeText('Akurasi ${(locationProvider.currentLocation?.accuracy ?? 0).toStringAsFixed(2)}m', style: CustomFont.locationAccuration()),
                             ],
                           ),
-                          Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            DropdownSearch<Location>(
-                              items: (filter, InfiniteScrollProps) => locations,
-                              // mode: Mode.form,
-                              itemAsString: (Location? location)=> '${location?.name} ${location?.distance}m',
-                              popupProps: PopupProps.menu(
-                                title: Container(
-                                  color: Colors.white,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      SizedBox(),
-                                      Text('Nearest Outlet'),
-                                      InkWell(
-                                        child: Icon(Icons.close),
-                                      ),
-                                    ],
-                                  )),
-                                itemBuilder: (ctx, item, isDisable, isSelected){
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(20)
-                                    ),
-                                    child: Text(item.brand),
-                                  );
-                                }
+                          Expanded(
+                            child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisSize: MainAxisSize.max,crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AutoSizeText(
+                                    nearest.brand == '1'
+                                        ? 'Happup'
+                                        : nearest.brand == '2'
+                                            ? 'Happy Puppy'
+                                            : nearest.brand == '3'
+                                                ? 'QQ'
+                                                : nearest.brand == '4'
+                                                    ? 'Suka - Suka'
+                                                    : nearest.brand == '2'
+                                                        ? 'Blackhole'
+                                                        : 'Office',
+                                    style: CustomFont.headingDuaBold(),
+                                    maxLines: 1,
+                                    minFontSize: 6,
+                                  ),
+                                  AutoSizeText(nearest.name, style: CustomFont.headingTiga()),
+                                  AutoSizeText('Jarak: ${Calculate.meterToUp(nearest.distance)}', style: CustomFont.headingEmpat(),),
+                                ],
                               ),
-                              dropdownBuilder: (context, selectedItem) {
-                                return Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      AutoSizeText(
-                                        selectedItem?.name??'',
-                                        style: CustomFont.standartFont(),
+                              
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Lihat lokasi outlet lain', style: CustomFont.headingLima()),
+                                  SizedBox(
+                                    child: DropdownSearch<Location>(
+                                      items: (filter, InfiniteScrollProps) => locations,
+                                      // mode: Mode.form,
+                                      itemAsString: (Location? location)=> '${location?.name} ${location?.distance}m',
+                                      popupProps: PopupProps.menu(
+                                        title: Container(
+                                          color: Colors.white,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(),
+                                              Text('Nearest Outlet'),
+                                              InkWell(
+                                                child: Icon(Icons.close),
+                                              ),
+                                            ],
+                                          )),
+                                        itemBuilder: (ctx, item, isDisable, isSelected){
+                                          return Container(
+                                            decoration: BoxDecoration(
+                                              color: Colors.white,
+                                              borderRadius: BorderRadius.circular(20)
+                                            ),
+                                            child: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  height: 36,
+                                                  child: item.brand == '1'? SizedBox(
+                                                    child: Image.asset('assets/image/happup.png'))
+                                                      : item.brand == '2'
+                                                        ? Image.asset('assets/image/happy_puppy.png')
+                                                      : item.brand == '3'
+                                                        ? Image.asset('assets/image/qq.png')
+                                                      : item.brand =='4'
+                                                        ? Image.asset('assets/image/suka_suka.png')
+                                                      : item.brand == '5'
+                                                        ? Image.asset('assets/image/blackhole.png')
+                                                      : const SizedBox(),
+                                                ),
+                                                AutoSizeText(item.name),
+                                                Text(Calculate.meterToUp(item.distance)),
+                                              ],
+                                            ),
+                                          );
+                                        }
                                       ),
-                                      AutoSizeText(
-                                        Calculate.meterToUp(selectedItem?.distance??0),
-                                        style: CustomFont.standartFont(),
-                                      )
-                                    ],
+                                      dropdownBuilder: (context, selectedItem) {
+                                        return Container(
+                                          decoration: const BoxDecoration(
+                                            color: Colors.white
+                                          ),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              AutoSizeText(
+                                                (selectedItem?.brand??nearest.brand) == '1'?
+                                                'Happup':
+                                                (selectedItem?.brand??nearest.brand) == '2'?
+                                                'Happy Puppy':
+                                                (selectedItem?.brand??nearest.brand) == '3'?
+                                                'QQ':
+                                                (selectedItem?.brand??nearest.brand) == '4'?
+                                                'Suka - Suka':
+                                                (selectedItem?.brand??nearest.brand) == '2'?
+                                                'Blackhole':
+                                                'Office',
+                                                style: CustomFont.headingTigaBold(),
+                                                maxLines: 1,
+                                                minFontSize: 6,
+                                              ),
+                                              AutoSizeText(
+                                                selectedItem?.name??nearest.name,
+                                                style: CustomFont.headingEmpat(), maxLines: 1, minFontSize: 6,
+                                              ),
+                                              AutoSizeText(
+                                                Calculate.meterToUp(selectedItem?.distance??nearest.distance),
+                                                style: CustomFont.headingLima(),
+                                              )
+                                            ],
+                                          ),
+                                        );
+                                      },
+                                      compareFn: (Location? a, Location? b) => a?.outletLat == b?.outletLat && a?.outletLong == b?.outletLong,
+                                      onChanged: (Location? selectedLocation){
+                                        if(selectedLocation != null){
+                                          _mapController.move(LatLng(selectedLocation.outletLat, selectedLocation.outletLong), 18);
+                                        }
+                                      },
+                                    ),
                                   ),
-                                );
-                              },
-                              compareFn: (Location? a, Location? b) => a?.outletLat == b?.outletLat && a?.outletLong == b?.outletLong,
-                              onChanged: (Location? selectedLocation){
-                                if(selectedLocation != null){
-                                  _mapController.move(LatLng(selectedLocation.outletLat, selectedLocation.outletLong), 18);
-                                }
-                              },
-                            ),
-                          ],
-                        ),
+                                  const SizedBox(height: 12,)
+                                ],
+                              ),
+                            ],
+                                                    ),
+                          ),
                           InkWell(onTap: (){
-                  
                           }, child: Container(
                             width: double.infinity,
                             padding: const EdgeInsets.symmetric(vertical: 9),
