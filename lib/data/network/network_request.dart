@@ -17,7 +17,7 @@ class NetworkRequest{
       }));
       
       final convertedResult = json.decode(apiResponse.body);
-      final response  =LoginResponse.fromJson(convertedResult);
+      final response  = LoginResponse.fromJson(convertedResult);
       if(response.state == true){
         SharedPreferencesData.setKey(response.key??'');
       }

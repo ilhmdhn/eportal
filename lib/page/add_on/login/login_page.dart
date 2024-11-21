@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/key/decoder.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/checker.dart';
+import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 
@@ -20,6 +24,28 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController tfUser = TextEditingController();
   TextEditingController tfPass = TextEditingController();
+
+  void keyChecker(){
+    final key = SharedPreferencesData.getKey();
+    print('menampilkan key');
+    print(key);
+    if (key == null) {
+      return;
+    } else {
+      try{
+        print('nganuu');
+      }catch(e){
+        print('e ${e.toString()}');
+      }
+    }
+  }
+
+  @override
+  void initState(){
+    super.initState();
+    keyChecker();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,6 +159,10 @@ class _LoginPageState extends State<LoginPage> {
                             Expanded(
                               child: InkWell(
                                 onTap: () async{
+                                          getIt<NavigationService>()
+                                      .pushNamedAndRemoveUntil(
+                                          DashboardPage.nameRoute);
+return;
                                   final user = tfUser.text.trim(); 
                                   final pass = tfPass.text.trim();
                                   if(isNullOrEmpty(user) && isNullOrEmpty(pass)){

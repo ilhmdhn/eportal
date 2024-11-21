@@ -13,8 +13,12 @@ class SharedPreferencesData{
     await _prefs?.setString('KEY', key);
   }
 
-  static Future<String?> getKey()async{
+  static String? getKey(){
     final String? key = _prefs?.getString('KEY');
     return key;
+  }
+
+  static deleteKey(){
+    _prefs?.remove('KEY');
   }
 }

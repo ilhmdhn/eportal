@@ -5,14 +5,14 @@ import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/provider/location_provider.dart';
 import 'package:eportal/util/init_firebase.dart';
+import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,6 +25,7 @@ void main() async{
   FirebaseTools.getToken();
   await SharedPreferencesData.initialize();
   await dotenv.load(fileName: ".env");
+  setupLocator();
   runApp(ChangeNotifierProvider(
     create: (_) => LocationProvider(),
     child: const MyApp(),
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: MaterialApp(
-        navigatorKey: navigatorKey,
+        navigatorKey: GetIt.instance<NavigationService>().navigatorKey,
         title: 'ePortal',
         
         theme: ThemeData(

@@ -7,5 +7,6 @@ class Decoder{
     final publicKey = PublicKey.rsaPublicKey();
     final data = JWT.verify(token, publicKey);
     print(data.payload.toString());
+    return data.payload;
   }
 }
