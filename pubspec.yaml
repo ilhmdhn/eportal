@@ -32,6 +32,7 @@ dependencies:
   auto_size_text: ^3.0.0
   carousel_slider: ^5.0.0
   cupertino_icons: ^1.0.6
+  dart_jsonwebtoken: ^2.14.1
   device_info_plus: ^11.1.1
   dropdown_search: ^6.0.1
   elegant_notification: ^2.3.1
@@ -40,12 +41,15 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_animate: ^4.5.0
+  flutter_dotenv: ^5.2.1
   flutter_map: ^7.0.2
   google_fonts: ^6.2.1
+  http: ^1.2.2
   latlong2: ^0.9.1
   location: ^7.0.1
   permission_handler: ^11.3.1
   provider: ^6.1.2
+  shared_preferences: ^2.3.3
   sliding_up_panel: ^2.0.0+1
 
 dev_dependencies:
@@ -67,6 +71,8 @@ flutter:
     - assets/icon/
     - assets/image/
     - assets/json/
+    - assets/key/
+    - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
   # For details regarding adding assets from package dependencies, see

@@ -39,14 +39,14 @@ class CustomFont{
   }
 
   static TextStyle titleLogin() {
-    return GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w600, color: CustomColor.secondaryColor());
+    return GoogleFonts.poppins(fontSize: 26, fontWeight: FontWeight.w600, color: CustomColor.primary());
   }
 
   static TextStyle forgotPassword() {
     return GoogleFonts.poppins(
         fontSize: 17,
         fontWeight: FontWeight.w600,
-        color: CustomColor.secondaryColor());
+        color: CustomColor.primary());
   }
 
   static TextStyle headingTiga() {
@@ -54,7 +54,7 @@ class CustomFont{
   }
 
   static TextStyle headingEmpatColorful() {
-    return GoogleFonts.poppins(fontSize: 16, color: CustomColor.secondaryColor());
+    return GoogleFonts.poppins(fontSize: 16, color: CustomColor.primary());
   }
 
   static TextStyle headingTigaBold() {

@@ -51,3 +51,5 @@ AndroidManifest.xml
 android/app/src/main/AndroidManifest.xml
 assets/json/locations.json
 android/app/src/main/AndroidManifest.xml
+assets/key/public.key
+*.env
