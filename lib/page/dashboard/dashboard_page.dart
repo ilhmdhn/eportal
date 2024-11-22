@@ -1,13 +1,21 @@
+import 'dart:convert';
+
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/local/shared_preferences.dart';
+import 'package:eportal/data/model/profile.dart';
+import 'package:eportal/key/decoder.dart';
 import 'package:eportal/page/add_on/button.dart';
+import 'package:eportal/page/add_on/login/login_page.dart';
+import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
-import 'package:eportal/util/optimizer.dart';
+import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -23,12 +31,12 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   final notificationDialog = NotificationDialog();
-  bool biometricState = false;
   bool darkMode = false;
   List<String> getPhotos = DummyData.getImage();
 
   @override
   Widget build(BuildContext context) {
+    bool biometricState = SharedPreferencesData.getBiometric();
     return SafeArea(
       child: Scaffold(
         drawer: Drawer(
@@ -48,10 +56,16 @@ class _DashboardPageState extends State<DashboardPage> {
                           ClipOval(
                             child: SizedBox.fromSize(
                               size: const Size.fromRadius(24),
-                              child: Image.network(
+                              child: CachedNetworkImage(
+                                imageUrl: "https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid",
+                                placeholder: (context, url) => CircularProgressIndicator(color: CustomColor.primary(),),
+                                fit: BoxFit.cover,
+                                errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red,),
+                              ),
+                              /*Image.network(
                                 'https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid',
                                 fit: BoxFit.cover,
-                              ),
+                              ),*/
                             ),
                           ),
                           const SizedBox(
@@ -63,7 +77,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 AutoSizeText(
-                                  'Mohammad Ferry Julyo',
+                                  Profile.getProfile().name,
                                   style: CustomFont.drawerName(),
                                   overflow: TextOverflow.clip,
                                   maxLines: 2,
@@ -94,9 +108,10 @@ class _DashboardPageState extends State<DashboardPage> {
                                 width: 36,
                                 child: Checkbox(value: biometricState,
                                 activeColor: Colors.blue,
-                                onChanged: (value){
-                                  setState(() {
-                                    biometricState = value??false;
+                                onChanged: (value)async{
+                                    await SharedPreferencesData.setBiometric(value??false);
+                                  setState((){
+                                    biometricState;
                                   });
                                 }),
                               )
@@ -109,7 +124,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         height: 1,
                         width: double.infinity,
                       ),
-                      InkWell(
+                     /* InkWell(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -141,7 +156,7 @@ class _DashboardPageState extends State<DashboardPage> {
                         margin: const EdgeInsets.symmetric(vertical: 10),
                         height: 1,
                         width: double.infinity,
-                      ),
+                      ),*/
                       InkWell(
                         onTap: (){
                           Navigator.pushNamed(context, PermissionPage.nameRoute);
@@ -166,12 +181,22 @@ class _DashboardPageState extends State<DashboardPage> {
                     
                     ],
                   ),
-                  Row(
-                      children: [
-                        const Icon(Icons.logout, size: 36, color: Colors.red,),
-                        Text("Keluar", style: CustomFont.headingTiga(),),
-                      ],
-                    ),
+                  InkWell(
+                    onTap: ()async {
+                      final confirm = await ConfirmationDialog.confirmation(context, 'Logout?');
+                      if(confirm != true){
+                        return;
+                      }
+                      SharedPreferencesData.deleteKey();
+                      NavigationService.moveRemoveUntil(LoginPage.nameRoute);
+                    },
+                    child: Row(
+                        children: [
+                          const Icon(Icons.logout, size: 36, color: Colors.red,),
+                          Text("Keluar", style: CustomFont.headingTiga(),),
+                        ],
+                      ),
+                  ),
                 ],
               ),
             ),
@@ -228,9 +253,20 @@ class _DashboardPageState extends State<DashboardPage> {
                                       ClipOval(
                                         child: SizedBox.fromSize(
                                           size: const Size.fromRadius(31),
-                                          child: Image.network(
-                                            'https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid',
+                                          child: CachedNetworkImage(
+                                            imageUrl:
+                                                "https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid",
+                                            placeholder: (context, url) =>
+                                                CircularProgressIndicator(
+                                              color: CustomColor.primary(),
+                                            ),
                                             fit: BoxFit.cover,
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    const Icon(
+                                              Icons.error,
+                                              color: Colors.red,
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -243,12 +279,12 @@ class _DashboardPageState extends State<DashboardPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             AutoSizeText(
-                                              'Mohammad Ferry Julyo',
+                                              Profile.getProfile().name,
                                               style: CustomFont.dashboardName(),
                                               overflow: TextOverflow.clip,
                                             ),
                                             AutoSizeText(
-                                              'Eksekutif Programmer',
+                                              Profile.getProfile().jabatan,
                                               style: CustomFont
                                                   .dashboardPosition(),
                                               overflow: TextOverflow.clip,
@@ -410,8 +446,15 @@ class _DashboardPageState extends State<DashboardPage> {
                             children: [
                               Flexible(
                                 flex: 1,
-                                child: AddOnButton.textImageButton(context,
-                                    'assets/icon/attendance.png', 'Absensi'),
+                                child: InkWell(
+                                  onTap: (){
+                                    final key = SharedPreferencesData.getKey();
+                                    final decryptor = Decoder.jwtDecoder(key!);
+                                    print(jsonEncode(decryptor));
+                                  },
+                                  child: AddOnButton.textImageButton(context,
+                                      'assets/icon/attendance.png', 'Absensi'),
+                                ),
                               ),
                               Flexible(
                                 flex: 1,
@@ -427,8 +470,13 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                               Flexible(
                                 flex: 1,
-                                child: AddOnButton.textImageButton(
-                                    context, 'assets/icon/cuti.png', 'Cuti'),
+                                child: InkWell(
+                                  onTap: (){
+                                    Profile.getProfile();
+                                  },
+                                  child: AddOnButton.textImageButton(
+                                      context, 'assets/icon/cuti.png', 'Cuti'),
+                                ),
                               ),
                               Flexible(
                                 flex: 1,

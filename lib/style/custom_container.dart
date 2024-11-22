@@ -21,4 +21,11 @@ class CustomContainer{
         color: CustomColor.secondaryColor()
     );
   }
+
+  static buttonCancel() {
+    return BoxDecoration(
+        borderRadius: BorderRadius.circular(16), 
+        color: Colors.redAccent
+  );
+  }
 }

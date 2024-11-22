@@ -20,6 +20,7 @@ class NetworkRequest{
       final response  = LoginResponse.fromJson(convertedResult);
       if(response.state == true){
         SharedPreferencesData.setKey(response.key??'');
+        SharedPreferencesData.saveAccount(user, pass);
       }
       return response;
     }catch(e){

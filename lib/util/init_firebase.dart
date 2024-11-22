@@ -9,7 +9,6 @@ class FirebaseTools{
     }).onError((err) {
       print('FAIL GENERATE NEW TOKEN'+err);
     });
-
     print('TOKEN new $fcmToken');
   }
 }

@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -98,7 +99,7 @@ class PermissionPage extends StatefulWidget {
                       InkWell(
                         onTap: () async{
                           if(notificationPermissionState == PermissionState.granted){
-                            print('Sudah disetujui');
+                            ShowToast.warning('Sudah disetujui');
                             return;
                           }
                           Permission.notification.onDeniedCallback(() {
@@ -160,7 +161,7 @@ class PermissionPage extends StatefulWidget {
                         onTap: () async {
                           if (locationPermissionState ==
                               PermissionState.granted) {
-                            print('Sudah disetujui');
+                            ShowToast.warning('Sudah disetujui');
                             return;
                           }
                           Permission.location.onDeniedCallback(() {
@@ -229,7 +230,7 @@ class PermissionPage extends StatefulWidget {
                         onTap: () async {
                           if (cameraPermissionState ==
                               PermissionState.granted) {
-                            print('Sudah disetujui');
+                            ShowToast.warning('Sudah disetujui');
                             return;
                           }
                           Permission.camera.onDeniedCallback(() {
@@ -297,7 +298,7 @@ class PermissionPage extends StatefulWidget {
                       InkWell(
                         onTap: () async{
                           if(phonePermissionState == PermissionState.granted){
-                            print('Sudah disetujui');
+                            ShowToast.warning('Sudah disetujui');
                             return;
                           }
                           Permission.phone.onDeniedCallback(() {

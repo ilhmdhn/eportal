@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eportal/assets/color/custom_color.dart';
@@ -305,7 +303,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                   ),
                                   Container(
                                     width: double.infinity,
-                                    margin: EdgeInsets.symmetric(horizontal: 24),
+                                    margin: const EdgeInsets.symmetric(horizontal: 24),
                                     height: 1,
                                     color: Colors.grey,
                                   ),
@@ -434,7 +432,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                   Container(
                                     width: double.infinity,
                                     margin:
-                                        EdgeInsets.symmetric(horizontal: 24),
+                                        const EdgeInsets.symmetric(horizontal: 24),
                                     height: 1,
                                     color: Colors.grey,
                                   ),

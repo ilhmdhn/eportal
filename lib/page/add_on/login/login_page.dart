@@ -1,17 +1,18 @@
-import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
+import 'package:eportal/data/model/user.dart';
 import 'package:eportal/data/network/network_request.dart';
-import 'package:eportal/key/decoder.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/biometric.dart';
 import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class LoginPage extends StatefulWidget {
   static const nameRoute = '/login';
@@ -24,26 +25,29 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   TextEditingController tfUser = TextEditingController();
   TextEditingController tfPass = TextEditingController();
+  final key = SharedPreferencesData.getKey();
+  User? user = SharedPreferencesData.getUser();
 
   void keyChecker(){
-    final key = SharedPreferencesData.getKey();
-    print('menampilkan key');
-    print(key);
-    if (key == null) {
-      return;
-    } else {
-      try{
-        print('nganuu');
-      }catch(e){
-        print('e ${e.toString()}');
+    if(key != null){
+      try {
+        getIt<NavigationService>().pushNamedAndRemoveUntil(DashboardPage.nameRoute);
+      } catch (e) {
+        ShowToast.warning('Gagal beripindah ke halaman dashboard');
       }
     }
-  }
+    if(user != null){
+      tfUser.text = user?.username??'';
+      tfPass.text = user?.password??'';
+    }
+}
 
   @override
   void initState(){
     super.initState();
-    keyChecker();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      keyChecker();
+    });
   }
 
   @override
@@ -149,9 +153,9 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                             ),
                           ),
-                          autofillHints: [
+                          autofillHints: const [
                             AutofillHints.password
-                          ], // Autofill untuk password
+                          ],
                         ),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -159,23 +163,13 @@ class _LoginPageState extends State<LoginPage> {
                             Expanded(
                               child: InkWell(
                                 onTap: () async{
-                                          getIt<NavigationService>()
-                                      .pushNamedAndRemoveUntil(
-                                          DashboardPage.nameRoute);
-return;
                                   final user = tfUser.text.trim(); 
                                   final pass = tfPass.text.trim();
-                                  if(isNullOrEmpty(user) && isNullOrEmpty(pass)){
-                                    print('user/ password kosong');
+                                  if(isNullOrEmpty(user) || isNullOrEmpty(pass)){
+                                    ShowToast.warning('Lengkapi user dan password');
+                                    return;
                                   }else{
-                                    final loginRequest = await NetworkRequest.login(user, pass);
-                                    if(loginRequest.state == true){
-                                      if(context.mounted){
-                                        Navigator.pushNamedAndRemoveUntil(context, DashboardPage.nameRoute, (_)=>false);
-                                      }
-                                    }else{
-                                      print('Gagal login '+loginRequest.message.toString());
-                                    }
+                                    executeLogin(user, pass);
                                   }
                                 },
                                 child: Container(
@@ -193,17 +187,32 @@ return;
                             const SizedBox(
                               width: 12,
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
+                            InkWell(
+                              onTap: ()async{
+                                final isAllowBiometric = SharedPreferencesData.getBiometric();
+                                if(isAllowBiometric != true){
+                                  ShowToast.warning('Autentikasi biometric belum diaktifkan');
+                                  return;
+                                }
+                                final biometricRequest = await BiometricAuth().requestFingerprintAuth();
+                                if(biometricRequest){
+                                  if(user != null){
+                                    executeLogin(user!.username, user!.password);
+                                  }
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: CustomColor.secondaryColor(),
+                                  ),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Icon(
+                                  Icons.fingerprint,
+                                  size: 42,
                                   color: CustomColor.secondaryColor(),
                                 ),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Icon(
-                                Icons.fingerprint,
-                                size: 42,
-                                color: CustomColor.secondaryColor(),
                               ),
                             )
                           ],
@@ -230,5 +239,16 @@ return;
         ],
       ),
     );
+  }
+
+  void executeLogin(String user, String pass)async{
+    EasyLoading.show();
+    final loginRequest = await NetworkRequest.login(user, pass);
+    EasyLoading.dismiss();
+    if(loginRequest.state == true){
+      getIt<NavigationService>().pushNamedAndRemoveUntil(DashboardPage.nameRoute);
+    }else{
+      ShowToast.warning('Gagal login ${loginRequest.message}');
+    }
   }
 }
