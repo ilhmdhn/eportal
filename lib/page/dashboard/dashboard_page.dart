@@ -1,14 +1,11 @@
-import 'dart:convert';
-
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/data/model/profile.dart';
-import 'package:eportal/key/decoder.dart';
 import 'package:eportal/page/add_on/button.dart';
-import 'package:eportal/page/add_on/login/login_page.dart';
+import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
@@ -20,6 +17,7 @@ import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DashboardPage extends StatefulWidget {
   static const nameRoute = '/dashboard';
@@ -33,9 +31,11 @@ class _DashboardPageState extends State<DashboardPage> {
   final notificationDialog = NotificationDialog();
   bool darkMode = false;
   List<String> getPhotos = DummyData.getImage();
-
+  static final baseUrl = dotenv.env['SERVER_URL'];
+  Uri photoUrl = Uri.parse('$baseUrl/uploads/${Profile.getProfile().nip}.jpg}');
   @override
   Widget build(BuildContext context) {
+    print('urll'+photoUrl.toString());
     bool biometricState = SharedPreferencesData.getBiometric();
     return SafeArea(
       child: Scaffold(
@@ -57,7 +57,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             child: SizedBox.fromSize(
                               size: const Size.fromRadius(24),
                               child: CachedNetworkImage(
-                                imageUrl: "https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid",
+                                imageUrl: photoUrl.toString(),
                                 placeholder: (context, url) => CircularProgressIndicator(color: CustomColor.primary(),),
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red,),
@@ -254,8 +254,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         child: SizedBox.fromSize(
                                           size: const Size.fromRadius(31),
                                           child: CachedNetworkImage(
-                                            imageUrl:
-                                                "https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid",
+                                            imageUrl: photoUrl.toString(),
                                             placeholder: (context, url) =>
                                                 CircularProgressIndicator(
                                               color: CustomColor.primary(),
@@ -448,9 +447,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: (){
-                                    final key = SharedPreferencesData.getKey();
-                                    final decryptor = Decoder.jwtDecoder(key!);
-                                    print(jsonEncode(decryptor));
                                   },
                                   child: AddOnButton.textImageButton(context,
                                       'assets/icon/attendance.png', 'Absensi'),
@@ -472,7 +468,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: (){
-                                    Profile.getProfile();
                                   },
                                   child: AddOnButton.textImageButton(
                                       context, 'assets/icon/cuti.png', 'Cuti'),

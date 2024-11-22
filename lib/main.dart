@@ -1,5 +1,5 @@
 import 'package:eportal/data/local/shared_preferences.dart';
-import 'package:eportal/page/add_on/login/login_page.dart';
+import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';

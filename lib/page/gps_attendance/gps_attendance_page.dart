@@ -2,16 +2,19 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/page/gps_attendance/camera_dialog.dart';
 import 'package:eportal/provider/location_provider.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/calculate.dart';
 import 'package:eportal/util/location_dummy.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:camera/camera.dart';
 
 class GpsAttendancePage extends StatefulWidget {
   static const nameRoute = '/gps-attendance';
@@ -30,6 +33,9 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
   Location nearest = Location(brand: '1', name: 'Happy Puppy', outletLat: 0, outletLong: 0);
   List<Location> locations = [];
   List<Marker> markerz = [];
+  late CameraController _cameraController;
+  late List<CameraDescription> cameras;
+  bool isCameraInitialized = false;
 
 
   @override
@@ -44,56 +50,6 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
         locations.addAll(loadedLocations);
         getMarker(loadedLocations);
       });
-  }
-
-  void getMarker(List<Location> locations){
-      for (var element in locations) {
-        nameOutletList.add(element.name);
-        markerz.add(
-          Marker(
-            width: 100,
-            point: LatLng(element.outletLat, element.outletLong),
-            child: 
-              element.brand == '1'?
-              SizedBox(child: Image.asset('assets/image/happup.png')):
-              element.brand == '2'?
-              Image.asset('assets/image/happy_puppy.png'):
-              element.brand == '3'?
-              Image.asset('assets/image/qq.png'):
-              element.brand == '4'?
-              Image.asset('assets/image/suka_suka.png'):
-              element.brand == '5'?
-              Image.asset('assets/image/blackhole.png'):
-              const SizedBox()
-            )
-        );
-      }
-    setState(() {
-      markerz;
-    });
-  }
-
-
-  void nearestOutlet(LatLng currentLocation){
-      double currentDistance = 0;
-      locations.asMap().forEach((index, value){
-        final dstnc = distance.as(LengthUnit.Meter, currentLocation , LatLng(value.outletLat, value.outletLong));
-        locations[index].distance = dstnc;
-        if(currentDistance == 0){
-          nearest = value;
-          currentDistance = dstnc;
-        } else if(currentDistance > dstnc){
-          nearest = value;
-          currentDistance = dstnc;
-        }
-      });
-      locations.sort((a, b) => a.distance.compareTo(b.distance));
-  }
-
-  @override
-  void dispose(){
-    _mapController.dispose();
-    super.dispose();
   }
 
   @override
@@ -196,22 +152,6 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                                 const SizedBox(),
-                                /*InkWell(
-                                onTap: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: CustomColor.primary(),
-                                        border: Border.all(
-                                            width: 2, color: Colors.white)),
-                                    child: const Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
-                                    )),
-                              ),*/
                             InkWell(
                               onTap: (){
                                 _mapController.move(currentLocation, 18);
@@ -446,7 +386,18 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                             padding: const EdgeInsets.symmetric(
                             horizontal: 24,
                           ),
-                            child: InkWell(onTap: (){
+                            child: InkWell(onTap: ()async{
+                              if(nearest.distance>50){
+                                ShowToast.error('Jarak ke outlet harus dibawah 50 meter');
+                                return;
+                              }
+                                await _initializeCamera();
+
+                              if(_cameraController.value.isInitialized && context.mounted){
+                                CameraDialog.showCameraDialog(context, _cameraController);
+                              }else{
+                                ShowToast.warning('Kamera Belum siap');
+                              }
                             }, child: Container(
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(vertical: 9),
@@ -462,5 +413,72 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
         ),
       ),
     );
+  }
+
+
+  Future<void> _initializeCamera() async {
+    cameras = await availableCameras();
+    final frontCamera = cameras.firstWhere(
+      (camera) => camera.lensDirection == CameraLensDirection.front,
+      orElse: () => cameras.first,
+    );
+    _cameraController = CameraController(frontCamera, ResolutionPreset.medium);
+
+    try {
+      await _cameraController.initialize();
+      setState(() {
+        isCameraInitialized = true;
+      });
+    } catch (e) {
+      print("Error initializing camera: $e");
+    }
+    return;
+  }
+
+  void getMarker(List<Location> locations) {
+    for (var element in locations) {
+      nameOutletList.add(element.name);
+      markerz.add(Marker(
+          width: 100,
+          point: LatLng(element.outletLat, element.outletLong),
+          child: element.brand == '1'
+              ? SizedBox(child: Image.asset('assets/image/happup.png'))
+              : element.brand == '2'
+                  ? Image.asset('assets/image/happy_puppy.png')
+                  : element.brand == '3'
+                      ? Image.asset('assets/image/qq.png')
+                      : element.brand == '4'
+                          ? Image.asset('assets/image/suka_suka.png')
+                          : element.brand == '5'
+                              ? Image.asset('assets/image/blackhole.png')
+                              : const SizedBox()));
+    }
+    setState(() {
+      markerz;
+    });
+  }
+
+  void nearestOutlet(LatLng currentLocation) {
+    double currentDistance = 0;
+    locations.asMap().forEach((index, value) {
+      final dstnc = distance.as(LengthUnit.Meter, currentLocation,
+          LatLng(value.outletLat, value.outletLong));
+      locations[index].distance = dstnc;
+      if (currentDistance == 0) {
+        nearest = value;
+        currentDistance = dstnc;
+      } else if (currentDistance > dstnc) {
+        nearest = value;
+        currentDistance = dstnc;
+      }
+    });
+    locations.sort((a, b) => a.distance.compareTo(b.distance));
+  }
+
+  @override
+  void dispose() {
+    _mapController.dispose();
+    _cameraController.dispose();
+    super.dispose();
   }
 }
