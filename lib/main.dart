@@ -1,4 +1,6 @@
 import 'package:eportal/data/local/shared_preferences.dart';
+import 'package:eportal/page/attendance/attendance_page.dart';
+import 'package:eportal/page/cuti/cuti_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
@@ -47,14 +49,15 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        
         debugShowCheckedModeBanner: false,
         initialRoute: LoginPage.nameRoute,
         routes: {
           LoginPage.nameRoute: (context) => const LoginPage(),
           DashboardPage.nameRoute: (context) => const DashboardPage(),
+          AttendancePage.nameRoute: (context) => const AttendancePage(),
           GpsAttendancePage.nameRoute: (context) => const GpsAttendancePage(),
-          PermissionPage.nameRoute: (context) => const PermissionPage()
+          PermissionPage.nameRoute: (context) => const PermissionPage(),
+          CutiPage.nameRoute: (context) => const CutiPage()
         },
       ),
     );

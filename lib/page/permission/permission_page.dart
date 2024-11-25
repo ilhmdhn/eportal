@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/optimizer.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
@@ -297,23 +298,7 @@ class PermissionPage extends StatefulWidget {
                       ),
                       InkWell(
                         onTap: () async{
-                          if(phonePermissionState == PermissionState.granted){
-                            ShowToast.warning('Sudah disetujui');
-                            return;
-                          }
-                          Permission.phone.onDeniedCallback(() {
-                            // Your code
-                          }).onGrantedCallback(() {
-                            // Your code
-                          }).onPermanentlyDeniedCallback(() {
-                            // Your code
-                          }).onRestrictedCallback(() {
-                            // Your code
-                          }).onLimitedCallback(() {
-                            // Your code
-                          }).onProvisionalCallback(() {
-                            // Your code
-                          }).request();
+                          Optimizer().requestIgnoreBatteryOptimization();
                         },
                         child: Column(
                           children: [
@@ -324,8 +309,8 @@ class PermissionPage extends StatefulWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Phone',
-                                          style: CustomFont.headingEmpatBold()),
+                                      AutoSizeText('Optimalkan Penggunaan Baterai',
+                                          style: CustomFont.headingEmpatBold(), minFontSize: 6, maxLines: 1,),
                                       AutoSizeText(
                                         "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
                                         style: CustomFont.headingEmpat(),
@@ -337,22 +322,6 @@ class PermissionPage extends StatefulWidget {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(
-                                  width: 19,
-                                ),
-                                SizedBox(
-                                  width: 26,
-                                  height: 26,
-                                  child: Transform.scale(
-                                    scale: 1.3,
-                                    child: Checkbox(
-                                      value: phonePermissionState == PermissionState.granted? true: false,
-                                      activeColor: CustomColor.primary(),
-                                      checkColor: Colors.white,
-                                      onChanged: ((value) {}),
-                                    ),
-                                  ),
-                                )
                               ],
                             ),
                           ],

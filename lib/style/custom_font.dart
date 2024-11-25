@@ -61,6 +61,27 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 18, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
   }
 
+  static TextStyle headingTigaSemiBold() {
+    return GoogleFonts.poppins(
+        fontSize: 18,
+        color: CustomColor.fontStandart(),
+        fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle headingTigaSemiBoldColor() {
+    return GoogleFonts.poppins(
+        fontSize: 18,
+        color: CustomColor.primary(),
+        fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle headingTigaSemiBoldSecondary() {
+    return GoogleFonts.poppins(
+        fontSize: 18,
+        color: Colors.white,
+        fontWeight: FontWeight.w500);
+  }
+
   static TextStyle headingTigaBoldSecondary() {
     return GoogleFonts.poppins(
         fontSize: 18,
@@ -78,6 +99,14 @@ class CustomFont{
 
   static TextStyle headingLima() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black);
+  }
+
+  static TextStyle headingLimaSemiBold() {
+    return GoogleFonts.poppins(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle headingLimaBold() {
+    return GoogleFonts.poppins(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w600);
   }
 
   static TextStyle announcement() {

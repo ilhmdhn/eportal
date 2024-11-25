@@ -1,3 +1,4 @@
+import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
@@ -17,11 +18,18 @@ class NavigationService {
   Future<dynamic> pushNamedAndRemoveUntil(String routeName) {
     return navigatorKey.currentState!.pushNamedAndRemoveUntil(routeName, (route) => false);
   }
+  
   static void moveRemoveUntil(routeName){
     getIt<NavigationService>().pushNamedAndRemoveUntil(routeName);
   }
+
+  static void move(routeName) {
+    getIt<NavigationService>().pushNamed(routeName);
+  }
+
   void goBack() => navigatorKey.currentState!.pop();
 }
+
 
 void setupLocator() {
   getIt.registerLazySingleton(() => NavigationService(navigatorKey: navigatorKey));

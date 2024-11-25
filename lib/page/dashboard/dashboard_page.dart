@@ -5,6 +5,8 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/data/model/profile.dart';
 import 'package:eportal/page/add_on/button.dart';
+import 'package:eportal/page/attendance/attendance_page.dart';
+import 'package:eportal/page/cuti/cuti_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
@@ -35,7 +37,6 @@ class _DashboardPageState extends State<DashboardPage> {
   Uri photoUrl = Uri.parse('$baseUrl/uploads/${Profile.getProfile().nip}.jpg}');
   @override
   Widget build(BuildContext context) {
-    print('urll'+photoUrl.toString());
     bool biometricState = SharedPreferencesData.getBiometric();
     return SafeArea(
       child: Scaffold(
@@ -160,7 +161,6 @@ class _DashboardPageState extends State<DashboardPage> {
                       InkWell(
                         onTap: (){
                           Navigator.pushNamed(context, PermissionPage.nameRoute);
-                          // Optimizer().requestIgnoreBatteryOptimization();
                         },
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -246,9 +246,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   const SizedBox(
                                     height: 41,
                                   ),
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                  Row( crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       ClipOval(
                                         child: SizedBox.fromSize(
@@ -447,6 +445,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: (){
+                                    NavigationService.move(AttendancePage.nameRoute);
                                   },
                                   child: AddOnButton.textImageButton(context,
                                       'assets/icon/attendance.png', 'Absensi'),
@@ -468,6 +467,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: (){
+                                    NavigationService.move(CutiPage.nameRoute);
                                   },
                                   child: AddOnButton.textImageButton(
                                       context, 'assets/icon/cuti.png', 'Cuti'),

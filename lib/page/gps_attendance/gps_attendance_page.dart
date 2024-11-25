@@ -478,7 +478,6 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
   @override
   void dispose() {
     _mapController.dispose();
-    _cameraController.dispose();
     super.dispose();
   }
 }
