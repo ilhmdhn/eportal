@@ -43,24 +43,47 @@ class _AttendancePageState extends State<AttendancePage> {
                   child: Column(
                     children: [
                       AutoSizeText('Data Absensi', style: CustomFont.headingTigaSemiBoldSecondary(),),
-                      AutoSizeText('November 2024', style: CustomFont.headingTigaSemiBoldSecondary(),),
-                      GroupButton(
-                        isRadio: true,
-                        buttonBuilder: (selected, value, context) {
-                          return Badge.count(
-                            count: 1,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20)
-                              ),
-                              child: Text(value),
-                            ),
-                          );
+                      InkWell(
+                        onTap: ()async{
                         },
-                        buttons: const ['All', 'Tepat Waktu','Cuti', 'Sakit', 'Izin','Terlambat'],
-                      )
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            AutoSizeText('November 2024', style: CustomFont.headingTigaSemiBoldSecondary(),),
+                            Icon(
+                                  Icons.change_circle_outlined,
+                                  color: Colors.white,
+                                  size: 21,
+                                ),
+                          ],
+                        ),
+                      ),
+                     SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                       child: GroupButton(
+                          isRadio: true,
+                          buttonBuilder: (selected, value, context) {
+                            return Badge.count(
+                              count: 1,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20)
+                                ),
+                                child: AutoSizeText(value, style: CustomFont.standartFont(),),
+                              ),
+                            );
+                          },
+                          buttons: const ['All', 'Tepat Waktu','Cuti', 'Sakit', 'Izin','Terlambat', 'All',
+                                'Tepat Waktu',
+                                'Cuti',
+                                'Sakit',
+                                'Izin',
+                                'Terlambat'
+                              ],
+                        ),
+                     )
                     ],
                   ),
                 ),

@@ -1,6 +1,8 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:calendar_slider/calendar_slider.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/page/add_on/animation.dart';
+import 'package:eportal/page/cuti/add_cuti_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
@@ -66,9 +68,49 @@ class _CutiPageState extends State<CutiPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColor.background(),
+      floatingActionButton: InkWell(
+        onTap: (){
+          CutiDialog.showAddCUtiDialog(context, 3);
+        },
+        child: Container(
+          width: 52,
+          height: 52,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(26),
+            color: CustomColor.primary()
+          ),
+          child: Icon(Icons.add, color: Colors.white, size: 36,),
+        ),
+      ),
       body: Column(
         children: [
-          CustomAnimation.loading()
+          Expanded(
+            child: ListView.builder(
+              itemCount: 12,
+              itemBuilder: (BuildContext ctx, index){
+                return Container(
+                  margin: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12)
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          AutoSizeText('CUT-1000AKT24112601', style: CustomFont.headingLimaSemiBold(),),
+                        ],
+                      ),
+                      AutoSizeText('01 Desember 2024 - 02 Desember 2024', style: CustomFont.headingLimaSemiBold(),),
+                    ],
+                  ),
+                );
+              }),
+          )
+          // CustomAnimation.loading()
          /* Positioned(
             top: 0,
             right: 0,

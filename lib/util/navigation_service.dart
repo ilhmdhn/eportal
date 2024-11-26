@@ -27,6 +27,10 @@ class NavigationService {
     getIt<NavigationService>().pushNamed(routeName);
   }
 
+  static void back() {
+    getIt<NavigationService>().goBack();
+  }
+
   void goBack() => navigatorKey.currentState!.pop();
 }
 

@@ -97,6 +97,11 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600);
   }
 
+  static TextStyle headingEmpatSemiBold() {
+    return GoogleFonts.poppins(
+        fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
+  }
+
   static TextStyle headingLima() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black);
   }
