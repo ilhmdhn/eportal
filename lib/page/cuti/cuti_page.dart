@@ -1,11 +1,17 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:calendar_slider/calendar_slider.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/network/network_request.dart';
+import 'package:eportal/data/network/response/attendance_list_response.dart';
 import 'package:eportal/page/add_on/animation.dart';
 import 'package:eportal/page/cuti/add_cuti_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class CutiPage extends StatefulWidget {
   static const nameRoute = '/cuti';
@@ -38,9 +44,14 @@ class _CutiPageState extends State<CutiPage> {
   late PageController _pageController;
   int _currentIndex = 0;
 
+  AttendanceListResponse? attendanceListResponse;
+
   @override
-  void initState() {
+  void initState() async{
     super.initState();
+    EasyLoading.show();
+    attendanceListResponse = await NetworkRequest.getAttendance('11-2024');
+    EasyLoading.dismiss();
     _monthYearList = _generateMonthYearList();
     _pageController = PageController(
       initialPage: _currentIndex,
@@ -85,8 +96,17 @@ class _CutiPageState extends State<CutiPage> {
       body: Column(
         children: [
           Expanded(
-            child: ListView.builder(
-              itemCount: 12,
+            child: 
+            
+            attendanceListResponse == null?
+              SizedBox():
+            attendanceListResponse?.state != true?
+              Center(
+                child: AutoSizeText(attendanceListResponse?.message??'')
+              ):
+                        
+            ListView.builder(
+              itemCount: attendanceListResponse?.listAbsen.length,
               itemBuilder: (BuildContext ctx, index){
                 return Container(
                   margin: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
@@ -104,7 +124,7 @@ class _CutiPageState extends State<CutiPage> {
                           AutoSizeText('CUT-1000AKT24112601', style: CustomFont.headingLimaSemiBold(),),
                         ],
                       ),
-                      AutoSizeText('01 Desember 2024 - 02 Desember 2024', style: CustomFont.headingLimaSemiBold(),),
+                      AutoSizeText('${CustomConverter.dateToMonth('2024-12-12')} - ${CustomConverter.dateToMonth('2024-12-13')}', style: CustomFont.headingLimaSemiBold(),),
                     ],
                   ),
                 );

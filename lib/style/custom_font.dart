@@ -97,6 +97,16 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w600);
   }
 
+  static TextStyle headingEmpatBoldSecondary() {
+    return GoogleFonts.poppins(
+        fontSize: 16, color: Colors.white, fontWeight: FontWeight.w600);
+  }
+
+  static TextStyle headingEmpatSecondary() {
+    return GoogleFonts.poppins(
+        fontSize: 16, color: Colors.white);
+  }
+
   static TextStyle headingEmpatSemiBold() {
     return GoogleFonts.poppins(
         fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
@@ -112,6 +122,11 @@ class CustomFont{
 
   static TextStyle headingLimaBold() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w600);
+  }
+
+  static TextStyle headingLimaWarning() {
+    return GoogleFonts.poppins(
+        fontSize: 14, color: Colors.red, fontWeight: FontWeight.w600);
   }
 
   static TextStyle announcement() {

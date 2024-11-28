@@ -387,7 +387,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                             horizontal: 24,
                           ),
                             child: InkWell(onTap: ()async{
-                              if(nearest.distance>50){
+                              if(nearest.distance>5000){
                                 ShowToast.error('Jarak ke outlet harus dibawah 50 meter');
                                 return;
                               }

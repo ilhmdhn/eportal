@@ -476,7 +476,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               Flexible(
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
-                                    context, 'assets/icon/ijin.png', 'Ijin'),
+                                    context, 'assets/icon/ijin2.png', 'Ijin'),
                               ),
                             ],
                           ),
@@ -503,7 +503,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               Flexible(
                                 flex: 1,
                                 child: AddOnButton.textImageButton(
-                                    context, 'assets/icon/bpd.png', 'BPD'),
+                                    context, 'assets/icon/bpd2.png', 'BPD'),
                               ),
                             ],
                           ),
@@ -513,7 +513,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               AddOnButton.textImageButton(context,
                                   'assets/icon/salary.png', 'Slip Gaji'),
                               AddOnButton.textImageButton(
-                                  context, 'assets/icon/ssp.png', 'SSP'),
+                                  context, 'assets/icon/ssp2.png', 'SSP'),
                               AddOnButton.textImageButton(context,
                                   'assets/icon/calendar.png', 'Jadwal Kerja'),
                               AddOnButton.textImageButton(context,

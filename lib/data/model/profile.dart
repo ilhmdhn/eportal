@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/key/decoder.dart';
-import 'package:eportal/util/toast.dart';
 
 class Profile {
   String nip;
