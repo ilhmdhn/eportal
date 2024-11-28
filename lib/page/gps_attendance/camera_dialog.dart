@@ -210,18 +210,18 @@ class CameraDialog {
         return StatefulBuilder(
             builder: (BuildContext ctx, StateSetter setState) {
           return AlertDialog(
-            insetPadding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-            titlePadding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            actionsPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            contentPadding: EdgeInsets.symmetric(horizontal: 25, vertical: 2),
+            insetPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            titlePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            actionsPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 25, vertical: 2),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            title: Container(
+            title: SizedBox(
               width: double.infinity,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(width: 36, height: 36),
+                  const SizedBox(width: 36, height: 36),
                   Text('Ambil Foto', style: CustomFont.headingTiga()),
                   SizedBox(
                     width: 36,
@@ -231,7 +231,7 @@ class CameraDialog {
                         cameraController.dispose();
                         Navigator.pop(context);
                       },
-                      child: Icon(Icons.close),
+                      child: const Icon(Icons.close),
                     ),
                   ),
                 ],

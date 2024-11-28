@@ -76,7 +76,7 @@ class NetworkRequest{
 
   static Future<AttendanceListResponse> getAttendance(String month) async{
     try{
-      final url = Uri.parse('https://eportal.happypuppy.id/Api/getListAttendance?date=$month');
+      final url = Uri.parse('$baseUrl/Api/getListAttendance?date=$month');
       final apiResponse = await http.get(url, headers: {
         'authorization': key
       });
@@ -90,4 +90,5 @@ class NetworkRequest{
         listAbsen: []);
     }
   }
+
 }

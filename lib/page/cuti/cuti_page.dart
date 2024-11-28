@@ -26,7 +26,7 @@ class _CutiPageState extends State<CutiPage> {
   late List<String> _monthYearList;
 
   late PageController _pageController;
-  int _currentIndex = 0;
+  final int _currentIndex = 0;
 
   AttendanceListResponse? attendanceListResponse;
 
@@ -57,7 +57,7 @@ class _CutiPageState extends State<CutiPage> {
             borderRadius: BorderRadius.circular(26),
             color: CustomColor.primary()
           ),
-          child: Icon(Icons.add, color: Colors.white, size: 36,),
+          child: const Icon(Icons.add, color: Colors.white, size: 36,),
         ),
       ),
       body: Column(
@@ -66,7 +66,7 @@ class _CutiPageState extends State<CutiPage> {
             child: 
             
             attendanceListResponse == null?
-              SizedBox():
+              const SizedBox():
             attendanceListResponse?.state != true?
               Center(
                 child: AutoSizeText(attendanceListResponse?.message??'')
@@ -76,8 +76,8 @@ class _CutiPageState extends State<CutiPage> {
               itemCount: attendanceListResponse?.listAbsen.length,
               itemBuilder: (BuildContext ctx, index){
                 return Container(
-                  margin: EdgeInsets.symmetric(horizontal: 12, vertical: 3),
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 3),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(12)

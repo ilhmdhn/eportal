@@ -1,4 +1,3 @@
-import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
