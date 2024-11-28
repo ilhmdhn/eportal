@@ -22,23 +22,7 @@ class CutiPage extends StatefulWidget {
 }
 
 class _CutiPageState extends State<CutiPage> {
-  final List<String> _months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
 
-  final int _startYear = 2000;
-  final int _endYear = 2050;
   late List<String> _monthYearList;
 
   late PageController _pageController;
@@ -47,27 +31,10 @@ class _CutiPageState extends State<CutiPage> {
   AttendanceListResponse? attendanceListResponse;
 
   @override
-  void initState() async{
+  void initState(){
     super.initState();
-    EasyLoading.show();
-    attendanceListResponse = await NetworkRequest.getAttendance('11-2024');
-    EasyLoading.dismiss();
-    _monthYearList = _generateMonthYearList();
-    _pageController = PageController(
-      initialPage: _currentIndex,
-      viewportFraction: 0.4, // Item tengah lebih besar, sisi lebih kecil
-    );
   }
 
-  List<String> _generateMonthYearList() {
-    List<String> monthYearList = [];
-    for (int year = _startYear; year <= _endYear; year++) {
-      for (String month in _months) {
-        monthYearList.add("$month $year");
-      }
-    }
-    return monthYearList;
-  }
 
     @override
   void dispose() {

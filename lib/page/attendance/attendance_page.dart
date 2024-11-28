@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
@@ -7,12 +5,11 @@ import 'package:eportal/data/network/response/attendance_list_response.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:group_button/group_button.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/intl.dart';
 
 class AttendancePage extends StatefulWidget {
@@ -90,7 +87,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                     cancelWidget: Text('Batal', style: GoogleFonts.poppins(fontSize: 16, color: Colors.red),),
                                     confirmWidget: Text('Confirm', style: CustomFont.headingEmpatColorful(),),
                                     firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                                    lastDate: DateTime.now().add(const Duration(days: 60)),
+                                    lastDate: DateTime.now(),
                                     monthPickerDialogSettings:
                                         MonthPickerDialogSettings(
                                           headerSettings: PickerHeaderSettings(

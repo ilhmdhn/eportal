@@ -76,14 +76,13 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                         height: 56,
                         width: 56,
                         child: CircularProgressIndicator(
-                            color: CustomColor.primary(),
-                          ),
+                          color: CustomColor.primary(),
+                        ),
                       ),
                     ),
                   )
                   : Stack(
                     children: [
-                      
                       Positioned(
                         top: 0,
                         right: 0,
