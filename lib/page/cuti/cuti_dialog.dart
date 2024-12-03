@@ -618,7 +618,7 @@ class CutiDialog {
                         ),
                         Expanded(
                           child: AutoSizeText(
-                            'Cuti diambil: $cutiPicked',
+                            'Cuti sebelumnya: $cutiPicked',
                             textAlign: TextAlign.end,
                             style: CustomFont.headingEmpatSemiBold(),
                             maxLines: 1,

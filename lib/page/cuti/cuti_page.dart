@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
@@ -5,9 +6,10 @@ import 'package:eportal/page/cuti/cuti_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 class CutiPage extends StatefulWidget {
   static const nameRoute = '/cuti';
@@ -53,7 +55,6 @@ class _CutiPageState extends State<CutiPage> {
       backgroundColor: CustomColor.background(),
       floatingActionButton: InkWell(
         onTap: (){
-          final cutiRemaining = _cutiResponse?.data?.cutiRemaining??0;
           CutiDialog.showAddCUtiDialog(context, _cutiResponse?.data?.cutiRemaining??0);
         },
         child: Container(
@@ -123,13 +124,26 @@ class _CutiPageState extends State<CutiPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius: BorderRadius.circular(20)
+                            borderRadius: BorderRadius.circular(12)
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: [
-                              Text('mulai cuti: ${CustomConverter.dateToDay(data.startCuti.toString())}'),
-                              Text('selesai cuti: ${CustomConverter.dateToDay(data.endCuti.toString())}')
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AutoSizeText(DateFormat('dd/MM/yyy').format(data.startCuti), style: CustomFont.headingLimaSemiBold(),),
+                                  AutoSizeText('mulai cuti: ${CustomConverter.dateToDay(data.startCuti.toString())}', style: CustomFont.headingLima(),),
+                                  AutoSizeText('selesai cuti: ${CustomConverter.dateToDay(data.endCuti.toString())}', style: CustomFont.headingLima())
+                                ],
+                              ),
+                              SizedBox(
+                                child: Text(
+                                  '${data.state == 1?'Menunggu' : data.state == 2? 'Disetujui': 'Ditolak'}',
+                                  style: GoogleFonts.poppins(
+                                    
+                                  ),
+                                ),
+                              )
                             ],
                           ),
                         ),
