@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/data/network/response/attendance_list_response.dart';
+import 'package:eportal/data/network/response/cuti_response.dart';
 import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -88,6 +89,24 @@ class NetworkRequest{
         state: false, 
         message: e.toString(), 
         listAbsen: []);
+    }
+  }
+
+  static Future<CutiResponse> getCuti()async{
+    try{
+      final url = Uri.parse('$baseUrl/Api/get_cuti');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      final response = CutiResponse.fromJson(convertedResult);
+      print('response nganu ${response.data?.listCuti?.length}');
+      return response;
+    }catch(e){
+      return CutiResponse(
+        state: false,
+        message: e.toString(),
+      
+
+      );
     }
   }
 
