@@ -1,6 +1,7 @@
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
+import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
@@ -58,7 +59,8 @@ class MyApp extends StatelessWidget {
           AttendancePage.nameRoute: (context) => const AttendancePage(),
           GpsAttendancePage.nameRoute: (context) => const GpsAttendancePage(),
           PermissionPage.nameRoute: (context) => const PermissionPage(),
-          CutiPage.nameRoute: (context) => const CutiPage()
+          CutiPage.nameRoute: (context) => const CutiPage(),
+          IjinPage.nameRoute: (context) => const IjinPage()
         },
       ),
     );

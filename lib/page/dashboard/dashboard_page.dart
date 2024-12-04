@@ -7,6 +7,7 @@ import 'package:eportal/data/model/profile.dart';
 import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
+import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
@@ -475,8 +476,13 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                               Flexible(
                                 flex: 1,
-                                child: AddOnButton.textImageButton(
-                                    context, 'assets/icon/ijin2.png', 'Ijin'),
+                                child: InkWell(
+                                  onTap: (){
+                                    NavigationService.move(IjinPage.nameRoute);
+                                  },
+                                  child: AddOnButton.textImageButton(
+                                      context, 'assets/icon/ijin2.png', 'Ijin'),
+                                ),
                               ),
                             ],
                           ),

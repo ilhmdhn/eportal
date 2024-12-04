@@ -1,4 +1,3 @@
-
 import 'package:eportal/data/model/user.dart';
 import 'package:eportal/util/checker.dart';
 import 'package:shared_preferences/shared_preferences.dart';

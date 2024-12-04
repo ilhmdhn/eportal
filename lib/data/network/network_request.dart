@@ -98,7 +98,6 @@ class NetworkRequest{
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       final response = CutiResponse.fromJson(convertedResult);
-      print('response nganu ${response.data?.listCuti?.length}');
       return response;
     }catch(e){
       return CutiResponse(
@@ -110,4 +109,59 @@ class NetworkRequest{
     }
   }
 
+  static Future<BaseResponse> postCuti(String startDate, String endDate, String reason)async{
+    try{
+      final url = Uri.parse('$baseUrl/Api/post_cuti');
+
+      final apiResponse = await http.post(url,
+          headers: {
+            'Content-Type': 'application/json',
+            'authorization': key          
+          },
+          body: json.encode(
+            {
+              'start_date': startDate, 
+              'end_date': endDate,
+              'reason': reason
+            }
+          )
+      );
+
+      final convertedResult = json.decode(apiResponse.body);
+      final response = BaseResponse.fromJson(convertedResult);
+      return response;
+    }catch(e){
+      return BaseResponse(
+        state: false,
+        message: e.toString()
+      );
+    }
+  }
+
+  static Future<BaseResponse> putCuti(String id, String startDate, String endDate, String reason)async{
+    try{
+      final url = Uri.parse('$baseUrl/Api/Cuti/$id');
+      final apiResponse = await http.put(
+        url, 
+        headers: {
+          'Content-Type': 'application/json',
+          'authorization': key
+        },
+        body: json.encode(
+          {
+            "start_date": startDate,
+            "end_date": endDate,
+            "reason": reason
+          }
+        ),
+      );
+      final convertedResult = json.decode(apiResponse.body);
+      return BaseResponse.fromJson(convertedResult);
+    }catch(e){
+      return BaseResponse(
+        state: false,
+        message: e.toString()
+      );
+    }
+  }
 }

@@ -81,10 +81,10 @@ class CutiListModel{
       startCuti: DateTime.parse(json['StartDate']),
       endCuti: DateTime.parse(json['EndDate']),
       requestDate: DateTime.parse(json['RequestDate']),
-      day: json['Day'],
-      state: json['Status'],
-      rejectReason: json['RejectComment'],
-      cutiReason: json['Alasan'],
+      day: json['Day']??1,
+      state: json['Status']??3,
+      rejectReason: json['RejectComment']??'',
+      cutiReason: json['Alasan']??'',
     );
   }
 }

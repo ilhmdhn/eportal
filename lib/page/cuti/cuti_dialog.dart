@@ -1,10 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/navigation_service.dart';
+import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +42,7 @@ class CutiDialog {
     DateTime endDate = DateTime.now().add(const Duration(days: 30));
     int pickedCount = 1;
     const List<String> listCutiType = <String>['Tahunan'];
-
+    TextEditingController tfReason = TextEditingController();
 
     showDialog(
       context: ctx,
@@ -92,13 +94,17 @@ class CutiDialog {
                     height: 6,
                   ),
                   DropdownMenu<String>(
-                    width: double.infinity,
+                    menuStyle: const MenuStyle(
+                      backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
+                    ),
+                    width: ScreenSize.setWidthPercent(ctx, 85) - 24,
                     initialSelection: listCutiType.first,
                     dropdownMenuEntries: listCutiType
-                        .map<DropdownMenuEntry<String>>((String value) {
-                      return DropdownMenuEntry<String>(
-                          value: value, label: value);
-                    }).toList(),
+                      .map<DropdownMenuEntry<String>>((String value) {
+                        return DropdownMenuEntry<String>(
+                          value: value, label: value
+                        );
+                      }).toList(),
                   ),
                   const SizedBox(
                     height: 12,
@@ -188,6 +194,7 @@ class CutiDialog {
                   TextField(
                     minLines: 3,
                     maxLines: 5,
+                    controller: tfReason,
                     decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(6.0),
@@ -231,7 +238,17 @@ class CutiDialog {
                         ),
                       ),
                       InkWell(
-                        onTap: () {
+                        onTap: () async{
+                          final response = await NetworkRequest.postCuti(DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
+                          if(response.state != true){
+                            if(ctx.mounted){
+                              NotificationStyle.warning(ctx, 'Gagal mengajukan cuti', response.message);
+                            }
+                            return;
+                          }
+                          if(ctx.mounted){
+                            NotificationStyle.info(ctx, 'Berhasil', response.message);
+                          }  
                           NavigationService.back();
                         },
                         child: Container(
@@ -261,7 +278,7 @@ class CutiDialog {
     final cutiDate = data.startCuti;
     final today = DateTime.now();
 
-    if(cutiDate.isAfter(today)){
+    if(cutiDate.isAfter(today) && data.state != 3){
       isEditable = true;
     }
 
@@ -756,7 +773,17 @@ class CutiDialog {
                           ),
                         ),
                         InkWell(
-                          onTap: () {
+                          onTap: () async{
+                            final response = await NetworkRequest.putCuti(data.id, DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
+                            if (response.state != true) {
+                              if (ctx.mounted) {
+                                NotificationStyle.warning(ctx, 'Gagal mengajukan ulang cuti', response.message);
+                              }
+                              return;
+                            }
+                            if (ctx.mounted) {
+                              NotificationStyle.info(ctx, 'Berhasil', response.message);
+                            }
                             NavigationService.back();
                           },
                           child: Container(

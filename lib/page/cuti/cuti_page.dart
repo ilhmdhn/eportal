@@ -108,6 +108,7 @@ class _CutiPageState extends State<CutiPage> {
                   ),
                 ),
                 Container(
+                  margin: const EdgeInsets.only(top: 12),
                   padding: const EdgeInsets.symmetric(horizontal: 6),
                   child: ListView.builder(
                     shrinkWrap: true,
@@ -127,20 +128,29 @@ class _CutiPageState extends State<CutiPage> {
                             borderRadius: BorderRadius.circular(12)
                           ),
                           child: Row(
+                            mainAxisSize: MainAxisSize.max,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  AutoSizeText(DateFormat('dd/MM/yyy').format(data.startCuti), style: CustomFont.headingLimaSemiBold(),),
+                                  AutoSizeText(CustomConverter.dateToDay(data.startCuti.toString()), style: CustomFont.headingLimaSemiBold(),),
                                   AutoSizeText('mulai cuti: ${CustomConverter.dateToDay(data.startCuti.toString())}', style: CustomFont.headingLima(),),
                                   AutoSizeText('selesai cuti: ${CustomConverter.dateToDay(data.endCuti.toString())}', style: CustomFont.headingLima())
                                 ],
                               ),
-                              SizedBox(
-                                child: Text(
-                                  '${data.state == 1?'Menunggu' : data.state == 2? 'Disetujui': 'Ditolak'}',
-                                  style: GoogleFonts.poppins(
-                                    
+                              Expanded(
+                                child: SizedBox(
+                                  child: AutoSizeText(
+                                    data.state == 1?'Menunggu' : data.state == 2? 'Disetujui': 'Ditolak',
+                                    style: GoogleFonts.poppins(
+                                      color: data.state == 1
+                                              ? Colors.amber.shade600
+                                              : data.state == 2
+                                                  ? Colors.green.shade700
+                                                  : Colors.red.shade700,
+                                      fontWeight: FontWeight.w500
+                                    ),
+                                    textAlign: TextAlign.end,
                                   ),
                                 ),
                               )

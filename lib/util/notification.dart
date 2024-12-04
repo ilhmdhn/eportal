@@ -15,4 +15,17 @@ class NotificationStyle{
       toastDuration: const Duration(seconds: 3),
     ).show(ctx);
   }
+
+  static void warning(BuildContext ctx, title, body) {
+    ElegantNotification.error(
+      title: AutoSizeText(title, style: CustomFont.headingDua(), maxLines: 1),
+      description:
+          AutoSizeText(body, style: CustomFont.headingLima(), minFontSize: 12),
+      // icon: Icon(
+      //   Icons.check,
+      //   color: CustomColor.primary(),
+      // ),
+      toastDuration: const Duration(seconds: 3),
+    ).show(ctx);
+  }
 }
