@@ -52,6 +52,11 @@
 	<string>We need your location to show on the map</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>We need your location to show on the map</string>
+	
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to the camera</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need access to your photo library</string>
 
 </dict>
 </plist>

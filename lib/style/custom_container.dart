@@ -15,12 +15,24 @@ class CustomContainer{
     );
   }
 
+  static buttonGreen() {
+    return BoxDecoration(
+        borderRadius: BorderRadius.circular(20), color: Colors.green.shade700);
+  }
+
   static buttonSecondary() {
     return BoxDecoration(
         borderRadius: BorderRadius.circular(16), 
         color: CustomColor.secondaryColor()
     );
   }
+
+  static buttonGrey() {
+    return BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.grey);
+  }
+
 
   static buttonCancel() {
     return BoxDecoration(

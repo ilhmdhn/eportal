@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
+import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -358,7 +359,7 @@ class CameraDialog {
                                 if(context.mounted){
                                   NotificationStyle.info(context, 'Success', 'Absensi berhasil');
                                 }
-                                NavigationService.moveRemoveUntil(GpsAttendancePage.nameRoute);
+                                NavigationService.moveRemoveUntil(DashboardPage.nameRoute);
                               }
                             },
                             child: Container(

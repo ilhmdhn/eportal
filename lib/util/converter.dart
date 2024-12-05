@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CustomConverter{
@@ -82,6 +83,9 @@ static String monthCheck(String inputDate) {
     return "$monthName ${dateTime.year}";
   }
 
-
+  static String time(TimeOfDay time) {
+    final now = DateTime.now();
+    final dateTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+    return DateFormat('HH:mm').format(dateTime);
+  }
 }
-
