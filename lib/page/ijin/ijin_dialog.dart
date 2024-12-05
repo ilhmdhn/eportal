@@ -356,7 +356,7 @@ class IjinDialog{
                           return CustomDatePicker.primary(child!);
                         },
                         context: ctx,
-                        initialDate: startDate,
+                        initialDate: endDate,
                         firstDate: DateTime.now().subtract(const Duration(days: 30)),
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                       );
