@@ -731,14 +731,14 @@ class IjinDialog{
                             }
                             networkResponse = await NetworkRequest.postIzin('5',DateFormat('yyyy-MM-dd').format(startDate),DateFormat('yyyy-MM-dd').format(endDate), CustomConverter.time(startTime), CustomConverter.time(endTime), tfReason.text, doctorLetter);
                           } else if(selectedType == 'Izin Menikah'){
-                            networkResponse = await NetworkRequest.postIjinBukti('6', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), (selectedImage?.path??''));
+                            networkResponse = await NetworkRequest.postIjinBukti('7', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), (selectedImage?.path??''));
                           } else if(selectedType == 'Izin Melahirkan'){
-                            networkResponse = await NetworkRequest.postIjinBukti('7', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), (file?.paths[0]??''));                            
+                            networkResponse = await NetworkRequest.postIjinBukti('8', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), (file?.paths[0]??''));                            
                           } else if(selectedType == 'Izin Lainnnya'){
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');
                             }
-                            networkResponse = await NetworkRequest.postIzin('8',DateFormat('yyyy-MM-dd').format(startDate),DateFormat('yyyy-MM-dd').format(endDate), CustomConverter.time(startTime), CustomConverter.time(endTime), tfReason.text, '0');
+                            networkResponse = await NetworkRequest.postIzin('6',DateFormat('yyyy-MM-dd').format(startDate),DateFormat('yyyy-MM-dd').format(endDate), CustomConverter.time(startTime), CustomConverter.time(endTime), tfReason.text, '0');
                           }
 
                           if(ctx.mounted){

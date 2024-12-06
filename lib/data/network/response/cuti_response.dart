@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class CutiResponse{
   bool state;
   String message;
