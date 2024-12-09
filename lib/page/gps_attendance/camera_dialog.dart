@@ -4,14 +4,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
-import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
-import 'package:eportal/util/screen.dart';
-import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -200,7 +197,7 @@ class CameraDialog{
 
 class CameraDialog {
   static void showCameraDialog(
-      BuildContext context, CameraController cameraController, num distance) {
+      BuildContext context, CameraController cameraController, num distance, String outlet) {
     XFile? capturedImage;
     int selectorType = 1;
 
@@ -353,7 +350,7 @@ class CameraDialog {
                           child: InkWell(
                             onTap: () async {
                               EasyLoading.show();
-                              final attendanceResponse = await NetworkRequest.postGpsAttendance(capturedImage, 'HP000', distance.round(), selectorType);
+                              final attendanceResponse = await NetworkRequest.postGpsAttendance(capturedImage, outlet, distance.round(), selectorType);
                               EasyLoading.dismiss();
                               if(attendanceResponse.state == true){
                                 if(context.mounted){

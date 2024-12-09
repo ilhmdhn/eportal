@@ -88,4 +88,15 @@ static String monthCheck(String inputDate) {
     final dateTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
     return DateFormat('HH:mm').format(dateTime);
   }
+  
+  static TimeOfDay stringToTime(String timeSource) {
+    List<String> timeParts = timeSource.split(":");
+
+    int hour = int.parse(timeParts[0]);
+    int minute = int.parse(timeParts[1]);
+
+    TimeOfDay time = TimeOfDay(hour: hour, minute: minute);
+
+    return time;
+  }
 }

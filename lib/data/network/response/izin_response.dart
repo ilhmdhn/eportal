@@ -1,3 +1,5 @@
+import 'package:eportal/util/checker.dart';
+import 'package:eportal/util/converter.dart';
 import 'package:flutter/material.dart';
 
 class IzinResponse {
@@ -69,12 +71,14 @@ class IzinListModel{
       outlet: json['Outlet'],
       nip: json['NIP'],
       name: json['Name'],
-      startDate: json['Tanggal'],
-      finishDate: json['TanggalSelesai'],
+      startDate: DateTime.parse(json['Tanggal']),
+      finishDate: DateTime.parse(json['TanggalSelesai']),
       year: json['Tahun'],
       type: json['Type'],
-      startTime: json['StartTime'],
-      finishTime: json['EndTime'],
+      startTime: isNullOrEmpty(json['StartTime']) ?TimeOfDay.now(): CustomConverter.stringToTime(json['StartTime']),
+      finishTime: isNullOrEmpty(json['StartTime'])
+          ? TimeOfDay.now()
+          : CustomConverter.stringToTime(json['EndTime']),
       doctorLetter: json['SuratDokter'],
       invitationUrl: json['Invitation'],
       hlpUrl: json['HPL'],
@@ -84,3 +88,4 @@ class IzinListModel{
     );
   }
 }
+

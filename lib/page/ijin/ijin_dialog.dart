@@ -4,7 +4,9 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:camera/camera.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
+import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
+import 'package:eportal/page/dialog/viewer_dialog.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -21,7 +23,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-
+import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class IjinDialog{
   static void showIjinDialog(BuildContext ctx){
@@ -125,30 +128,44 @@ class IjinDialog{
                                         child: AutoSizeText('Gallery', minFontSize: 1, maxLines: 1, style: CustomFont.headingLimaSecondary(),),
                                       ),
                                     ),
+                                    isNotNullOrEmpty(selectedImage?.path)
+                                      ? Row(
+                                        children: [
+                                          const SizedBox(width: 12,),
+                                          InkWell(
+                                              onTap: () {
+                                                CustomViewer.filePhoto(
+                                                    ctx, selectedImage!);
+                                              },
+                                              child: AutoSizeText(
+                                                'image.jpg',
+                                                style:
+                                                    CustomFont.headingLimaWarning(),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              width: 4,
+                                            ),
+                                            InkWell(
+                                              onTap: ()async{
+                                                final deleteResponse = await ConfirmationDialog.confirmation(ctx, 'Hapus gambar dipilih?');
+                                                if(deleteResponse){
+                                                  setState((){
+                                                    File(selectedImage!.path).delete();
+                                                    selectedImage = null;
+                                                  });
+                                                }
+                                              },
+                                              child: const Icon(Icons.close, color: Colors.red, size: 24,),
+                                            )
+                                        ],
+                                      )
+                                      : const SizedBox(
+                                          width: 0,
+                                        )
                                   ],
                                 ),
                               ),
-                              isNotNullOrEmpty(selectedImage?.path)
-                                  ? Column(
-                                      children: [
-                                        AutoSizeText(
-                                          'Gambar dipilih',
-                                          style:CustomFont.headingLimaSemiBold(),
-                                          maxLines: 1,
-                                          minFontSize: 6,
-                                        ),
-                                        const SizedBox(
-                                          height: 2,
-                                        ),
-                                        Container(
-                                          padding: const EdgeInsets.all(3),
-                                          width: ScreenSize.setWidthPercent(ctx, 50),
-                                          child:
-                                              Image.file(File(selectedImage!.path), fit: BoxFit.cover,),
-                                        ),
-                                      ],
-                                    )
-                                  : const SizedBox(width: 0,)
                             ],
                           ),
                         ),
@@ -533,7 +550,26 @@ class IjinDialog{
                               Row(
                                 children: [
                                   const SizedBox(width: 6,),
-                                  AutoSizeText((file?.names[0]??''), style: CustomFont.standartFont(),),
+                                  SizedBox(
+                                    width: 120,
+                                    child: InkWell(
+                                      onTap: (){
+                                        CustomViewer.pdfFile(ctx, File(file!.paths[0]!));
+                                      },
+                                      child: AutoSizeText((file?.names[0]??''), style: GoogleFonts.poppins(color: Colors.red), softWrap: true, maxLines: 1, overflow: TextOverflow.ellipsis,)),
+                                  ),
+                                  const SizedBox(width: 6,),
+                                  InkWell(
+                                    onTap: () async{
+                                      final removeState = await ConfirmationDialog.confirmation(ctx, 'Hapus file dipilih?');
+                                      if(removeState){
+                                        setState(() {
+                                          file = null;
+                                        });
+                                      }
+                                    },
+                                    child: const Icon(Icons.close, color: Colors.red, size: 21,),
+                                  )
                                 ],
                               ): const SizedBox()
                             ],
@@ -769,4 +805,41 @@ class IjinDialog{
       }
     );
   }
+
+static void showIzinDetail(BuildContext ctx, IzinListModel data) {
+    final baseUrl = dotenv.env['SERVER_URL'];
+
+    showDialog(
+      context: ctx,
+      builder: (BuildContext ctxDialog) {
+        return AlertDialog(
+          content: Container(
+            width: ScreenSize.setWidthPercent(ctx, 85),
+            child: Column(
+              mainAxisSize:
+                  MainAxisSize.min, // Batasi ukuran berdasarkan konten
+              children: [
+                // URL Teks
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Text(
+                    Uri.parse('$baseUrl/${data.hlpUrl}').toString(),
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                ),
+                // PDF Viewer
+                SizedBox(
+                  height: 400, // Berikan tinggi maksimal agar tidak infinite
+                  child: SfPdfViewer.network(
+                    Uri.parse('$baseUrl/${data.hlpUrl}').toString(),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

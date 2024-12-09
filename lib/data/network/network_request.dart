@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/data/network/response/attendance_list_response.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
+import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
 import 'package:eportal/util/checker.dart';
@@ -230,6 +231,21 @@ class NetworkRequest{
       return response;
     }catch(e){
       return BaseResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<IzinResponse> getIzin()async{
+    try{
+      final url = Uri.parse('$baseUrl/Api/ijin');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      final response = IzinResponse.fromJson(convertedResult);
+      return response;      
+    }catch(e){
+      return IzinResponse(
+        state: false,
+        message: e.toString()
+      );
     }
   }
 }

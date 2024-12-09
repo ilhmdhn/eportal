@@ -393,7 +393,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                 await _initializeCamera();
 
                               if(_cameraController.value.isInitialized && context.mounted){
-                                CameraDialog.showCameraDialog(context, _cameraController, nearest.distance);
+                                CameraDialog.showCameraDialog(context, _cameraController, nearest.distance, nearest.name);
                               }else{
                                 ShowToast.warning('Kamera Belum siap');
                               }
