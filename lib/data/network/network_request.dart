@@ -273,4 +273,28 @@ class NetworkRequest{
       );
     }
   }
+
+  static Future<BaseResponse> editIzin(String id ,String type, String startDate, String finishDate, String startTime, String finishTime, String reason, String isDoctorLetter) async {
+    try {
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/ijin/$id');
+
+      final apiResponse = await http.put(url,
+          headers: {'Content-Type': 'application/json', 'authorization': key},
+          body: json.encode({
+            'type': type,
+            'start_date': startDate,
+            'finish_date': finishDate,
+            'start_time': startTime,
+            'finish_time': finishTime,
+            'reason': reason,
+            'doctor_letter': isDoctorLetter
+          }));
+      final convertedResult = json.decode(apiResponse.body);
+      final response = BaseResponse.fromJson(convertedResult);
+      return response;
+    } catch (e) {
+      return BaseResponse(state: false, message: e.toString());
+    }
+  }
 }

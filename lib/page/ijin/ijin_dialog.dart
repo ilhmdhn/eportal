@@ -1170,8 +1170,6 @@ class IjinDialog{
   }
 
   static void showEditIjinDialog(BuildContext ctx, IzinListModel data) {
-    String selectedType = 'Izin Terlambat';
-
     TimeOfDay startTime = data.startTime??TimeOfDay.now();
     TimeOfDay endTime = data.finishTime ?? TimeOfDay.now();
     DateTime startDate = data.startDate ?? DateTime.now();
@@ -1915,93 +1913,115 @@ class IjinDialog{
                       ),
                       InkWell(
                         onTap: () async {
-                          final confirmationDialog = await ConfirmationDialog.confirmation(ctx, '$selectedType?');
+                          final confirmationDialog = await ConfirmationDialog.confirmation(ctx, 'Ubah ${data.type == 1?
+                              'Izin Terlambat':
+                              data.type == 2?
+                              'Izin Keluar Kantor':
+                              data.type == 3?
+                              'Izin Pulang Cepat':
+                              data.type == 4?
+                              'Izin Tidak Masuk Kerja':
+                              data.type == 5?
+                              'Izin Sakit':
+                              data.type == 6?
+                              'Izin Lain':
+                              data.type == 7?
+                              'Izin Menikah':
+                              data.type == 8?
+                              'Izin Melahirkan':
+                              'Izin Tidak diketahui'}?');
                           BaseResponse networkResponse = BaseResponse();
                           if (confirmationDialog != true) {
                             return;
                           }
 
-                          if (selectedType == 'Izin Terlambat') {
+                          if (data.type == 1) {
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');
                             }
-                            networkResponse = await NetworkRequest.postIzin(
-                                '1',
+                            networkResponse = await NetworkRequest.editIzin(
+                                data.id??'',
+                                data.type.toString(),
                                 DateFormat('yyyy-MM-dd').format(startDate),
                                 DateFormat('yyyy-MM-dd').format(endDate),
                                 CustomConverter.time(startTime),
                                 CustomConverter.time(endTime),
                                 tfReason.text,
                                 '0');
-                          } else if (selectedType == 'Izin Pulang Awal') {
+                          } else if (data.type == 2) {
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');
                             }
-                            networkResponse = await NetworkRequest.postIzin(
-                                '2',
+                            networkResponse = await NetworkRequest.editIzin(
+                                data.id??'',
+                                data.type.toString(),
                                 DateFormat('yyyy-MM-dd').format(startDate),
                                 DateFormat('yyyy-MM-dd').format(endDate),
                                 CustomConverter.time(startTime),
                                 CustomConverter.time(endTime),
                                 tfReason.text,
                                 '0');
-                          } else if (selectedType == 'Izin Keluar Kantor') {
+                          } else if ( data.type == 3) {
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');
                             }
-                            networkResponse = await NetworkRequest.postIzin(
-                                '3',
+                            networkResponse = await NetworkRequest.editIzin(
+                                data.id??'',
+                                data.type.toString(),
                                 DateFormat('yyyy-MM-dd').format(startDate),
                                 DateFormat('yyyy-MM-dd').format(endDate),
                                 CustomConverter.time(startTime),
                                 CustomConverter.time(endTime),
                                 tfReason.text,
                                 '0');
-                          } else if (selectedType == 'Izin Tidak Masuk Kerja') {
+                          } else if (data.type == 4) {
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');
                             }
-                            networkResponse = await NetworkRequest.postIzin(
-                                '4',
+                            networkResponse = await NetworkRequest.editIzin(
+                                data.id??'',
+                                data.type.toString(),
                                 DateFormat('yyyy-MM-dd').format(startDate),
                                 DateFormat('yyyy-MM-dd').format(endDate),
                                 CustomConverter.time(startTime),
                                 CustomConverter.time(endTime),
                                 tfReason.text,
                                 '0');
-                          } else if (selectedType == 'Izin Sakit') {
+                          } else if (data.type == 5) {
                             String doctorLetter = '0';
                             if (isDoctorLetterAvailable) {
                               doctorLetter = '1';
                             }
-                            networkResponse = await NetworkRequest.postIzin(
-                                '5',
+                            networkResponse = await NetworkRequest.editIzin(
+                                data.id??'',
+                                data.type.toString(),
                                 DateFormat('yyyy-MM-dd').format(startDate),
                                 DateFormat('yyyy-MM-dd').format(endDate),
                                 CustomConverter.time(startTime),
                                 CustomConverter.time(endTime),
                                 tfReason.text,
                                 doctorLetter);
-                          } else if (selectedType == 'Izin Menikah') {
+                          } else if (data.type == 7) {
                             networkResponse =
                                 await NetworkRequest.postIjinBukti(
-                                    '7',
+                                    data.type.toString(),
                                     DateFormat('yyyy-MM-dd').format(startDate),
                                     DateFormat('yyyy-MM-dd').format(endDate),
                                     (selectedImage?.path ?? ''));
-                          } else if (selectedType == 'Izin Melahirkan') {
+                          } else if (data.type == 8) {
                             networkResponse =
                                 await NetworkRequest.postIjinBukti(
-                                    '8',
+                                    data.type.toString(),
                                     DateFormat('yyyy-MM-dd').format(startDate),
                                     DateFormat('yyyy-MM-dd').format(endDate),
                                     (file?.paths[0] ?? ''));
-                          } else if (selectedType == 'Izin Lainnnya') {
+                          } else if (data.type == 6) {
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');
                             }
-                            networkResponse = await NetworkRequest.postIzin(
-                                '6',
+                            networkResponse = await NetworkRequest.editIzin(
+                                data.id??'',
+                                data.type.toString(),
                                 DateFormat('yyyy-MM-dd').format(startDate),
                                 DateFormat('yyyy-MM-dd').format(endDate),
                                 CustomConverter.time(startTime),
@@ -2015,8 +2035,7 @@ class IjinDialog{
                               NotificationStyle.warning(ctx, 'Gagal', networkResponse.message);
                               return;
                             }
-                            NotificationStyle.info(
-                                ctx, 'Berhasil', networkResponse.message);
+                            NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
                           }
                           NavigationService.back();
                         },
