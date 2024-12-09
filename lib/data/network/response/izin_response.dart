@@ -76,7 +76,7 @@ class IzinListModel{
       year: json['Tahun'],
       type: json['Type'],
       startTime: isNullOrEmpty(json['StartTime']) ?TimeOfDay.now(): CustomConverter.stringToTime(json['StartTime']),
-      finishTime: isNullOrEmpty(json['StartTime'])
+      finishTime: isNullOrEmpty(json['EndTime'])
           ? TimeOfDay.now()
           : CustomConverter.stringToTime(json['EndTime']),
       doctorLetter: json['SuratDokter'],

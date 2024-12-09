@@ -8,14 +8,13 @@ import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
 import 'package:eportal/util/checker.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
 
 class NetworkRequest{
-
-  static final String key = SharedPreferencesData.getKey()??'';
   static final baseUrl = dotenv.env['SERVER_URL'];
 
   static Future<LoginResponse> login(String user, String pass)async{
@@ -43,6 +42,7 @@ class NetworkRequest{
 
   static Future<BaseResponse> postGpsAttendance(XFile? photo, String outlet, int distance, int type) async {
     try {
+      final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/gps_attendance');
 
       final request = http.MultipartRequest('POST', url);
@@ -80,6 +80,7 @@ class NetworkRequest{
 
   static Future<AttendanceListResponse> getAttendance(String month) async{
     try{
+      final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/getListAttendance?date=$month');
       final apiResponse = await http.get(url, headers: {
         'authorization': key
@@ -97,6 +98,7 @@ class NetworkRequest{
 
   static Future<CutiResponse> getCuti()async{
     try{
+      final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/get_cuti');
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
@@ -114,6 +116,7 @@ class NetworkRequest{
 
   static Future<BaseResponse> postCuti(String startDate, String endDate, String reason)async{
     try{
+      final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/post_cuti');
 
       final apiResponse = await http.post(url,
@@ -143,6 +146,7 @@ class NetworkRequest{
 
   static Future<BaseResponse> putCuti(String id, String startDate, String endDate, String reason)async{
     try{
+      final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/Cuti/$id');
       final apiResponse = await http.put(
         url, 
@@ -170,6 +174,7 @@ class NetworkRequest{
 
   static Future<BaseResponse> postIjinBukti(String type, String startDate, String finishDate, String filePath)async{
     try{
+      final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/ijin_bukti');
       final request = http.MultipartRequest('POST', url);
 
@@ -212,6 +217,7 @@ class NetworkRequest{
 
   static Future<BaseResponse> postIzin(String type, String startDate, String finishDate, String startTime, String finishTime, String reason, String isDoctorLetter)async{
     try{
+      final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/ijin');
       
       final apiResponse = await http.post(url,
@@ -236,13 +242,32 @@ class NetworkRequest{
 
   static Future<IzinResponse> getIzin()async{
     try{
+      final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/ijin');
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       final response = IzinResponse.fromJson(convertedResult);
       return response;      
     }catch(e){
+      ShowToast.error(e.toString());
       return IzinResponse(
+        state: false,
+        message: e.toString()
+      );
+    }
+  }
+
+  static Future<BaseResponse> cancelIzin(String id)async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/ijin/$id');
+      final apiResponse = await http.delete(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      final response = BaseResponse.fromJson(convertedResult);
+      return response;  
+    }catch(e){
+      ShowToast.error(e.toString());
+      return BaseResponse(
         state: false,
         message: e.toString()
       );

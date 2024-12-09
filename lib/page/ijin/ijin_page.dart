@@ -3,11 +3,13 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/page/ijin/ijin_dialog.dart';
+import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class IjinPage extends StatefulWidget {
   static const nameRoute = '/ijin';
@@ -27,7 +29,6 @@ class _IjinPageState extends State<IjinPage> {
     setState(() {
       networkResponse;
     });
-    print('DEBUGGING PANJANGNYA ${networkResponse.data?.length??0}');
     EasyLoading.dismiss();
   }
 
@@ -41,6 +42,15 @@ class _IjinPageState extends State<IjinPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        floatingActionButton: InkWell(
+          onTap: () {
+            IjinDialog.showIjinDialog(context);
+          },
+          child: Container(
+            margin: const EdgeInsets.only(right: 12, bottom: 12),
+            decoration: CustomContainer.buttonPrimary(),
+            child: const Icon(Icons.add, color: Colors.white, size: 40,),
+          )),
         backgroundColor: CustomColor.background(),
         body: Stack(
           children: [
@@ -81,40 +91,48 @@ class _IjinPageState extends State<IjinPage> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    AutoSizeText(
-                                      data.type == 1?
-                                      'Izin Terlambat':
-                                      data.type == 2?
-                                      'Izin Keluar Kantor':
-                                      data.type == 3?
-                                      'Izin Pulang Cepat':
-                                      data.type == 4?
-                                      'Izin Tidak Masuk Kerja':
-                                      data.type == 5?
-                                      'Izin Sakit':
-                                      data.type == 6?
-                                      'Izin Lain':
-                                      data.type == 7?
-                                      'Izin Menikah':
-                                      data.type == 8?
-                                      'Izin Melahirkan':
-                                      'Izin tidak diketahui',
-                                      style: CustomFont.headingEmpatSemiBold(),
+                                    Expanded(
+                                      child: AutoSizeText(
+                                        data.type == 1?
+                                        'Izin Terlambat':
+                                        data.type == 2?
+                                        'Izin Pulang Cepat':
+                                        data.type == 3?
+                                        'Izin Keluar Kantor':
+                                        data.type == 4?
+                                        'Izin Tidak Masuk Kerja':
+                                        data.type == 5?
+                                        'Izin Sakit':
+                                        data.type == 6?
+                                        'Izin Lain':
+                                        data.type == 7?
+                                        'Izin Menikah':
+                                        data.type == 8?
+                                        'Izin Melahirkan':
+                                        'Izin tidak diketahui',
+                                        style: CustomFont.headingEmpatSemiBold(), maxLines: 1,
+                                      ),
                                     ),
-                                    AutoSizeText(
-                                      CustomConverter.dateToDay(data.startDate.toString())
+                                    AutoSizeText(CustomConverter.dateToDay(data.startDate.toString(),), style: CustomFont.standartFont(), maxLines: 1,
                                     )
                                   ],
                                 ),
+                                Row(
+                                  children: [
+                                    Text('Status:', style: CustomFont.headingEmpat(),),
+                                    Text(data.state == 1?' Menunggu': data.state == 2? ' Disetujui': ' Ditolak', 
+                                    style: data.state == 1? GoogleFonts.poppins(fontSize: 16, color: Colors.yellow.shade700):
+                                            data.state == 2? GoogleFonts.poppins(fontSize: 16, color: Colors.green):
+                                            GoogleFonts.poppins(fontSize: 16, color: Colors.red)
+                                    ),
+                                  ],
+                                )
                               ],
                             ),
                           ),
                         );
                       }),
-                  ),
-                  ElevatedButton(onPressed: (){
-                    IjinDialog.showIjinDialog(context);
-                  }, child: const Text('Show add dialog'))      
+                  ),      
                 ],
               )
             )

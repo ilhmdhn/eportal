@@ -20,6 +20,11 @@ class CustomContainer{
         borderRadius: BorderRadius.circular(20), color: Colors.green.shade700);
   }
 
+  static buttonYellow() {
+    return BoxDecoration(
+        borderRadius: BorderRadius.circular(20), color: Colors.yellow.shade700);
+  }
+
   static buttonSecondary() {
     return BoxDecoration(
         borderRadius: BorderRadius.circular(16), 

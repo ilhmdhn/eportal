@@ -36,7 +36,7 @@ class _DashboardPageState extends State<DashboardPage> {
   bool darkMode = false;
   List<String> getPhotos = DummyData.getImage();
   static final baseUrl = dotenv.env['SERVER_URL'];
-  Uri photoUrl = Uri.parse('$baseUrl/uploads/${Profile.getProfile().nip}.jpg}');
+  Uri photoUrl = Uri.parse('$baseUrl/uploads/ProfilePicture/${Profile.getProfile().nip}.jpg}');
   @override
   Widget build(BuildContext context) {
     bool biometricState = SharedPreferencesData.getBiometric();
