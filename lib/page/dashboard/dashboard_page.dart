@@ -9,6 +9,7 @@ import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
 import 'package:eportal/page/ijin/ijin_page.dart';
+import 'package:eportal/page/lembur/lembur_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
@@ -494,7 +495,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: (){
-                                    // CustomViewer.pdfNetwork(context, Uri.parse('https://eportal.happypuppy.id/uploads/Resign/1000160104_EMPLOYEE%20EXIT%20QUESTIONNAIRE%20FORM.pdf').toString());
+                                    NavigationService.move(OvertimePage.nameRoute);
                                   },
                                   child: AddOnButton.textImageButton(context,
                                     'assets/icon/overtime.png', 'Lembur'),

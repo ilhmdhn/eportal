@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
+import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
@@ -299,6 +300,10 @@ class CutiDialog {
                       ),
                       InkWell(
                         onTap: () async{
+                          final confirm = await ConfirmationDialog.confirmation(ctx, 'Ajukan cuti');
+                          if(confirm != true){
+                            return;
+                          }
                           final response = await NetworkRequest.postCuti(DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
                           if(response.state != true){
                             if(ctx.mounted){
@@ -877,6 +882,10 @@ class CutiDialog {
                         ),
                         InkWell(
                           onTap: () async{
+                            final confirm = await ConfirmationDialog.confirmation(ctx, 'Ubah data cuti');
+                            if(confirm != true){
+                              return;
+                            }
                             final response = await NetworkRequest.putCuti(data.id, DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
                             if (response.state != true) {
                               if (ctx.mounted) {

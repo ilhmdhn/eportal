@@ -32,6 +32,15 @@ class MaxDateProvider with ChangeNotifier{
 
     notifyListeners();
   }
+
+  Future<void> hardCode(DateTime startDate) async {
+    _isLoading = true;
+    notifyListeners();
+
+    _isLoading = false;
+    _date = startDate;
+    notifyListeners();
+  }
 }
 
 class DateModel{

@@ -2,6 +2,7 @@ import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
 import 'package:eportal/page/ijin/ijin_page.dart';
+import 'package:eportal/page/lembur/lembur_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
@@ -25,6 +26,10 @@ void main() async{
   await Firebase.initializeApp();
   configLoading();
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  
+  });
+
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
     createNotif(message.data['Title'], message.data['Body']);
   });
   
@@ -68,7 +73,8 @@ class MyApp extends StatelessWidget {
           GpsAttendancePage.nameRoute: (context) => const GpsAttendancePage(),
           PermissionPage.nameRoute: (context) => const PermissionPage(),
           CutiPage.nameRoute: (context) => const CutiPage(),
-          IjinPage.nameRoute: (context) => const IjinPage()
+          IjinPage.nameRoute: (context) => const IjinPage(),
+          OvertimePage.nameRoute: (context) => const OvertimePage()
         },
       ),
     );

@@ -673,7 +673,7 @@ class IjinDialog{
                       ),
                       const SizedBox(
                           height: 12,
-                        ),
+                      ),
                       Flexible(
                         child: SingleChildScrollView(
                           
@@ -1221,6 +1221,8 @@ class IjinDialog{
         ctx.read<MaxDateProvider>().updateDate(startDate, '2');
       } else if (data.type == 8) {
         ctx.read<MaxDateProvider>().updateDate(startDate, '3');
+      }else if(data.type == 6){
+        ctx.read<MaxDateProvider>().hardCode(startDate.add(const Duration(days: 30)));
       }
     }
 
@@ -1583,8 +1585,7 @@ class IjinDialog{
                             },
                             context: ctx,
                             initialDate: endDate,
-                            firstDate: DateTime.now()
-                                .subtract(const Duration(days: 30)),
+                            firstDate: DateTime.now().subtract(const Duration(days: 30)),
                             lastDate: maxDateProvider.date,
                           );
                           if (selectedDate != null) {
@@ -1609,7 +1610,7 @@ class IjinDialog{
                                 : Text(
                                     CustomConverter.dateToDay(
                                         DateFormat('yyyy-MM-dd')
-                                            .format(maxDateProvider.date)),
+                                            .format(endDate)),
                                     style: CustomFont.headingEmpat(),
                                   )),
                       );
@@ -1979,8 +1980,7 @@ class IjinDialog{
                               InkWell(
                                 onTap: () async {
                                   final selectedDate = await showDatePicker(
-                                    builder:
-                                        (BuildContext context, Widget? child) {
+                                    builder:(BuildContext context, Widget? child) {
                                       return CustomDatePicker.primary(child!);
                                     },
                                     context: ctx,
@@ -1992,6 +1992,7 @@ class IjinDialog{
                                   if (selectedDate != null) {
                                     setState(() {
                                       startDate = selectedDate;
+                                      endDate =selectedDate;
                                       updateMaxDate();
                                     });
                                   }
