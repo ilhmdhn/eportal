@@ -1,3 +1,4 @@
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 
@@ -18,7 +19,9 @@ class LocationProvider with ChangeNotifier {
     bool serviceEnabled = await _location.serviceEnabled();
     if (!serviceEnabled) {
       serviceEnabled = await _location.requestService();
-      if (!serviceEnabled) return;
+      if (!serviceEnabled){
+       return ShowToast.warning('Akses lokasi tidak diizinkan'); 
+      }
     }
 
     PermissionStatus permissionGranted = await _location.hasPermission();
@@ -37,7 +40,6 @@ class LocationProvider with ChangeNotifier {
     });
   }
 
-  // Aktifkan atau hentikan pelacakan lokasi
   void toggleTracking() {
     _isTracking = !_isTracking;
     if (!_isTracking) {

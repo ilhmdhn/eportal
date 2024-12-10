@@ -126,10 +126,12 @@ class _IjinPageState extends State<IjinPage> {
                                 Row(
                                   children: [
                                     Text('Status:', style: CustomFont.headingEmpat(),),
-                                    Text(data.state == 1?' Menunggu': data.state == 2? ' Disetujui': ' Ditolak', 
-                                    style: data.state == 1? GoogleFonts.poppins(fontSize: 16, color: Colors.yellow.shade700):
+                                    Text(data.state == 1?' Menunggu': data.state == 2? ' Disetujui': data.state == 3? 'Ditolak' : data.state == 4?'Dibatalkan':'', 
+                                    style:  data.state == 1? GoogleFonts.poppins(fontSize: 16, color: Colors.yellow.shade700):
                                             data.state == 2? GoogleFonts.poppins(fontSize: 16, color: Colors.green):
-                                            GoogleFonts.poppins(fontSize: 16, color: Colors.red)
+                                            data.state == 3? GoogleFonts.poppins(fontSize: 16, color: Colors.red):
+                                            data.state == 4? GoogleFonts.poppins(fontSize: 16, color: Colors.red):
+                                            GoogleFonts.poppins(fontSize: 16, color:Colors.black)
                                     ),
                                   ],
                                 )

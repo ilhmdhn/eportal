@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/data/network/response/attendance_list_response.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
+import 'package:eportal/data/network/response/data_response.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
@@ -13,6 +14,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class NetworkRequest{
   static final baseUrl = dotenv.env['SERVER_URL'];
@@ -333,5 +335,16 @@ class NetworkRequest{
     }
   }
 
-
+  static Future<DataResponse> getMaxDate(String type, DateTime startDate)async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/check_max_date?start_date=${DateFormat('yyyy-MM-dd').format(startDate)}&type=$type');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return DataResponse.fromJson(convertedResult);
+    }catch(e){
+      ShowToast.error(e.toString());
+      return DataResponse(state: false, message: e.toString());
+    }
+  }
 }

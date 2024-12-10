@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
+import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -12,6 +14,8 @@ import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 class CutiDialog {
 
@@ -43,7 +47,12 @@ class CutiDialog {
     int pickedCount = 1;
     const List<String> listCutiType = <String>['Tahunan'];
     TextEditingController tfReason = TextEditingController();
-
+    void updateMaxDate() {
+      ctx.read<MaxDateProvider>().updateDate(startDate, '1');
+    }
+    
+    updateMaxDate();
+    
     showDialog(
       context: ctx,
       builder: (BuildContext ctxDialog) {
@@ -128,8 +137,10 @@ class CutiDialog {
 
                       if (selectedDate != null) {
                         setState((){
+                          
                           startDate = selectedDate;
                           endDate = selectedDate;
+                          updateMaxDate();
                           pickedCount = calculateDaysBetween(startDate.toString(), endDate.toString());
                         });
                       }
@@ -153,6 +164,53 @@ class CutiDialog {
                     style: CustomFont.headingEmpatSemiBold(),
                     maxLines: 1,
                   ),
+                  Consumer<MaxDateProvider>(
+                    builder: (ctxMaxDate, maxDateProvider, child) {
+                      return InkWell(
+                        onTap: () async {
+                          final selectedDate = await showDatePicker(
+                            builder: (BuildContext context, Widget? child) {
+                              return CustomDatePicker.primary(child!);
+                            },
+                              context: ctx,
+                              initialDate: endDate,
+                              firstDate: startDate,
+                              lastDate: maxDateProvider.date,
+                          );
+                          if (selectedDate != null) {
+                            setState(() {
+                              endDate = selectedDate;
+                              pickedCount = calculateDaysBetween(startDate.toString(), endDate.toString());
+                            });
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 6, horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1, color: Colors.grey)),
+                            child: maxDateProvider.isLoading
+                              ? Center(
+                                  child: LoadingAnimationWidget.waveDots(
+                                    color: CustomColor.primary(),
+                                    size: 20,
+                                  )
+                                )
+                                : 
+                                Text(
+                                  CustomConverter.dateToDay(
+                                    DateFormat('yyyy-MM-dd')
+                                      .format(maxDateProvider.date)
+                                    ),
+                                  style: CustomFont.headingEmpat(),
+                                )
+                              ),
+                          );
+                        },
+                      ),
+                  /*
                   InkWell(
                     onTap: () async {
                       final selectedDate = await showDatePicker(
@@ -183,7 +241,7 @@ class CutiDialog {
                           style: CustomFont.headingEmpat(),
                         )),
                   ),
-
+                  */
                   const SizedBox(
                     height: 12,
                   ),
@@ -196,18 +254,20 @@ class CutiDialog {
                     maxLines: 5,
                     controller: tfReason,
                     decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            borderSide: const BorderSide(
-                                color: Colors.grey, width: 2.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            borderSide: const BorderSide(
-                                color: Colors.grey, width: 1.0),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 12))
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        borderSide: const BorderSide(
+                          color: Colors.grey, width: 2.0),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        borderSide: const BorderSide(
+                          color: Colors.grey, width: 1.0),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 8, horizontal: 12
+                      )
+                    )
                   ),
 
                   const SizedBox(
@@ -686,7 +746,50 @@ class CutiDialog {
                       style: CustomFont.headingEmpatSemiBold(),
                       maxLines: 1,
                     ),
-                    InkWell(
+                    Consumer<MaxDateProvider>(
+                      builder: (ctxMaxDate, maxDateProvider, child) {
+                        return InkWell(
+                          onTap: () async {
+                            final selectedDate = await showDatePicker(
+                              builder: (BuildContext context, Widget? child) {
+                                return CustomDatePicker.primary(child!);
+                              },
+                              context: ctx,
+                              initialDate: endDate,
+                              firstDate: startDate,
+                              lastDate: maxDateProvider.date,
+                            );
+                            if (selectedDate != null) {
+                              setState(() {
+                                endDate = selectedDate;
+                                pickedCount = calculateDaysBetween(
+                                    startDate.toString(), endDate.toString());
+                              });
+                            }
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 6, horizontal: 12),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                  border:
+                                      Border.all(width: 1, color: Colors.grey)),
+                              child: maxDateProvider.isLoading
+                                  ? Center(
+                                      child: LoadingAnimationWidget.waveDots(
+                                      color: CustomColor.primary(),
+                                      size: 20,
+                                    ))
+                                  : Text(
+                                      CustomConverter.dateToDay(
+                                          DateFormat('yyyy-MM-dd')
+                                              .format(maxDateProvider.date)),
+                                      style: CustomFont.headingEmpat(),
+                                    )),
+                        );
+                      },
+                    ),
+                    /*InkWell(
                       onTap: () async {
                         final selectedDate = await showDatePicker(
                           builder: (BuildContext context, Widget? child) {
@@ -718,7 +821,7 @@ class CutiDialog {
                                 DateFormat('yyyy-MM-dd').format(endDate)),
                             style: CustomFont.headingEmpat(),
                           )),
-                    ),
+                    ),*/
                     const SizedBox(
                       height: 12,
                     ),

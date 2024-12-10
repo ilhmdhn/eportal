@@ -7,6 +7,7 @@ import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
+import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -24,6 +25,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 class IjinDialog{
   static void showIjinDialog(BuildContext ctx){
@@ -37,7 +40,6 @@ class IjinDialog{
     bool isDoctorLetterAvailable = false;
     File? selectedImage;
     FilePickerResult? file;
-
     final ImagePicker picker = ImagePicker();
     List<String> tipeIjin = [
       'Izin Terlambat',
@@ -49,6 +51,18 @@ class IjinDialog{
       'Izin Melahirkan',
       'Izin Lainnnya',
     ];
+
+    void updateMaxDate(){
+      String type = '0';
+      if (selectedType == 'Izin Menikah') {
+        type = '2';
+      } else if (selectedType == 'Izin Melahirkan') {
+        type = '3';
+      }
+      if(type != '0'){
+        ctx.read<MaxDateProvider>().updateDate(startDate, type);
+      }
+    }
 
     TextEditingController tfReason = TextEditingController();    
 
@@ -311,6 +325,7 @@ class IjinDialog{
                 ],
               );
             }
+            
             Widget endTimeWidget() {
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -365,35 +380,42 @@ class IjinDialog{
                   const SizedBox(
                     height: 2,
                   ),
-                  InkWell(
-                    onTap: () async {
-                      final selectedDate = await showDatePicker(
-                        builder: (BuildContext context, Widget? child) {
-                          return CustomDatePicker.primary(child!);
+                  Consumer<MaxDateProvider>(
+                    builder: (ctxMaxDate, maxDateProvider, child){
+                      return InkWell(
+                        onTap: () async {
+                          final selectedDate = await showDatePicker(
+                            builder: (BuildContext context, Widget? child) {
+                              return CustomDatePicker.primary(child!);
+                            },
+                            context: ctx,
+                            initialDate: endDate,
+                            firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                            lastDate: maxDateProvider.date,
+                          );
+                          if (selectedDate != null) {
+                            setState(() {
+                              endDate = selectedDate;
+                            });
+                          }
                         },
-                        context: ctx,
-                        initialDate: endDate,
-                        firstDate: DateTime.now().subtract(const Duration(days: 30)),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
+                        
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                          width: double.infinity,
+                          decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
+                          child: 
+                          maxDateProvider.isLoading?
+                          Center(
+                            child: LoadingAnimationWidget.waveDots(
+                              color: CustomColor.primary(),
+                              size: 20,
+                            )
+                          )
+                          :Text(CustomConverter.dateToDay(DateFormat('yyyy-MM-dd').format(maxDateProvider.date)),style: CustomFont.headingEmpat(),)
+                        ),
                       );
-
-                      if (selectedDate != null) {
-                        setState(() {
-                          endDate = selectedDate;
-                        });
-                      }
                     },
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 6, horizontal: 12),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey)),
-                        child: Text(
-                          CustomConverter.dateToDay(
-                              DateFormat('yyyy-MM-dd').format(endDate)),
-                          style: CustomFont.headingEmpat(),
-                        )),
                   ),
                 ],
               );
@@ -675,15 +697,14 @@ class IjinDialog{
                                     },
                                     context: ctx,
                                     initialDate: startDate,
-                                    firstDate:
-                                        DateTime.now().subtract(const Duration(days: 30)),
-                                    lastDate:
-                                        DateTime.now().add(const Duration(days: 365)),
+                                    firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                                    lastDate: DateTime.now().add(const Duration(days: 365)),
                                   );
                                         
                                   if (selectedDate != null) {
                                     setState(() {
                                       startDate = selectedDate;
+                                      updateMaxDate();
                                     });
                                   }
                                 },
@@ -710,8 +731,9 @@ class IjinDialog{
                               DropdownMenu<String>(
                                   onSelected: (value) {
                                     setState((){
-                                      selectedType = value!;  
+                                      selectedType = value!;
                                     });
+                                    updateMaxDate();
                                   },
                                   menuStyle: const MenuStyle(
                                     backgroundColor:
@@ -1142,7 +1164,7 @@ class IjinDialog{
                     ),
                   ): const SizedBox(),
                   const SizedBox(width: 6,),
-                  data.startDate!.isAfter(DateTime.now())?
+                  data.startDate!.isAfter(DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()))) && (data.state != 3 && data.state != 4)?
                   InkWell(
                     onTap: () async{
                       final cancelState = await ConfirmationDialog.confirmation(ctx, 'Batalkan Izin?');
@@ -1193,6 +1215,16 @@ class IjinDialog{
     final ImagePicker picker = ImagePicker();
 
     TextEditingController tfReason = TextEditingController(text: data.reason);
+    
+    void updateMaxDate() {
+      if (data.type == 7) {
+        ctx.read<MaxDateProvider>().updateDate(startDate, '2');
+      } else if (data.type == 8) {
+        ctx.read<MaxDateProvider>().updateDate(startDate, '3');
+      }
+    }
+
+    updateMaxDate();
 
     int calculateMinutesDifference(TimeOfDay startTime, TimeOfDay endTime) {
       int startMinutes = startTime.hour * 60 + startTime.minute;
@@ -1541,7 +1573,49 @@ class IjinDialog{
                   const SizedBox(
                     height: 2,
                   ),
-                  InkWell(
+                  Consumer<MaxDateProvider>(
+                    builder: (ctxMaxDate, maxDateProvider, child) {
+                      return InkWell(
+                        onTap: () async {
+                          final selectedDate = await showDatePicker(
+                            builder: (BuildContext context, Widget? child) {
+                              return CustomDatePicker.primary(child!);
+                            },
+                            context: ctx,
+                            initialDate: endDate,
+                            firstDate: DateTime.now()
+                                .subtract(const Duration(days: 30)),
+                            lastDate: maxDateProvider.date,
+                          );
+                          if (selectedDate != null) {
+                            setState(() {
+                              endDate = selectedDate;
+                            });
+                          }
+                        },
+                        child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 1, color: Colors.grey)),
+                            child: maxDateProvider.isLoading
+                                ? Center(
+                                    child: LoadingAnimationWidget.waveDots(
+                                    color: CustomColor.primary(),
+                                    size: 20,
+                                  ))
+                                : Text(
+                                    CustomConverter.dateToDay(
+                                        DateFormat('yyyy-MM-dd')
+                                            .format(maxDateProvider.date)),
+                                    style: CustomFont.headingEmpat(),
+                                  )),
+                      );
+                    },
+                  ),
+                  /*InkWell(
                     onTap: () async {
                       final selectedDate = await showDatePicker(
                         builder: (BuildContext context, Widget? child) {
@@ -1572,7 +1646,7 @@ class IjinDialog{
                           style: CustomFont.headingEmpat(),
                         )),
                   ),
-                ],
+                */],
               );
             }
 
@@ -1918,6 +1992,7 @@ class IjinDialog{
                                   if (selectedDate != null) {
                                     setState(() {
                                       startDate = selectedDate;
+                                      updateMaxDate();
                                     });
                                   }
                                 },
