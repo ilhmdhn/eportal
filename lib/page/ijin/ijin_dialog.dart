@@ -766,9 +766,15 @@ class IjinDialog{
                             }
                             networkResponse = await NetworkRequest.postIzin('5',DateFormat('yyyy-MM-dd').format(startDate),DateFormat('yyyy-MM-dd').format(endDate), CustomConverter.time(startTime), CustomConverter.time(endTime), tfReason.text, doctorLetter);
                           } else if(selectedType == 'Izin Menikah'){
-                            networkResponse = await NetworkRequest.postIjinBukti('7', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), (selectedImage?.path??''));
+                            if(isNotNullOrEmpty(selectedImage?.path)){
+                              return ShowToast.error('Undangan tidak ada');
+                            }
+                            networkResponse = await NetworkRequest.postIjinBukti('7', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), selectedImage!.path);
                           } else if(selectedType == 'Izin Melahirkan'){
-                            networkResponse = await NetworkRequest.postIjinBukti('8', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), (file?.paths[0]??''));                            
+                            if (isNotNullOrEmpty(file?.paths[0])) {
+                              return ShowToast.error('Dokumen hpl tidak ada');
+                            }
+                            networkResponse = await NetworkRequest.postIjinBukti('8', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), file!.paths[0]!);                            
                           } else if(selectedType == 'Izin Lainnnya'){
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');
@@ -776,16 +782,17 @@ class IjinDialog{
                             networkResponse = await NetworkRequest.postIzin('6',DateFormat('yyyy-MM-dd').format(startDate),DateFormat('yyyy-MM-dd').format(endDate), CustomConverter.time(startTime), CustomConverter.time(endTime), tfReason.text, '0');
                           }
 
-                          if(ctx.mounted){
-
-                            if (networkResponse.state != true) {
+                          if (networkResponse.state != true) {
+                            if(ctx.mounted){
                               NotificationStyle.warning(ctx, 'Gagal', networkResponse.message);
-                              return;
                             }
+                            return;
+                          }
+
+                          if(ctx.mounted){
                             NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
                           }
                           NavigationService.back();
-                          
                         },
                         child: Container(
                           margin: const EdgeInsets.only(top: 12),
@@ -863,7 +870,7 @@ class IjinDialog{
                     color: Colors.grey, width: 1.0
                   )
                 ),
-                child: Text('hpl.pdf', style: CustomFont.headingEmpat(),),
+                child: Text('hpl.pdf', style: CustomFont.headingEmpatColorful()),
               ),
             ),
           ],
@@ -1170,6 +1177,9 @@ class IjinDialog{
   }
 
   static void showEditIjinDialog(BuildContext ctx, IzinListModel data) {
+    
+        final baseUrl = dotenv.env['SERVER_URL'];
+    
     TimeOfDay startTime = data.startTime??TimeOfDay.now();
     TimeOfDay endTime = data.finishTime ?? TimeOfDay.now();
     DateTime startDate = data.startDate ?? DateTime.now();
@@ -1315,8 +1325,16 @@ class IjinDialog{
                                             )
                                           ],
                                         )
-                                      : const SizedBox(
-                                          width: 0,
+                                      : InkWell(
+                                          onTap: (){
+                                            CustomViewer.networkPhoto(ctx, Uri.parse('$baseUrl/${data.invitationUrl}').toString());
+                                          },
+                                          child: Row(
+                                            children: [
+                                              const SizedBox(width: 6,),
+                                              AutoSizeText('uploaded.png', style: CustomFont.headingEmpatColorful(),)
+                                            ],
+                                          ),
                                         )
                                 ],
                               ),
@@ -1749,7 +1767,17 @@ class IjinDialog{
                                         )
                                       ],
                                     )
-                                  : const SizedBox()
+                                  : InkWell(
+                                    onTap: (){
+                                      CustomViewer.pdfNetwork(ctx, Uri.parse('$baseUrl/${data.hlpUrl}').toString());
+                                    },
+                                    child: Row(
+                                      children: [
+                                        const SizedBox(width: 6,),
+                                        AutoSizeText('uploaded.pdf', style: CustomFont.headingEmpatColorful(),),
+                                      ],
+                                    ),
+                                  )
                             ],
                           ),
                           const SizedBox(
@@ -2002,19 +2030,17 @@ class IjinDialog{
                                 tfReason.text,
                                 doctorLetter);
                           } else if (data.type == 7) {
-                            networkResponse =
-                                await NetworkRequest.postIjinBukti(
-                                    data.type.toString(),
+
+                            networkResponse = await NetworkRequest.putIjinBukti(data.type.toString(),
                                     DateFormat('yyyy-MM-dd').format(startDate),
                                     DateFormat('yyyy-MM-dd').format(endDate),
-                                    (selectedImage?.path ?? ''));
+                                    selectedImage?.path);
                           } else if (data.type == 8) {
-                            networkResponse =
-                                await NetworkRequest.postIjinBukti(
+                            networkResponse = await NetworkRequest.putIjinBukti(
                                     data.type.toString(),
                                     DateFormat('yyyy-MM-dd').format(startDate),
                                     DateFormat('yyyy-MM-dd').format(endDate),
-                                    (file?.paths[0] ?? ''));
+                                    file?.paths[0]);
                           } else if (data.type == 6) {
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');

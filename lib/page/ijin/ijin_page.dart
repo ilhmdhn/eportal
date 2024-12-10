@@ -34,8 +34,14 @@ class _IjinPageState extends State<IjinPage> {
 
   @override
   void didChangeDependencies() {
-    getData();
     super.didChangeDependencies();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getData();
   }
   
   @override

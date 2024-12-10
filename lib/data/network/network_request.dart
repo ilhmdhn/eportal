@@ -297,4 +297,41 @@ class NetworkRequest{
       return BaseResponse(state: false, message: e.toString());
     }
   }
+
+  static Future<BaseResponse> putIjinBukti(String type, String startDate, String finishDate, String? filePath) async {
+    try {
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/ijin_bukti');
+      final request = http.MultipartRequest('PUT', url);
+
+      request.fields['type'] = type;
+      request.fields['start_date'] = startDate;
+      request.fields['finish_date'] = finishDate;
+      Map<String, String> headers = {
+        'Content-Type': 'multipart/form-data',
+        'authorization': key
+      };
+
+      request.headers.addAll(headers);
+
+      if (isNullOrEmpty(filePath)) {
+        return BaseResponse(state: false, message: 'File tidak ada');
+      }
+
+      if(isNotNullOrEmpty(filePath)){
+        request.files.add(await http.MultipartFile.fromPath('bukti', filePath!));
+      }
+
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+      final convertedResult = json.decode(responseBody);
+      final responseResult = BaseResponse.fromJson(convertedResult);
+
+      return responseResult;
+    } catch (e) {
+      return BaseResponse(state: false, message: e.toString());
+    }
+  }
+
+
 }

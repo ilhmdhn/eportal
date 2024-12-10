@@ -34,7 +34,7 @@ void main() async{
   runApp(ChangeNotifierProvider(
     create: (_) => LocationProvider(),
     child: const MyApp(),
-    ));
+  ));
 }
 
 class MyApp extends StatelessWidget {
