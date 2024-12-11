@@ -300,25 +300,23 @@ class NetworkRequest{
     }
   }
 
-  static Future<BaseResponse> putIjinBukti(String type, String startDate, String finishDate, String? filePath) async {
+  static Future<BaseResponse> putIjinBukti(String id, String type, String startDate, String finishDate, String? filePath) async {
     try {
       final key = SharedPreferencesData.getKey() ?? '';
-      final url = Uri.parse('$baseUrl/Api/ijin_bukti');
+      final url = Uri.parse('$baseUrl/Api/ijin_bukti/$id');
       final request = http.MultipartRequest('PUT', url);
 
       request.fields['type'] = type;
       request.fields['start_date'] = startDate;
       request.fields['finish_date'] = finishDate;
-      Map<String, String> headers = {
-        'Content-Type': 'multipart/form-data',
-        'authorization': key
-      };
+      
+      Map<String, String> headers = 
+      type == '7'?
+      { 'Content-Type': 'multipart/form-data', 'authorization': key}:
+      {'Content-Type': 'application/pdf', 'authorization': key};
+      ;
 
       request.headers.addAll(headers);
-
-      if (isNullOrEmpty(filePath)) {
-        return BaseResponse(state: false, message: 'File tidak ada');
-      }
 
       if(isNotNullOrEmpty(filePath)){
         request.files.add(await http.MultipartFile.fromPath('bukti', filePath!));

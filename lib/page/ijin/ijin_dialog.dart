@@ -2107,12 +2107,15 @@ class IjinDialog{
                                 doctorLetter);
                           } else if (data.type == 7) {
 
-                            networkResponse = await NetworkRequest.putIjinBukti(data.type.toString(),
+                            networkResponse = await NetworkRequest.putIjinBukti(
+                                    data.id!,
+                                    data.type.toString(),
                                     DateFormat('yyyy-MM-dd').format(startDate),
                                     DateFormat('yyyy-MM-dd').format(endDate),
                                     selectedImage?.path);
                           } else if (data.type == 8) {
                             networkResponse = await NetworkRequest.putIjinBukti(
+                                    data.id!,
                                     data.type.toString(),
                                     DateFormat('yyyy-MM-dd').format(startDate),
                                     DateFormat('yyyy-MM-dd').format(endDate),
