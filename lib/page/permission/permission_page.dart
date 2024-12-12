@@ -102,7 +102,10 @@ class PermissionPage extends StatefulWidget {
                           if(notificationPermissionState == PermissionState.granted){
                             ShowToast.warning('Sudah disetujui');
                             return;
+                          }else if(notificationPermissionState == PermissionState.denied){
+                            await openAppSettings();
                           }
+
                           Permission.notification.onDeniedCallback(() {
                             // Your code
                           }).onGrantedCallback(() {
@@ -116,6 +119,18 @@ class PermissionPage extends StatefulWidget {
                           }).onProvisionalCallback(() {
                             // Your code
                           }).request();
+
+                          if(await Permission.notification.isGranted == true){
+                            notificationPermissionState = PermissionState.granted;
+                          }else if(await Permission.notification.isDenied == true || await Permission.notification.isPermanentlyDenied == true){
+                            notificationPermissionState = PermissionState.denied;
+                          }else if(await Permission.notification.isLimited == true || await Permission.notification.isProvisional || await Permission.notification.isRestricted){
+                            notificationPermissionState = PermissionState.limited;
+                          }
+                          
+                          setState(() {
+                            notificationPermissionState;
+                          });
                         },
                         child: Column(
                           children: [
