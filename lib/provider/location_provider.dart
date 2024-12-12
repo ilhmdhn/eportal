@@ -10,11 +10,7 @@ class LocationProvider with ChangeNotifier {
   LocationData? get currentLocation => _currentLocation;
   bool get isTracking => _isTracking;
 
-  LocationProvider() {
-    _initializeLocation();
-  }
-
-  Future<void> _initializeLocation() async {
+  Future<void> initializeLocation() async {
     // Memeriksa izin lokasi
     bool serviceEnabled = await _location.serviceEnabled();
     if (!serviceEnabled) {

@@ -9,204 +9,44 @@ import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-/*
-class CameraDialog{
-    static void showCameraDialog(BuildContext context, CameraController cameraController) {
-    XFile? capturedImage;
-    int selectorType = 1;
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-        builder: (BuildContext ctx, StateSetter setState) {
-          return PopScope(
-            canPop: true,
-            onPopInvokedWithResult:(didPop, result) => cameraController.dispose(),
-            child: AlertDialog(
-              insetPadding: EdgeInsets.symmetric(horizontal: 1, vertical: 2),
-              titlePadding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              actionsPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              contentPadding: EdgeInsets.symmetric(horizontal: 25, vertical: 2),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              title: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 36,
-                      height: 36,
-                    ),
-                    SizedBox(
-                      child: Text('Ambil Foto', style: CustomFont.headingTiga(),),
-                    ),
-                    SizedBox(
-                      width: 36,
-                      height: 36,
-                      child: InkWell(
-                        onTap: (){
-                          cameraController.dispose();
-                          Navigator.pop(context);
-                        },
-                        child: Icon(Icons.close)),
-                    )
-                  ],
-                ),
-              ),
-              content: SizedBox(
-                width: ScreenSize.setWidthPercent(ctx, 65),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    isNotNullOrEmpty(capturedImage?.path)
-                        ? Column(
-                            children: [
-                              SizedBox(
-                                child: Transform(
-                                    alignment: Alignment.center,
-                                    transform: Matrix4.identity()
-                                      ..scale(-1.0, 1.0, 1.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20)
-                                      ),
-                                      child: Image.file(File(capturedImage!.path)))),
-                              ),],
-                          ):
-                          Container(
-                            decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20)),
-                            child: Transform(
-                                  alignment: Alignment.center,
-                                  transform: Matrix4.identity()
-                                    ..scale(-1.0, 1.0, 1.0),
-                                  child: CameraPreview(cameraController),
-                                ),
-                          ),
-                          SizedBox(
-                            width: ScreenSize.setWidthPercent(ctx, 50),
-                            height: 26,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                RadioListTile(
-                                  title: Text('Datang', style: CustomFont.standartFont(),),
-                                  value: 1, 
-                                  groupValue: selectorType, 
-                                  onChanged: (value){
-                                    selectorType = value!;
-                                  }
-                                ),
-                                RadioListTile(
-                              title: Text('Pulang', style: CustomFont.standartFont(),),
-                              value: 2,
-                              groupValue: selectorType,
-                              onChanged: (value) {
-                                selectorType = value!;
-                              }),
-                              ],
-                            ),
-                          )
-                  ],
-                ),
-              ),
-              actions: [
-                capturedImage == null?
-                InkWell(
-                  onTap: () async {
-                    if (cameraController.value.isTakingPicture) return;
-            
-                    final image = await cameraController.takePicture();
-                    setState(() {
-                      capturedImage = image;
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    decoration: CustomContainer.buttonPrimary(),
-                    child: Center(
-                        child: Text(
-                      'Ambil',
-                      style: CustomFont.buttonSecondary(),
-                    )),
-                  ),
-                ): SizedBox(
-                        height: 46,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    File(capturedImage!.path).delete();
-                                    capturedImage = null;
-                                  });
-                                },
-                                child: Container(
-                                  height: 36,
-                                  decoration: CustomContainer.buttonCancel(),
-                                  child: Center(
-                                      child: Text('Hapus',
-                                          style: CustomFont.buttonSecondary())),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: InkWell(
-                                onTap: ()async{
-                                  final attendanceResponse = await NetworkRequest.postGpsAttendance(capturedImage, 'HP000', 1, 1);
-                                  ShowToast.warning(attendanceResponse.state.toString() + (attendanceResponse.message??''));
-            
-                                },
-                                child: Container(
-                                  height: 36,
-                                  decoration: CustomContainer.buttonPrimary(),
-                                  child: Center(
-                                      child: Text('Absen',
-                                          style: CustomFont.buttonSecondary())),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-              ],
-            ),
-          );
-      });
-      },
-    );
-  }
-
-}
-
-*/
-
 class CameraDialog {
-  static void showCameraDialog(
-      BuildContext context, CameraController cameraController, num distance, String outlet) {
+  static void showCameraDialog(BuildContext context, num distance, String outlet) async{
     XFile? capturedImage;
     int selectorType = 1;
+    late List<CameraDescription> cameras;
+    CameraController cameraController;
+
+    cameras = await availableCameras();
+    
+    final frontCamera = cameras.firstWhere(
+      (camera) => camera.lensDirection == CameraLensDirection.front,
+      orElse: () => cameras.first,
+    );
+    
+    cameraController = CameraController(frontCamera, ResolutionPreset.medium);
+
+    try {
+      await cameraController.initialize();
+    } catch (e) {
+      ShowToast.error('Error initializing camera: $e');
+      NavigationService.back();
+    }    
+    
+    if(!context.mounted){
+      NavigationService.back();
+      return;
+    }
 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-            builder: (BuildContext ctx, StateSetter setState) {
+        return StatefulBuilder(builder: (BuildContext ctx, StateSetter setState) {
           return AlertDialog(
             insetPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
             titlePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),

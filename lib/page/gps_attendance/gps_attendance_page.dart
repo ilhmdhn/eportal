@@ -3,7 +3,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/page/gps_attendance/camera_dialog.dart';
-import 'package:eportal/provider/location_provider.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/calculate.dart';
@@ -12,9 +11,8 @@ import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:camera/camera.dart';
+import 'package:location/location.dart';
 
 class GpsAttendancePage extends StatefulWidget {
   static const nameRoute = '/gps-attendance';
@@ -30,34 +28,70 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
   final _mapController = MapController();
   double _currentZoom = 18.0;
   final Distance distance = const Distance();
-  Location nearest = Location(brand: '1', name: 'Happy Puppy', outletLat: 0, outletLong: 0);
-  List<Location> locations = [];
+  LocationModel nearest = LocationModel(brand: '1', name: 'Happy Puppy', outletLat: 0, outletLong: 0);
+  List<LocationModel> locations = [];
   List<Marker> markerz = [];
-  late CameraController _cameraController;
-  late List<CameraDescription> cameras;
   bool isCameraInitialized = false;
-
-
+  final Location _location = Location();
+  LatLng currentLocation = const LatLng(-6.2026431, 106.5495505);
+  LocationData? locationDetail;
+  bool _serviceEnabled = false;
+  double accuration = 50;
+  
   @override
   void initState() {
     super.initState();
+    initLocation();
 
-      _mapController.mapEventStream.listen((event) {
-        _currentZoom = event.camera.zoom;
-      });
+    _mapController.mapEventStream.listen((event) {
+      _currentZoom = event.camera.zoom;
+    });
+    
+    loadLocations().then((loadedLocations) {
+      locations.addAll(loadedLocations);
+      getMarker(loadedLocations);
+    });
+  }
+
+  void initLocation()async{
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await _location.requestService();
       
-      loadLocations().then((loadedLocations) {
-        locations.addAll(loadedLocations);
-        getMarker(loadedLocations);
-      });
+      if (!_serviceEnabled) {
+        ShowToast.wawrningLong('Lokasi tidak aktif');
+        return;
+      }
+    }
+
+    PermissionStatus permissionGranted = await _location.hasPermission();
+    if(permissionGranted == PermissionStatus.denied){
+      permissionGranted = await _location.requestPermission();
+      if(permissionGranted != PermissionStatus.granted){
+        ShowToast.error('Akses lokasi tidak diizinkan');
+        return;
+      }
+    }
+
+
+    _location.onLocationChanged.listen((LocationData currentLoc) {
+      if (mounted) {
+        setState(() {
+          if(locationDetail == null){
+            _mapController.move(LatLng(currentLoc.latitude??0, currentLoc.longitude??0), 18);
+          }
+          currentLocation = LatLng(currentLoc.latitude ?? -6.2026431, currentLoc.longitude ?? 106.5495505);
+          accuration = currentLoc.accuracy??50;
+        });
+        ShowToast.error('mounted');
+      }else{
+        ShowToast.warning('not mounted');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-    final locationProvider = Provider.of<LocationProvider>(context);
-    LatLng currentLocation = LatLng((locationProvider.currentLocation?.latitude ?? 0.0), (locationProvider.currentLocation?.longitude ??0.0));
-    double accuration = locationProvider.currentLocation?.accuracy??100;
     nearestOutlet(currentLocation);
 
     return Scaffold(
@@ -67,21 +101,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
         child: Stack(
           children: [
             Positioned(
-              child: locationProvider.currentLocation == null
-                  ? SizedBox(
-                      width: double.infinity,
-                      height: ScreenSize.setHeightPercent(context, 60),
-                    child: Center(
-                      child: SizedBox(
-                        height: 56,
-                        width: 56,
-                        child: CircularProgressIndicator(
-                          color: CustomColor.primary(),
-                        ),
-                      ),
-                    ),
-                  )
-                  : Stack(
+              child: Stack(
                     children: [
                       Positioned(
                         top: 0,
@@ -95,8 +115,8 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                               mapController: _mapController,
                               options: MapOptions(
                                 backgroundColor: CustomColor.background(),
-                                initialCenter: currentLocation, // Jakarta
-                                initialZoom: 18.0,
+                                initialCenter: currentLocation,
+                                initialZoom: 23.0,
                               ),
                               children: [
                                 
@@ -194,7 +214,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 AutoSizeText(nearest.distance>50?'Outlet terdekat':'Kamu berada di', style: CustomFont.urLocation()),
-                                AutoSizeText('Akurasi ${(locationProvider.currentLocation?.accuracy ?? 0).toStringAsFixed(2)}m', style: CustomFont.locationAccuration()),
+                                AutoSizeText('Akurasi ${accuration.toStringAsFixed(2)}m', style: CustomFont.locationAccuration()),
                               ],
                             ),
                           ),
@@ -247,7 +267,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                     color: Colors.grey,
                                   ),
                                   SizedBox(
-                                    child: DropdownSearch<Location>(
+                                    child: DropdownSearch<LocationModel>(
                                       decoratorProps: const DropDownDecoratorProps(
                                         decoration: InputDecoration(
                                           border: InputBorder.none
@@ -255,7 +275,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                       ),
                                       items: (filter, a) => locations,
                                       // mode: Mode.form,
-                                      itemAsString: (Location? location)=> '${location?.name} ${location?.distance}m',
+                                      itemAsString: (LocationModel? location)=> '${location?.name} ${location?.distance}m',
                                       popupProps: PopupProps.menu(
                                         title: Container(
                                           color: Colors.white,
@@ -360,8 +380,8 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                           ),
                                         );
                                       },
-                                      compareFn: (Location? a, Location? b) => a?.outletLat == b?.outletLat && a?.outletLong == b?.outletLong,
-                                      onChanged: (Location? selectedLocation){
+                                      compareFn: (LocationModel? a, LocationModel? b) => a?.outletLat == b?.outletLat && a?.outletLong == b?.outletLong,
+                                      onChanged: (LocationModel? selectedLocation){
                                         if(selectedLocation != null){
                                           _mapController.move(LatLng(selectedLocation.outletLat, selectedLocation.outletLong), 18);
                                         }
@@ -390,13 +410,9 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                 ShowToast.error('Jarak ke outlet harus dibawah 50 meter');
                                 return;
                               }
-                                await _initializeCamera();
 
-                              if(_cameraController.value.isInitialized && context.mounted){
-                                CameraDialog.showCameraDialog(context, _cameraController, nearest.distance, nearest.name);
-                              }else{
-                                ShowToast.warning('Kamera Belum siap');
-                              }
+                              CameraDialog.showCameraDialog(context, nearest.distance, nearest.name);
+                              
                             }, child: Container(
                               width: double.infinity,
                               padding: const EdgeInsets.symmetric(vertical: 9),
@@ -414,27 +430,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
     );
   }
 
-
-  Future<void> _initializeCamera() async {
-    cameras = await availableCameras();
-    final frontCamera = cameras.firstWhere(
-      (camera) => camera.lensDirection == CameraLensDirection.front,
-      orElse: () => cameras.first,
-    );
-    _cameraController = CameraController(frontCamera, ResolutionPreset.medium);
-
-    try {
-      await _cameraController.initialize();
-      setState(() {
-        isCameraInitialized = true;
-      });
-    } catch (e) {
-      print("Error initializing camera: $e");
-    }
-    return;
-  }
-
-  void getMarker(List<Location> locations) {
+  void getMarker(List<LocationModel> locations) {
     for (var element in locations) {
       nameOutletList.add(element.name);
       markerz.add(Marker(
@@ -452,9 +448,10 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                               ? Image.asset('assets/image/blackhole.png')
                               : const SizedBox()));
     }
-    setState(() {
-      markerz;
-    });
+      setState(() {
+        markerz;
+      });
+    
   }
 
   void nearestOutlet(LatLng currentLocation) {
