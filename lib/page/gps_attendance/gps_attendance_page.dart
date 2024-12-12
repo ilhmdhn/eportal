@@ -16,6 +16,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:location/location.dart';
 import 'package:permission_handler/permission_handler.dart' as PH;
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class GpsAttendancePage extends StatefulWidget {
   static const nameRoute = '/gps-attendance';
@@ -108,7 +109,9 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                 _mapController.move(LatLng(snapshot.data?.latitude?? 0, snapshot.data?.longitude?? 0), 18);
                 initCamera = true;
               }
-                nearestOutlet(LatLng(snapshot.data?.latitude ?? -7.4085933, snapshot.data?.longitude ?? 111.4349469));
+              nearestOutlet(LatLng(snapshot.data?.latitude ?? -7.4085933, snapshot.data?.longitude ?? 111.4349469));
+            }else if(snapshot.hasError){
+              ShowToast.error(snapshot.error.toString());
             }
             LatLng currentLocation = LatLng(snapshot.data?.latitude?? -7.4085933, snapshot.data?.longitude?? 111.4349469);
             double accuration = snapshot.data?.accuracy??10;
@@ -117,93 +120,90 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
               children: [
                 Positioned(
                   child: Stack(
-                        children: [
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            bottom: 0,
-                            left: 0,
-                            child: SizedBox(
-                                width: double.infinity,
-                                height: ScreenSize.setHeightPercent(context, 65),
-                                child: FlutterMap(
-                                  mapController: _mapController,
-                                  options: MapOptions(
-                                    backgroundColor: CustomColor.background(),
-                                    initialCenter: currentLocation,
-                                    initialZoom: 23.0,
+                  children: [
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      bottom: 0,
+                      left: 0,
+                      child: SizedBox(
+                          width: double.infinity,
+                          height: ScreenSize.setHeightPercent(context, 65),
+                          child: FlutterMap(
+                            mapController: _mapController,
+                            options: MapOptions(
+                              backgroundColor: CustomColor.background(),
+                              initialCenter: currentLocation,
+                              initialZoom: 13.0,
+                            ),
+                            children: [
+                              TileLayer(
+                                urlTemplate: 'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                                subdomains: const ['mt0', 'mt1', 'mt2', 'mt3'],
+                              ),
+                              CircleLayer(
+                                circles: [
+                                  CircleMarker(
+                                    point: currentLocation,
+                                    color: Colors.blue.withOpacity(0.3),
+                                    borderStrokeWidth: 2,
+                                    borderColor: Colors.blue,
+                                    useRadiusInMeter: true,
+                                    radius: locationSuccess? accuration:0,
+                                    // radius: accuration / pow(2, -(_currentZoom - 18)),
                                   ),
-                                  children: [
-                                    
-                                    TileLayer(
-                                      urlTemplate: 'http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
-                                      subdomains: const ['mt0', 'mt1', 'mt2', 'mt3'],
-                                    ),
-            
-                                    
-                                    CircleLayer(
-                                      circles: [
-                                        CircleMarker(
-                                          point: currentLocation,
-                                          color: Colors.blue.withOpacity(0.3),
-                                          borderStrokeWidth: 2,
-                                          borderColor: Colors.blue,
-                                          radius: accuration / pow(2, -(_currentZoom - 18)),
+                                ],
+                              ),
+                              MarkerLayer(
+                                markers: 
+                                [
+                                  Marker(
+                                    point: currentLocation,
+                                    width: locationSuccess? 20:0,
+                                    height: locationSuccess? 20:0,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: CustomColor.primary(),
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                          color:
+                                              Colors.white, // Warna border putih
+                                          width: 3.0, // Ketebalan border
                                         ),
-                                      ],
-                                    ),
-                                    MarkerLayer(
-                                      markers: 
-                                      [
-                                        Marker(
-                                          point: currentLocation,
-                                          width: 20,
-                                          height: 20,
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              color: CustomColor.primary(),
-                                              borderRadius: BorderRadius.circular(10),
-                                              border: Border.all(
-                                                  color:
-                                                      Colors.white, // Warna border putih
-                                                  width: 3.0, // Ketebalan border
-                                                ),
-                                            ),
-                                          )
-                                        ),
-                                        ...markerz
-                                      ],
+                                      ),
                                     )
-                                  ],
-                                ),
-                                ),
+                                  ),
+                                  ...markerz
+                                ],
+                              )
+                            ],
                           ),
-                          Positioned(
-                            bottom: ScreenSize.setHeightPercent(context, 36),
-                            right: 10,
-                            left: 10,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                    const SizedBox(),
-                                InkWell(
-                                  onTap: (){
-                                    _mapController.move(currentLocation, 18);
-                                  },
-                                  child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(20),
-                                      color: CustomColor.primary(),
-                                      border: Border.all(width: 2, color: Colors.white)
-                                    ),
-                                    child: const Icon(Icons.gps_fixed, color: Colors.white, size: 26,)),
-                                ),
-                              ],
-                            ),
-                            ),
-                        ],
+                          ),
+                    ),
+                    Positioned(
+                      bottom: ScreenSize.setHeightPercent(context, 36),
+                      right: 10,
+                      child: 
+
+                      locationSuccess?
+
+                      InkWell(
+                        onTap: (){
+                          _mapController.move(currentLocation, 18);
+                        },
+                        child: Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: CustomColor.primary(),
+                            border: Border.all(width: 2, color: Colors.white)
+                          ),
+                          child: const Icon(Icons.gps_fixed, color: Colors.white, size: 26,)
+                        ),
+                      ): const SizedBox(),
+                      ),
+                  ],
                       ),
                 ),
                 Positioned(
@@ -247,8 +247,8 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                                 },
                                                 child: Container(
                                                   decoration: CustomContainer.buttonPrimary(),
-                                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                                  child: Text('Buka Pengaturan', style: CustomFont.buttonSecondary()),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                  child: Text('Buka Pengaturan', style: CustomFont.headingEmpatSemiBoldSecondary()),
                                                 ),
                                               ),
                                             )
@@ -257,8 +257,9 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                         _serviceEnabled == false?
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
+                                          mainAxisSize: MainAxisSize.max,
                                           children: [
-                                            AutoSizeText('Aktifkan lokasi terkini', style: CustomFont.headingTigaSemiBold(),),
+                                            AutoSizeText('Aktifkan lokasi terkini', style: CustomFont.headingEmpatSemiBoldSecondary(),),
                                             Align(
                                               alignment: Alignment.center,
                                               child: InkWell(
@@ -270,12 +271,25 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                                   initLocation();
                                                 },
                                                 child: Container(
-                                                  decoration: CustomContainer.buttonPrimary(),
-                                                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                                  child: Text('Buka Pengaturan', style: CustomFont.buttonSecondary()),
+                                                  decoration: CustomContainer.buttonGrey(),
+                                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                                  child: Text('Aktifkan GPS', style: CustomFont.headingEmpatSecondary()),
                                                 ),
                                               ),
                                             )
+                                          ],
+                                        ): locationSuccess == false?
+                                        Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Text('Sedang mencari lokasi kamu', style: CustomFont.headingEmpatSemiBold()),
+                                            Center(
+                                              child: LoadingAnimationWidget.horizontalRotatingDots(
+                                                color: CustomColor.primary(),
+                                                size: 43
+                                              ),
+                                            ),
                                           ],
                                         ):
                                         Column(
@@ -292,7 +306,8 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                                         ? 'Outlet terdekat'
                                                         : 'Kamu berada di',
                                                     style: CustomFont
-                                                        .urLocation()),
+                                                        .urLocation()
+                                                ),
                                                 AutoSizeText(
                                                     'Akurasi ${accuration.toStringAsFixed(2)}m',
                                                     style: CustomFont
