@@ -311,11 +311,7 @@ class NetworkRequest{
       request.fields['start_date'] = startDate;
       request.fields['finish_date'] = finishDate;
       
-      Map<String, String> headers = 
-      type == '7'?
-      { 'Content-Type': 'multipart/form-data', 'authorization': key}:
-      {'Content-Type': 'application/pdf', 'authorization': key};
-      ;
+      Map<String, String> headers =  {'Content-Type': 'multipart/form-data', 'authorization': key};
 
       request.headers.addAll(headers);
 

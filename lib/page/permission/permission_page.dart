@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -311,6 +313,7 @@ class PermissionPage extends StatefulWidget {
                         color: Colors.grey,
                         margin: const EdgeInsets.symmetric(vertical: 6),
                       ),
+                      Platform.isAndroid?
                       InkWell(
                         onTap: () async{
                           Optimizer().requestIgnoreBatteryOptimization();
@@ -341,7 +344,7 @@ class PermissionPage extends StatefulWidget {
                             ),
                           ],
                         ),
-                      ),
+                      ):const SizedBox(),
                     ],
                   ),
                 )
