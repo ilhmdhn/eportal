@@ -7,7 +7,7 @@ import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
-import 'package:eportal/provider/location_provider.dart';
+import 'package:eportal/provider/list_outlet_provider.dart';
 import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/navigation_service.dart';
@@ -44,7 +44,9 @@ void main() async{
         ChangeNotifierProvider.value(
           value: MaxDateProvider()
         ),
-        ChangeNotifierProvider(create: (_) => LocationProvider()),
+        ChangeNotifierProvider.value(
+          value: ListOutletProvider(),
+        ),
       ],
       child: const MyApp(),
     )

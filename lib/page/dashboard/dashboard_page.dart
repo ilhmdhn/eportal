@@ -7,7 +7,6 @@ import 'package:eportal/data/model/profile.dart';
 import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
-import 'package:eportal/page/dialog/viewer_dialog.dart';
 import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/page/lembur/lembur_page.dart';
 import 'package:eportal/page/login/login_page.dart';

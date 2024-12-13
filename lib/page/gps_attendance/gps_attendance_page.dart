@@ -3,20 +3,21 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/network/response/list_response.dart';
 import 'package:eportal/page/gps_attendance/camera_dialog.dart';
-import 'package:eportal/page/permission/permission_page.dart';
+import 'package:eportal/provider/list_outlet_provider.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/calculate.dart';
-import 'package:eportal/util/location_dummy.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:location/location.dart';
-import 'package:permission_handler/permission_handler.dart' as PH;
+import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:provider/provider.dart';
 
 class GpsAttendancePage extends StatefulWidget {
   static const nameRoute = '/gps-attendance';
@@ -28,12 +29,12 @@ class GpsAttendancePage extends StatefulWidget {
 
 class _GpsAttendancePageState extends State<GpsAttendancePage> {
 
+
   List<String> nameOutletList = [];
   final _mapController = MapController();
   double _currentZoom = 18.0;
   final Distance distance = const Distance();
-  LocationModel nearest = LocationModel(brand: '1', name: 'Happy Puppy', outletLat: 0, outletLong: 0);
-  List<LocationModel> locations = [];
+  OutletModel nearest = OutletModel(code: 'HP000' ,brand: '1', name: 'Happy Puppy', lat: 0, long: 0);
   List<Marker> markerz = [];
   final Location _location = Location();
   bool _serviceEnabled = false;
@@ -46,19 +47,26 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
   void initState() {
     super.initState();
     initLocation();
+    context.read<ListOutletProvider>().getList();
+    // context.read<ListOutletProvider>().
+    initMarker();
 
     _mapController.mapEventStream.listen((event) {
       _currentZoom = event.camera.zoom;
     });
-    
-    loadLocations().then((loadedLocations) {
-      locations.addAll(loadedLocations);
-      getMarker(loadedLocations);
+
+  }
+
+  void initMarker(){
+    final listOutletProvider = context.read<ListOutletProvider>();
+    listOutletProvider.getList().then((_){
+      getMarker(listOutletProvider.outletList);
     });
   }
 
   void initLocation()async{
     PermissionStatus permissionGranted = await _location.hasPermission();
+
     if(permissionGranted == PermissionStatus.denied){
       permissionGranted = await _location.requestPermission();
       if(permissionGranted != PermissionStatus.granted){
@@ -80,8 +88,8 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
     }
 
     setState(() {
-      _serviceEnabled;
-      _permissionEnabled;
+      _serviceEnabled = _serviceEnabled;
+      _permissionEnabled = _permissionEnabled;
     });
 
     _location.onLocationChanged.listen((LocationData currentLoc) {
@@ -109,7 +117,6 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                 _mapController.move(LatLng(snapshot.data?.latitude?? 0, snapshot.data?.longitude?? 0), 18);
                 initCamera = true;
               }
-              nearestOutlet(LatLng(snapshot.data?.latitude ?? -7.4085933, snapshot.data?.longitude ?? 111.4349469));
             }else if(snapshot.hasError){
               ShowToast.error(snapshot.error.toString());
             }
@@ -149,8 +156,8 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                     borderStrokeWidth: 2,
                                     borderColor: Colors.blue,
                                     useRadiusInMeter: true,
-                                    radius: locationSuccess? accuration:0,
-                                    // radius: accuration / pow(2, -(_currentZoom - 18)),
+                                    // radius: locationSuccess? accuration:0,
+                                    radius: accuration / pow(2, -(_currentZoom - 18)),
                                   ),
                                 ],
                               ),
@@ -239,7 +246,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                               alignment: Alignment.center,
                                               child: InkWell(
                                                 onTap: ()async {
-                                                  await PH.openAppSettings();
+                                                  await ph.openAppSettings();
                                                   setState(() {
                                                     
                                                   });
@@ -343,124 +350,131 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                               color: Colors.grey,
                                             ),
                                             SizedBox(
-                                              child: DropdownSearch<LocationModel>(
-                                                decoratorProps: const DropDownDecoratorProps(
-                                                  decoration: InputDecoration(
-                                                    border: InputBorder.none
-                                                  )
-                                                ),
-                                                items: (filter, a) => locations,
-                                                itemAsString: (LocationModel? location)=> '${location?.name} ${location?.distance}m',
-                                                popupProps: PopupProps.menu(
-                                                  title: Container(
-                                                    color: Colors.white,
-                                                    height: 36,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        const SizedBox(
-                                                              height: 26,
-                                                              width: 26,
-                                                            ),
-                                                        Text('Nearest Outlet', style: CustomFont.headingTiga(),),
-                                                        InkWell(
-                                                          onTap: (){
-                                                            Navigator.pop(context);
-                                                          },
-                                                          child: const SizedBox(
-                                                            height: 26,
-                                                            width: 26,
-                                                            child: Icon(Icons.close)),
-                                                        ),
-                                                      ],
-                                                    )),
-                                                  itemBuilder: (ctx, item, isDisable, isSelected){
-                                                    return Container(
-                                                      decoration: BoxDecoration(
-                                                        color:  isSelected? Colors.amber: Colors.white,
-                                                      ),
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          Padding(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 12),
-                                                            child: Column(
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: [
-                                                                SizedBox(
+                                              child: Consumer<ListOutletProvider>(
+                                                builder: (ctxListOutlet, listOutletProvider, child) {
+                                                  if(listOutletProvider.outletList.isNotEmpty){
+                                                    nearestOutlet(currentLocation, listOutletProvider.outletList);
+                                                  }
+                                                  return DropdownSearch<OutletModel>(
+                                                    decoratorProps: const DropDownDecoratorProps(
+                                                      decoration: InputDecoration(
+                                                        border: InputBorder.none
+                                                      )
+                                                    ),
+                                                    items: (filter, a) => listOutletProvider.outletList,
+                                                    itemAsString: (OutletModel? location)=> '${location?.name} ${location?.distance}m',
+                                                    popupProps: PopupProps.menu(
+                                                      title: Container(
+                                                        color: Colors.white,
+                                                        height: 36,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                          children: [
+                                                            const SizedBox(
                                                                   height: 26,
-                                                                  child: item.brand == '1'? SizedBox(
-                                                                    child: Image.asset('assets/image/happup.png'))
-                                                                      : item.brand == '2'
-                                                                        ? Image.asset('assets/image/happy_puppy.png')
-                                                                      : item.brand == '3'
-                                                                        ? Image.asset('assets/image/qq.png')
-                                                                      : item.brand =='4'
-                                                                        ? Image.asset('assets/image/suka_suka.png')
-                                                                      : item.brand == '5'
-                                                                        ? Image.asset('assets/image/blackhole.png')
-                                                                      : const SizedBox(),
+                                                                  width: 26,
                                                                 ),
-                                                                AutoSizeText(item.name, style: CustomFont.headingEmpatBold(),),
-                                                                Text('Jarak :${Calculate.meterToUp(item.distance)}', style: CustomFont.headingEmpat(),),
-                                                              ],
+                                                            Text('Nearest Outlet', style: CustomFont.headingTiga(),),
+                                                            InkWell(
+                                                              onTap: (){
+                                                                Navigator.pop(context);
+                                                              },
+                                                              child: const SizedBox(
+                                                                height: 26,
+                                                                width: 26,
+                                                                child: Icon(Icons.close)),
                                                             ),
+                                                          ],
+                                                        )),
+                                                      itemBuilder: (ctx, item, isDisable, isSelected){
+                                                        return Container(
+                                                          decoration: BoxDecoration(
+                                                            color:  isSelected? Colors.amber: Colors.white,
                                                           ),
-                                                          Container(
-                                                            height: 1,
-                                                            width: double.infinity,
-                                                            color: Colors.grey,
-                                                          )
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }
-                                                ),
-                                                dropdownBuilder: (context, selectedItem) {
-                                                  return Container(
-                                                    margin: const EdgeInsets.symmetric(
-                                                      horizontal: 0,
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Padding(
+                                                                padding: const EdgeInsets.symmetric(horizontal: 12),
+                                                                child: Column(
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                                  children: [
+                                                                    SizedBox(
+                                                                      height: 26,
+                                                                      child: item.brand == '1'? SizedBox(
+                                                                        child: Image.asset('assets/image/happup.png'))
+                                                                          : item.brand == '2'
+                                                                            ? Image.asset('assets/image/happy_puppy.png')
+                                                                          : item.brand == '3'
+                                                                            ? Image.asset('assets/image/qq.png')
+                                                                          : item.brand =='4'
+                                                                            ? Image.asset('assets/image/suka_suka.png')
+                                                                          : item.brand == '5'
+                                                                            ? Image.asset('assets/image/blackhole.png')
+                                                                          : Image.asset('assets/image/office.png'),
+                                                                    ),
+                                                                    AutoSizeText(item.name, style: CustomFont.headingEmpatBold(),),
+                                                                    Text('Jarak :${Calculate.meterToUp(item.distance)}', style: CustomFont.headingEmpat(),),
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              Container(
+                                                                height: 1,
+                                                                width: double.infinity,
+                                                                color: Colors.grey,
+                                                              )
+                                                            ],
+                                                          ),
+                                                        );
+                                                      }
                                                     ),
-                                                    decoration: const BoxDecoration(
-                                                      color: Colors.white
-                                                    ),
-                                                    child: Column(
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        AutoSizeText(
-                                                          (selectedItem?.brand??nearest.brand) == '1'?
-                                                          'Happup':
-                                                          (selectedItem?.brand??nearest.brand) == '2'?
-                                                          'Happy Puppy':
-                                                          (selectedItem?.brand??nearest.brand) == '3'?
-                                                          'QQ':
-                                                          (selectedItem?.brand??nearest.brand) == '4'?
-                                                          'Suka - Suka':
-                                                          (selectedItem?.brand??nearest.brand) == '2'?
-                                                          'Blackhole':
-                                                          'Office',
-                                                          style: CustomFont.headingTigaBold(),
-                                                          maxLines: 1,
-                                                          minFontSize: 6,
+                                                    dropdownBuilder: (context, selectedItem) {
+                                                      return Container(
+                                                        margin: const EdgeInsets.symmetric(
+                                                          horizontal: 0,
                                                         ),
-                                                        AutoSizeText(
-                                                          selectedItem?.name??nearest.name,
-                                                          style: CustomFont.headingEmpat(), maxLines: 1, minFontSize: 6,
+                                                        decoration: const BoxDecoration(
+                                                          color: Colors.white
                                                         ),
-                                                        AutoSizeText(
-                                                          Calculate.meterToUp(selectedItem?.distance??nearest.distance),
-                                                          style: CustomFont.headingLima(),
-                                                        )
-                                                      ],
-                                                    ),
+                                                        child: Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: [
+                                                            AutoSizeText(
+                                                              (selectedItem?.brand??nearest.brand) == '1'?
+                                                              'Happup':
+                                                              (selectedItem?.brand??nearest.brand) == '2'?
+                                                              'Happy Puppy':
+                                                              (selectedItem?.brand??nearest.brand) == '3'?
+                                                              'QQ':
+                                                              (selectedItem?.brand??nearest.brand) == '4'?
+                                                              'Suka - Suka':
+                                                              (selectedItem?.brand??nearest.brand) == '5'?
+                                                              'Blackhole':
+                                                              'Office',
+                                                              style: CustomFont.headingTigaBold(),
+                                                              maxLines: 1,
+                                                              minFontSize: 6,
+                                                            ),
+                                                            AutoSizeText(
+                                                              selectedItem?.name??nearest.name,
+                                                              style: CustomFont.headingEmpat(), maxLines: 1, minFontSize: 6,
+                                                            ),
+                                                            AutoSizeText(
+                                                              Calculate.meterToUp(selectedItem?.distance??nearest.distance),
+                                                              style: CustomFont.headingLima(),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                    compareFn: (OutletModel? a, OutletModel? b) => a?.lat == b?.lat && a?.long == b?.long,
+                                                    onChanged: (OutletModel? selectedLocation){
+                                                      if(selectedLocation != null){
+                                                        _mapController.move(LatLng(selectedLocation.lat, selectedLocation.long), 18);
+                                                      }
+                                                    },
                                                   );
-                                                },
-                                                compareFn: (LocationModel? a, LocationModel? b) => a?.outletLat == b?.outletLat && a?.outletLong == b?.outletLong,
-                                                onChanged: (LocationModel? selectedLocation){
-                                                  if(selectedLocation != null){
-                                                    _mapController.move(LatLng(selectedLocation.outletLat, selectedLocation.outletLong), 18);
-                                                  }
-                                                },
+                                                }
                                               ),
                                             ),
                                             Container(
@@ -504,23 +518,18 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
     );
   }
 
-  void getMarker(List<LocationModel> locations) {
+  void getMarker(List<OutletModel> locations) {
     for (var element in locations) {
       nameOutletList.add(element.name);
       markerz.add(Marker(
           width: 100,
-          point: LatLng(element.outletLat, element.outletLong),
+          point: LatLng(element.lat, element.long),
           child: element.brand == '1'
-              ? SizedBox(child: Image.asset('assets/image/happup.png'))
-              : element.brand == '2'
-                  ? Image.asset('assets/image/happy_puppy.png')
-                  : element.brand == '3'
-                      ? Image.asset('assets/image/qq.png')
-                      : element.brand == '4'
-                          ? Image.asset('assets/image/suka_suka.png')
-                          : element.brand == '5'
-                              ? Image.asset('assets/image/blackhole.png')
-                              : const SizedBox()));
+            ? SizedBox(child: Image.asset('assets/image/happup.png')) : element.brand == '2'
+            ? Image.asset('assets/image/happy_puppy.png') : element.brand == '3'
+            ? Image.asset('assets/image/qq.png') : element.brand == '4'
+            ? Image.asset('assets/image/suka_suka.png') : element.brand == '5'
+            ? Image.asset('assets/image/blackhole.png') : Image.asset('assets/image/office.png')));
     }
       setState(() {
         markerz;
@@ -528,12 +537,11 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
     
   }
 
-  void nearestOutlet(LatLng currentLocation) {
+  void nearestOutlet(LatLng currentLocation, List<OutletModel> listOutlet) {
     double currentDistance = 0;
-    locations.asMap().forEach((index, value) {
-      final dstnc = distance.as(LengthUnit.Meter, currentLocation,
-          LatLng(value.outletLat, value.outletLong));
-      locations[index].distance = dstnc;
+    listOutlet.asMap().forEach((index, value) {
+      final dstnc = distance.as(LengthUnit.Meter, currentLocation, LatLng(value.lat, value.long));
+      listOutlet[index].distance = dstnc;
       if (currentDistance == 0) {
         nearest = value;
         currentDistance = dstnc;
@@ -542,7 +550,8 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
         currentDistance = dstnc;
       }
     });
-    locations.sort((a, b) => a.distance.compareTo(b.distance));
+    listOutlet.sort((a, b) => a.distance.compareTo(b.distance));
+    context.read<ListOutletProvider>().updateDistance(listOutlet);
   }
 
   @override

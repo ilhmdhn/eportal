@@ -306,22 +306,27 @@ class IjinDialog{
                     height: 2,
                   ),
                   TextField(
-                      minLines: 3,
-                      maxLines: 5,
-                      controller: tfReason,
-                      decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            borderSide: const BorderSide(
-                                color: Colors.grey, width: 2.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(6.0),
-                            borderSide: const BorderSide(
-                                color: Colors.grey, width: 1.0),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 12))),
+                    minLines: 3,
+                    maxLines: 5,
+                    controller: tfReason,
+                    decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        borderSide: const BorderSide(
+                          color: Colors.grey, width: 2.0
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        borderSide: const BorderSide(
+                          color: Colors.grey, width: 1.0
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 8, 
+                        horizontal: 12)
+                    )
+                  ),
                 ],
               );
             }
@@ -347,6 +352,7 @@ class IjinDialog{
                         initialTime: TimeOfDay.now(),
                         context: ctx,
                       );
+
                       if (selectedTime != null) {
                         setState((){
                           endTime = selectedTime;

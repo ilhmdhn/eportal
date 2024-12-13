@@ -6,6 +6,7 @@ import 'package:eportal/data/network/response/attendance_list_response.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
 import 'package:eportal/data/network/response/data_response.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
+import 'package:eportal/data/network/response/list_response.dart';
 import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
 import 'package:eportal/util/checker.dart';
@@ -343,6 +344,22 @@ class NetworkRequest{
     }catch(e){
       ShowToast.error(e.toString());
       return DataResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<OutletResponse> getOutletList()async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/list_outlet');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return OutletResponse.fromJson(convertedResult);
+    }catch(e){
+            ShowToast.error('ERROR ');
+      return OutletResponse(
+        state: false, 
+        message: e.toString()
+      );
     }
   }
 }
