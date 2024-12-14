@@ -66,6 +66,7 @@ dependencies:
   provider: ^6.1.2
   rename: ^3.0.2
   shared_preferences: ^2.3.3
+  shimmer: ^3.0.0
   sliding_up_panel: ^2.0.0+1
   syncfusion_flutter_pdfviewer: ^27.2.5
 

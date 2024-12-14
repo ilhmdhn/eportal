@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 class OvertimeResponse{
-  bool state;
-  String message;
+  // bool state;
+  // String message;
   
 }
 

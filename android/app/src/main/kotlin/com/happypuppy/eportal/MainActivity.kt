@@ -1,4 +1,4 @@
-package com.example.eportal
+package com.happypuppy.eportal
 
 import android.content.Intent
 import android.os.Build

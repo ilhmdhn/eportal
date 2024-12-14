@@ -494,11 +494,11 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                               ),
                             ),
                             InkWell(onTap: ()async{
-                              if(nearest.distance>5000){
+                              if(nearest.distance>49){
                                 ShowToast.error('Jarak ke outlet harus dibawah 50 meter');
                                 return;
                               }
-                                  
+                              print('DEBUGGING Jaraknyaaa ${nearest.distance}');
                               CameraDialog.showCameraDialog(context, nearest.distance, nearest.name);
                               
                             }, child: Container(

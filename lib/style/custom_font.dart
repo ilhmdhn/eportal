@@ -61,6 +61,10 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 16, color: CustomColor.primary());
   }
 
+  static TextStyle headingEmpatWarning() {
+    return GoogleFonts.poppins(fontSize: 16, color: Colors.amber.shade900);
+  }
+
   static TextStyle headingTigaBold() {
     return GoogleFonts.poppins(fontSize: 18, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
   }

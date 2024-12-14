@@ -10,8 +10,13 @@ class CustomColor{
   }
 
   static Color background() {
+    return hexToColor('#F5F5F5');
+  }
+
+  static Color dashboardBackground() {
     return hexToColor('#E1F0F8');
   }
+
 
   static Color fontStandart(){
     return Colors.black87;

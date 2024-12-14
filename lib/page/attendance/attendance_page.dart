@@ -30,10 +30,12 @@ class _AttendancePageState extends State<AttendancePage> {
   void getData(String month) async{
     EasyLoading.show();
     attendanceListResponse = await NetworkRequest.getAttendance(month);
-    setState(() {
-      attendanceListResponse;
-      monthName = CustomConverter.monthCheck(month);
-    });
+    if(mounted){
+      setState(() {
+        attendanceListResponse;
+        monthName = CustomConverter.monthCheck(month);
+      });
+    }
     EasyLoading.dismiss();
   }
 
@@ -41,7 +43,7 @@ class _AttendancePageState extends State<AttendancePage> {
   void initState() {
     super.initState();
     String monthYear = DateFormat('MM-yyyy').format(DateTime.now());
-    getData(monthYear);
+    // getData(monthYear);
   }
 
   @override

@@ -7,6 +7,7 @@ import 'package:eportal/data/model/profile.dart';
 import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
+import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/page/lembur/lembur_page.dart';
 import 'package:eportal/page/login/login_page.dart';
@@ -204,7 +205,7 @@ class _DashboardPageState extends State<DashboardPage> {
             ),
           ),
         ),
-        backgroundColor: CustomColor.background(),
+        backgroundColor: CustomColor.dashboardBackground(),
         body: Stack(
           children: [
             Positioned(
@@ -502,10 +503,15 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                               Flexible(
                                 flex: 1,
-                                child: AddOnButton.textImageButton(
-                                    context,
-                                    'assets/icon/holiday_exchange.png',
-                                    'Libur Pengganti'),
+                                child: InkWell(
+                                  onTap: (){
+                                    NavigationService.move(ErrorPage.nameRoute);
+                                  },
+                                  child: AddOnButton.textImageButton(
+                                      context,
+                                      'assets/icon/holiday_exchange.png',
+                                      'Libur Pengganti'),
+                                ),
                               ),
                               Flexible(
                                 flex: 1,
