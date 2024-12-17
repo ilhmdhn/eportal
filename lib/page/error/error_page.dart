@@ -5,14 +5,17 @@ import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 
 class ErrorPage extends StatelessWidget {
   static const nameRoute = '/error';
   const ErrorPage({super.key});
 
+
   @override
   Widget build(BuildContext context) {
+    final arguments = ModalRoute.of(context)!.settings.arguments as Map;
     return Scaffold(
       backgroundColor: CustomColor.background(),
       body: SizedBox(
@@ -28,7 +31,11 @@ class ErrorPage extends StatelessWidget {
             const SizedBox(height: 31,),
             Text('Oops!', style: CustomFont.headingDuaBold(),),
             const SizedBox(height: 4,),
-            Text('Seems like the page is not working', style: CustomFont.headingEmpatSemiBold(),),
+            InkWell(
+              onDoubleTap: (){
+                ShowToast.wawrningLong('Nama halaman: ${arguments['namePage']} desc: ${arguments['desc']}');
+              },
+              child: Text('Seems like the page is not working', style: CustomFont.headingEmpatSemiBold(),)),
             const SizedBox(height: 6,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -45,10 +52,10 @@ class ErrorPage extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(20)
                     ),
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 6
                     ),
-                    child: Text('Retry', style: CustomFont.headingLima()),
+                    child: Text('Back', style: CustomFont.headingLima()),
                   ),
                 ),
                 const SizedBox(width: 6,),
@@ -58,7 +65,7 @@ class ErrorPage extends StatelessWidget {
                   },
                   child: Container(
                     decoration: CustomContainer.buttonGreen(),
-                    padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     child: Text('Back to dashboard', style: CustomFont.headingLimaSecondary(),),
                   ),
                 ),

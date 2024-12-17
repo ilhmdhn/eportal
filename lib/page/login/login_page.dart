@@ -3,6 +3,7 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/data/model/user.dart';
 import 'package:eportal/data/network/network_request.dart';
+import 'package:eportal/page/add_on/loading.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -27,6 +28,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController tfPass = TextEditingController();
   final key = SharedPreferencesData.getKey();
   User? user = SharedPreferencesData.getUser();
+  bool isLoading = true;
 
   void keyChecker(){
     if(key != null){
@@ -35,12 +37,16 @@ class _LoginPageState extends State<LoginPage> {
       } catch (e) {
         ShowToast.warning('Gagal beripindah ke halaman dashboard');
       }
+    }else{
+      setState(() {
+        isLoading = false;
+      });
     }
     if(user != null){
       tfUser.text = user?.username??'';
       tfPass.text = user?.password??'';
     }
-}
+  }
 
   @override
   void initState(){
@@ -55,7 +61,11 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: CustomColor.dashboardBackground(),
-      body: Stack(
+      body: 
+      isLoading?
+      ShimmerLoading.dashboardShimmer(context):
+      
+      Stack(
         children: [
           Positioned(
             top: 0,

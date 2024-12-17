@@ -15,6 +15,7 @@ import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
+import 'package:eportal/page/sallary/sallary_page.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/navigation_service.dart';
@@ -505,7 +506,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: (){
-                                    NavigationService.move(ErrorPage.nameRoute);
+                                    NavigationService.error(description: 'aoawkowko');
                                   },
                                   child: AddOnButton.textImageButton(
                                       context,
@@ -528,8 +529,13 @@ class _DashboardPageState extends State<DashboardPage> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              AddOnButton.textImageButton(context,
-                                  'assets/icon/salary.png', 'Slip Gaji'),
+                              InkWell(
+                                onTap: (){
+                                  NavigationService.move(SallaryPage.nameRoute);
+                                },
+                                child: AddOnButton.textImageButton(context,
+                                    'assets/icon/salary.png', 'Slip Gaji'),
+                              ),
                               AddOnButton.textImageButton(
                                   context, 'assets/icon/ssp2.png', 'SSP'),
                               AddOnButton.textImageButton(context,

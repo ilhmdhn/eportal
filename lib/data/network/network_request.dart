@@ -9,7 +9,11 @@ import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/data/network/response/list_response.dart';
 import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
+import 'package:eportal/data/network/response/overtime_response.dart';
+import 'package:eportal/data/network/response/sallary_response.dart';
+import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/util/checker.dart';
+import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
@@ -92,6 +96,7 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       return AttendanceListResponse.fromJson(convertedResult);
     }catch(e){
+      NavigationService.error(description: e.toString());
       return AttendanceListResponse(
         state: false, 
         message: e.toString(), 
@@ -351,8 +356,58 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       return OutletResponse.fromJson(convertedResult);
     }catch(e){
-            ShowToast.error('ERROR ');
+      ShowToast.error('ERROR ');
       return OutletResponse(
+        state: false, 
+        message: e.toString()
+      );
+    }
+  }
+
+  static Future<SallaryResponse> getSallary()async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/list_slip_gaji');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return SallaryResponse.fromJson(convertedResult);
+    }catch(e){
+      NavigationService.error(description: e.toString());
+      return SallaryResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<DataResponse> getSallaryPdf(String period) async {
+    try {
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/detail_slip_gaji?period=$period');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return DataResponse.fromJson(convertedResult);
+    } catch (e) {
+      NavigationService.error(description: e.toString());
+      return DataResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<OvertimeResponse> getOvertime()async{
+    try{
+      print('DEBUGGING 1');
+      final key = SharedPreferencesData.getKey() ?? '';
+      print('DEBUGGING 2');
+      final url = Uri.parse('$baseUrl/Api/lembur');
+      print('DEBUGGING 3');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      print('DEBUGGING 4');
+      final convertedResult = json.decode(apiResponse.body);
+      print('DEBUGGING 5');
+      final response = OvertimeResponse.fromJson(convertedResult);
+      print('DEBUGGING 6');
+      return response;
+    }catch(e){
+      ShowToast.error('KOK MASUK SINI??');
+      NavigationService.error(description: e.toString());
+      return OvertimeResponse(
         state: false, 
         message: e.toString()
       );

@@ -30,6 +30,11 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 19, color: Colors.white, fontWeight: FontWeight.w500);
   }
 
+  static TextStyle headingDuaSemiBold() {
+    return GoogleFonts.poppins(
+        fontSize: 19, color: Colors.black, fontWeight: FontWeight.w500);
+  }
+
   static TextStyle headingDuaBold() {
     return GoogleFonts.poppins(fontSize: 20, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
   }
@@ -118,6 +123,11 @@ class CustomFont{
   static TextStyle headingEmpatSemiBold() {
     return GoogleFonts.poppins(
         fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle headingEmpatSemiBoldColorful() {
+    return GoogleFonts.poppins(
+        fontSize: 16, color: Colors.blue.shade900, fontWeight: FontWeight.w500);
   }
 
   static TextStyle headingEmpatSemiBoldSecondary() {

@@ -237,7 +237,7 @@ class OvertimeDialog{
                             value: value, label: value);
                       }).toList(),
                       ),
-                      instructorSelected == 'Lainya'?
+                      instructorSelected == 'Lainya' || !listInstructor.contains(instructorSelected)?
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [

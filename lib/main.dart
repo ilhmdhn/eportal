@@ -8,6 +8,7 @@ import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
+import 'package:eportal/page/sallary/sallary_page.dart';
 import 'package:eportal/provider/list_outlet_provider.dart';
 import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/util/init_firebase.dart';
@@ -30,7 +31,6 @@ void main() async{
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
   
   });
-
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
     createNotif(message.data['Title'], message.data['Body']);
   });
@@ -66,6 +66,7 @@ class MyApp extends StatelessWidget {
     return SafeArea(
       child: MaterialApp(
         navigatorKey: GetIt.instance<NavigationService>().navigatorKey,
+        
         title: 'ePortal',
         builder: EasyLoading.init(),
         theme: ThemeData(
@@ -83,7 +84,8 @@ class MyApp extends StatelessWidget {
           CutiPage.nameRoute: (context) => const CutiPage(),
           IjinPage.nameRoute: (context) => const IjinPage(),
           OvertimePage.nameRoute: (context) => const OvertimePage(),
-          ErrorPage.nameRoute: (context) => const ErrorPage()
+          ErrorPage.nameRoute: (context) => const ErrorPage(),
+          SallaryPage.nameRoute: (context) => const SallaryPage()
         },
       ),
     );
