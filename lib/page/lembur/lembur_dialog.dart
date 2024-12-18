@@ -1,13 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/style/custom_time_picker.dart';
+import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/navigation_service.dart';
+import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -237,7 +241,7 @@ class OvertimeDialog{
                             value: value, label: value);
                       }).toList(),
                       ),
-                      instructorSelected == 'Lainya' || !listInstructor.contains(instructorSelected)?
+                      instructorSelected == 'Lainnya' || !listInstructor.contains(instructorSelected)?
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -276,11 +280,28 @@ class OvertimeDialog{
                         const SizedBox(height: 12,),
                         InkWell(
                       onTap: () async {
+                        if(instructorSelected == 'Pilih' || instructorSelected == 'Lainnya' || isNullOrEmpty(instructorSelected)){
+                          ShowToast.warning('Lengkapi data');
+                          return;
+                        }
                         final confirm = await ConfirmationDialog.confirmation(ctx, 'Ajukan lembur?');
                         if (confirm != true) {
                           return;
                         }
-                        NavigationService.back();
+
+                        final networkResponse = await NetworkRequest.postLembur(startDate, startTime, endTime, tfReason.text, instructorSelected);
+
+                        if(networkResponse.state != true){
+                          if(ctx.mounted){
+                            NotificationStyle.warning(ctx, "Gagal", networkResponse.message);
+                          }
+                          return;
+                        }else{
+                          if(ctx.mounted){
+                            NotificationStyle.warning(ctx, "Berhasil", 'Lembur Diajukan');
+                          }
+                          NavigationService.back();
+                        }  
                       },
                       child: Container(
                         width: double.infinity,

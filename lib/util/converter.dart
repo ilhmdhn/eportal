@@ -60,7 +60,40 @@ class CustomConverter{
     return "$dayName, ${dateTime.day} $monthName ${dateTime.year}";    
   }
 
-static String monthCheck(String inputDate) {
+  static String dateTimeToDay(DateTime dateTime) {
+
+    List<String> days = [
+      "Minggu",
+      "Senin",
+      "Selasa",
+      "Rabu",
+      "Kamis",
+      "Jumat",
+      "Sabtu"
+    ];
+
+    List<String> months = [
+      "Januari",
+      "Februari",
+      "Maret",
+      "April",
+      "Mei",
+      "Juni",
+      "Juli",
+      "Agustus",
+      "September",
+      "Oktober",
+      "November",
+      "Desember"
+    ];
+
+    String dayName = days[dateTime.weekday % 7];
+    String monthName = months[dateTime.month - 1];
+
+    return "$dayName, ${dateTime.day} $monthName ${dateTime.year}";
+  }
+
+  static String monthCheck(String inputDate) {
     DateTime dateTime = DateFormat('MM-yyyy').parse(inputDate);
 
     List<String> months = [

@@ -17,8 +17,9 @@ class CustomFont{
 
   static TextStyle drawerName() {
     return GoogleFonts.poppins(
-        fontSize: 17,
-        color: CustomColor.fontStandart());
+      fontSize: 17,
+      color: CustomColor.fontStandart()
+    );
   }
   
   static TextStyle headingDua() {

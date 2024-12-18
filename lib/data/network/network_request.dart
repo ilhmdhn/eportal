@@ -13,8 +13,11 @@ import 'package:eportal/data/network/response/overtime_response.dart';
 import 'package:eportal/data/network/response/sallary_response.dart';
 import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/util/checker.dart';
+import 'package:eportal/util/converter.dart';
+import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/toast.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
@@ -392,23 +395,45 @@ class NetworkRequest{
 
   static Future<OvertimeResponse> getOvertime()async{
     try{
-      print('DEBUGGING 1');
       final key = SharedPreferencesData.getKey() ?? '';
-      print('DEBUGGING 2');
       final url = Uri.parse('$baseUrl/Api/lembur');
-      print('DEBUGGING 3');
       final apiResponse = await http.get(url, headers: {'authorization': key});
-      print('DEBUGGING 4');
       final convertedResult = json.decode(apiResponse.body);
-      print('DEBUGGING 5');
       final response = OvertimeResponse.fromJson(convertedResult);
-      print('DEBUGGING 6');
       return response;
     }catch(e){
-      ShowToast.error('KOK MASUK SINI??');
       NavigationService.error(description: e.toString());
       return OvertimeResponse(
         state: false, 
+        message: e.toString()
+      );
+    }
+  }
+
+  static Future<BaseResponse> postLembur(DateTime date, TimeOfDay startTime, TimeOfDay endTime, String reason, String assigner)async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/lembur');
+
+      int assignerCode = DummyData.assignerConverter(assigner);
+
+      final apiResponse = await http.post(url, 
+        headers: {'authorization': key}, 
+        body:jsonEncode({
+          "start_date": DateFormat('yyyy-MM-dd').format(date),
+          "reason": reason,
+          "start_time": CustomConverter.time(startTime),
+          "finish_time": CustomConverter.time(endTime),
+          "penugas": assignerCode,
+          "penugas_lain": assigner
+        })
+      );
+
+      final convertedResult = json.decode(apiResponse.body);
+      return  BaseResponse.fromJson(convertedResult);      
+    }catch(e){
+      return BaseResponse(
+        state: false,
         message: e.toString()
       );
     }
