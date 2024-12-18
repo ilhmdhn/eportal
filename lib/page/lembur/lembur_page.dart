@@ -50,20 +50,6 @@ class OvertimePageState extends State<OvertimePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColor.background(),
-      floatingActionButton: Container(
-        height: 48,
-        width: 48,
-        margin: const EdgeInsets.only(right: 12, bottom: 12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(24),
-          color: CustomColor.primary()
-        ),
-        child: InkWell(
-          onTap: (){
-            OvertimeDialog.showOvertimeDialog(context);
-          },
-          child: const Icon(Icons.add, color: Colors.white, size: 32,)),
-      ),
       body: isLoading? 
       ShimmerLoading.listShimmer(context): 
       Stack(
@@ -98,7 +84,43 @@ class OvertimePageState extends State<OvertimePage> {
                   ),
                   child: Column(
                     children: [
-                      Text('Data Lembur', style: CustomFont.headingTigaSemiBold(),)
+                      Row(
+                        children: [
+                          const Expanded(
+                            flex: 1,
+                            child: SizedBox()),
+                          AutoSizeText('Data Lembur', style: CustomFont.headingTigaSemiBold(),),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(width: 0.3, color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(3)
+                                    ),
+                                    child: InkWell(
+                                      onTap: (){
+                                        OvertimeDialog.showOvertimeDialog(context);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.add, size: 16, ),
+                                          AutoSizeText('Ajukan', style: CustomFont.standartFont(),)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -109,6 +131,7 @@ class OvertimePageState extends State<OvertimePage> {
                     itemBuilder: (ctxList, index){
                       final data = listOvertime[index];
                       return Container(
+                        margin: const EdgeInsets.only(bottom: 6),
                         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -118,46 +141,55 @@ class OvertimePageState extends State<OvertimePage> {
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12)
                         ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                AutoSizeText(CustomConverter.dateTimeToDay(data.date), style: CustomFont.headingLimaSemiBold()),
-                                const SizedBox(height: 6,),
-                                Row(
-                                  children: [
-                                    AutoSizeText(CustomConverter.time(data.startTime), style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500),),
-                                    Text(' - ', style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500)),
-                                    AutoSizeText(CustomConverter.time(data.finishTime), style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500)),
-                                  ],
-                                )
-                              ],
-                            ),
-                            data.state == 1?
-                            Column(
-                              children: [
-                                Icon(Icons.approval, color: Colors.green.shade800, size: 19),
-                                Text('Disetujui', style: GoogleFonts.poppins(fontSize: 14, color: Colors.green.shade800, fontWeight: FontWeight.w600))
-                              ],
-                            ):
-                            data.state == 2?
-                            Column(
-                              children: [
-                                Icon(Icons.wifi_protected_setup_rounded, size: 19, color: Colors.amber.shade800,),
-                                Text('Menunggu', style: GoogleFonts.poppins(fontSize: 14, color: Colors.amber.shade800, fontWeight: FontWeight.w600))
-                              ],
-                            ):
-                            data.state == 3?
-                            Column(
-                              children: [
-                                Icon(Icons.cancel_outlined, color: Colors.red.shade800, size: 19),
-                                Text('Ditolak', style: GoogleFonts.poppins(fontSize: 14, color: Colors.green.shade800, fontWeight: FontWeight.w600))
-                              ],
-                            ):
-                            SizedBox()
-                          ],
+                        child: InkWell(
+                          onTap: (){
+                            OvertimeDialog.showOvertimeDetail(context, data);
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  AutoSizeText(CustomConverter.dateTimeToDay(data.date), style: CustomFont.headingLimaSemiBold()),
+                                  const SizedBox(height: 6,),
+                                  Row(
+                                    children: [
+                                      AutoSizeText(CustomConverter.time(data.startTime), style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500),),
+                                      Text(' - ', style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500)),
+                                      AutoSizeText(CustomConverter.time(data.finishTime), style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500)),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              data.state == 2?
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Icon(Icons.approval, color: Colors.green.shade800, size: 19),
+                                  Text('Disetujui', style: GoogleFonts.poppins(fontSize: 14, color: Colors.green.shade800, fontWeight: FontWeight.w600))
+                                ],
+                              ):
+                              data.state == 1?
+                              Column(
+
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Icon(Icons.wifi_protected_setup_rounded, size: 19, color: Colors.amber.shade800,),
+                                  Text('Menunggu', style: GoogleFonts.poppins(fontSize: 14, color: Colors.amber.shade800, fontWeight: FontWeight.w600))
+                                ],
+                              ):
+                              data.state == 3?
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Icon(Icons.cancel_outlined, color: Colors.red.shade800, size: 19),
+                                  Text('Ditolak', style: GoogleFonts.poppins(fontSize: 14, color: Colors.red.shade800, fontWeight: FontWeight.w600))
+                                ],
+                              ):
+                              SizedBox()
+                            ],
+                          ),
                         ),
                       );
                     }

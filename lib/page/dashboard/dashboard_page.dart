@@ -506,7 +506,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: (){
-                                    NavigationService.error(description: 'aoawkowko');
                                   },
                                   child: AddOnButton.textImageButton(
                                       context,

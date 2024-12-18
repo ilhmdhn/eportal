@@ -71,6 +71,10 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 16, color: Colors.amber.shade900);
   }
 
+  static TextStyle headingEmpatApprove() {
+    return GoogleFonts.poppins(fontSize: 16, color: Colors.green);
+  }
+
   static TextStyle headingTigaBold() {
     return GoogleFonts.poppins(fontSize: 18, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
   }
@@ -124,6 +128,11 @@ class CustomFont{
   static TextStyle headingEmpatSemiBold() {
     return GoogleFonts.poppins(
         fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle headingEmpatReject() {
+    return GoogleFonts.poppins(
+        fontSize: 16, color: Colors.red, fontWeight: FontWeight.w500);
   }
 
   static TextStyle headingEmpatSemiBoldColorful() {

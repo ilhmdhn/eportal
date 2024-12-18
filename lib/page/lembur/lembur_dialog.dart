@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/data/network/network_request.dart';
+import 'package:eportal/data/network/response/overtime_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
@@ -13,6 +14,7 @@ import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class OvertimeDialog{
@@ -298,7 +300,7 @@ class OvertimeDialog{
                           return;
                         }else{
                           if(ctx.mounted){
-                            NotificationStyle.warning(ctx, "Berhasil", 'Lembur Diajukan');
+                            NotificationStyle.info(ctx, "Berhasil", 'Lembur Diajukan');
                           }
                           NavigationService.back();
                         }  
@@ -321,4 +323,204 @@ class OvertimeDialog{
         );
       });
   }
+
+  static void showOvertimeDetail(BuildContext ctx, OvertimeModel data){
+    showDialog(
+      context: ctx,
+      builder: (BuildContext ctxDialog){
+        return AlertDialog(
+          iconPadding: const EdgeInsets.all(0),
+          insetPadding: const EdgeInsets.all(0),
+          titlePadding: const EdgeInsets.all(0),
+          buttonPadding: const EdgeInsets.all(0),
+          actionsPadding: const EdgeInsets.all(0),
+          contentPadding: const EdgeInsets.all(0),
+          content: Container(
+            padding: const EdgeInsets.symmetric(
+              vertical: 9,
+              horizontal: 12
+            ),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(16)
+            ),
+            width: ScreenSize.setWidthPercent(ctx, 85),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Align(
+                  alignment: Alignment.center,
+                  child: AutoSizeText('Rincian Lembur',style: CustomFont.headingTigaSemiBold())),
+                 const SizedBox(
+                    height: 12,
+                  ),
+                  AutoSizeText('Tanggal', style: CustomFont.headingEmpatSemiBold(), maxLines: 1, ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey)
+                    ),
+                    child: Text( CustomConverter.dateToDay(DateFormat('yyyy-MM-dd').format(data.date)), style: CustomFont.headingEmpat(),)
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  AutoSizeText(
+                    'Jam Lembur',
+                    style: CustomFont.headingEmpatSemiBold(),
+                    maxLines: 1,
+                  ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey)),
+                    child: Text('${CustomConverter.time(data.startTime)} - ${CustomConverter.time(data.finishTime)}',
+                      style: CustomFont.headingEmpat(),
+                    )
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Text(
+                      'Tujuan lembur',
+                      style: CustomFont.headingEmpatSemiBold(),
+                    ),
+                    const SizedBox(
+                      height: 2,
+                    ),
+                  TextField(
+                    minLines: 2,
+                    maxLines: 5,
+                    readOnly: true,
+                    controller: TextEditingController(text: data.reason),
+                    decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        borderSide: const BorderSide(
+                          color: Colors.grey, width: 2.0
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(6.0),
+                        borderSide: const BorderSide(
+                          color: Colors.grey, width: 1.0
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 8, 
+                        horizontal: 12
+                      )
+                    )
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  AutoSizeText(
+                    'Penugas',
+                    style: CustomFont.headingEmpatSemiBold(),
+                    maxLines: 1,
+                  ),
+                  const SizedBox(
+                    height: 2,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    width: double.infinity,
+                    decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
+                    child: Text(data.assigner, style: CustomFont.headingEmpat(),)
+                  ),
+                  data.state == 1?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                      height: 12,
+                      ),
+                      AutoSizeText('Status', style: CustomFont.headingEmpatSemiBold(), maxLines: 1,),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1, 
+                            color: Colors.grey
+                          )
+                        ),
+                        child: Text( 'Menunggu Persetujuan', style: CustomFont.headingEmpatWarning(),
+                      )),
+                    ], 
+                  ):
+                  data.state == 2?
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(
+                      height: 12,
+                      ),
+                      AutoSizeText('Status', style: CustomFont.headingEmpatSemiBold(), maxLines: 1,),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 1, 
+                            color: Colors.grey
+                          )
+                        ),
+                        child: Text( 'Disetujui', style: CustomFont.headingEmpatApprove(),
+                      )),
+                    ], 
+                  ):
+                  data.state == 3?
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 12,),
+                      AutoSizeText('Alasan Penolakan', style: CustomFont.headingEmpatReject(),maxLines: 1,),
+                      const SizedBox(
+                        height: 2,
+                      ),
+                      TextField(
+                        minLines: 2,
+                        maxLines: 5,
+                        readOnly: true,
+                        controller: TextEditingController(text: data.rejectReason),
+                        decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6.0),
+                            borderSide: const BorderSide(
+                              color: Colors.grey, width: 2.0
+                            ),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(6.0),
+                            borderSide: const BorderSide(
+                              color: Colors.grey, width: 1.0
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                            vertical: 8, 
+                            horizontal: 12
+                          )
+                        )
+                      ),
+                    ],
+                  ):
+                  const SizedBox()
+              ],
+            ),
+          ),
+        );
+      });
+  }
+
 }
