@@ -72,7 +72,7 @@ class CustomFont{
   }
 
   static TextStyle headingEmpatApprove() {
-    return GoogleFonts.poppins(fontSize: 16, color: Colors.green);
+    return GoogleFonts.poppins(fontSize: 16, color: Colors.green, fontWeight: FontWeight.w500);
   }
 
   static TextStyle headingTigaBold() {

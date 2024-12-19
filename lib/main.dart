@@ -1,9 +1,11 @@
+import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
 import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/page/lembur/lembur_page.dart';
+import 'package:eportal/page/lipeng/substitute_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
@@ -85,7 +87,8 @@ class MyApp extends StatelessWidget {
           IjinPage.nameRoute: (context) => const IjinPage(),
           OvertimePage.nameRoute: (context) => const OvertimePage(),
           ErrorPage.nameRoute: (context) => const ErrorPage(),
-          SallaryPage.nameRoute: (context) => const SallaryPage()
+          SallaryPage.nameRoute: (context) => const SallaryPage(),
+          SubstitutePage.nameRoute: (context) => const SubstitutePage()
         },
       ),
     );
@@ -96,9 +99,10 @@ void configLoading() {
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
     ..indicatorType = EasyLoadingIndicatorType.fadingCircle
-    ..loadingStyle = EasyLoadingStyle.dark
-    ..progressColor = Colors.yellow
-    ..backgroundColor = Colors.green
+    ..loadingStyle = EasyLoadingStyle.custom
+    ..progressColor = CustomColor.primary()
+    // ..backgroundColor = Colors.green
+    ..backgroundColor = Colors.transparent
     ..indicatorColor = Colors.yellow
     ..textColor = Colors.yellow
     ..maskColor = Colors.blue.withOpacity(0.5)

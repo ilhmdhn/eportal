@@ -10,6 +10,7 @@ import 'package:eportal/page/cuti/cuti_page.dart';
 import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/page/lembur/lembur_page.dart';
+import 'package:eportal/page/lipeng/substitute_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
@@ -506,6 +507,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: (){
+                                    NavigationService.move(SubstitutePage.nameRoute);
                                   },
                                   child: AddOnButton.textImageButton(
                                       context,

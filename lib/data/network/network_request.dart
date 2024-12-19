@@ -438,4 +438,29 @@ class NetworkRequest{
       );
     }
   }
+
+  static Future<BaseResponse> putLembur(String idLembur, DateTime date, TimeOfDay startTime, TimeOfDay endTime, String reason, String assigner) async {
+    try {
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/lembur/$idLembur');
+
+      int assignerCode = DummyData.assignerConverter(assigner);
+
+      final apiResponse = await http.put(url,
+          headers: {'authorization': key},
+          body: jsonEncode({
+            "start_date": DateFormat('yyyy-MM-dd').format(date),
+            "reason": reason,
+            "start_time": CustomConverter.time(startTime),
+            "finish_time": CustomConverter.time(endTime),
+            "penugas": assignerCode,
+            "penugas_lain": assigner
+          }));
+
+      final convertedResult = json.decode(apiResponse.body);
+      return BaseResponse.fromJson(convertedResult);
+    } catch (e) {
+      return BaseResponse(state: false, message: e.toString());
+    }
+  }
 }
