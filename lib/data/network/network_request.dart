@@ -261,7 +261,7 @@ class NetworkRequest{
       final response = IzinResponse.fromJson(convertedResult);
       return response;      
     }catch(e){
-      ShowToast.error(e.toString());
+      NavigationService.error(description: e.toString());
       return IzinResponse(
         state: false,
         message: e.toString()
@@ -495,6 +495,26 @@ class NetworkRequest{
           'overtime': isOvertime? 1:0,
         })
       );
+      final convertedResult = json.decode(apiResponse.body);
+      return BaseResponse.fromJson(convertedResult);
+    } catch (e) {
+      NavigationService.error(description: e.toString());
+      return BaseResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<BaseResponse> putLipeng(String id, DateTime dateSource, DateTime dateDest, String reason, bool isOvertime) async {
+    try {
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/libur_pengganti/$id');
+      final apiResponse = await http.put(url,
+          headers: {'authorization': key},
+          body: jsonEncode({
+            'source_date': DateFormat('yyyy-MM-dd').format(dateSource),
+            'reason': reason,
+            'furlough_date': DateFormat('yyyy-MM-dd').format(dateDest),
+            'overtime': isOvertime ? 1 : 0,
+          }));
       final convertedResult = json.decode(apiResponse.body);
       return BaseResponse.fromJson(convertedResult);
     } catch (e) {

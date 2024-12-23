@@ -50,6 +50,8 @@ class NavigationService {
   }
 
   void goBack() => navigatorKey.currentState!.pop();
+
+  void goBackWithData(data) => navigatorKey.currentState!.pop(data);
 }
 
 

@@ -135,6 +135,7 @@ class _SubstitutePageState extends State<SubstitutePage> {
                         final data = listLipeng[index];
                         return Container(
                           padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                          margin: const EdgeInsets.only(bottom: 3),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(

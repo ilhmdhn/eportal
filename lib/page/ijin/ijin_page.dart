@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
+import 'package:eportal/page/add_on/loading.dart';
 import 'package:eportal/page/ijin/ijin_dialog.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -21,15 +22,22 @@ class IjinPage extends StatefulWidget {
 
 class _IjinPageState extends State<IjinPage> {
   
-  IzinResponse networkResponse = IzinResponse();
+  List<IzinListModel> izinList = [];
+  bool isLoading = true;
 
   void getData() async{
-    EasyLoading.show();
-    networkResponse = await NetworkRequest.getIzin();
+    if(!isLoading){
+      setState(() {
+        isLoading = true;
+      });
+    }
+    
+    final networkResponse = await NetworkRequest.getIzin();
+    
     setState(() {
-      networkResponse;
+      isLoading = false;
+      izinList = networkResponse.data??[];
     });
-    EasyLoading.dismiss();
   }
 
   @override
@@ -39,7 +47,6 @@ class _IjinPageState extends State<IjinPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }
@@ -73,13 +80,16 @@ class _IjinPageState extends State<IjinPage> {
               right: 0,
               bottom: 0,
               left: 0,
-              child: Column(
+              child: 
+              isLoading?
+              ShimmerLoading.listShimmer(context):
+              Column(
                 children: [
                   Expanded(
                     child: ListView.builder(
-                      itemCount: networkResponse.data?.length??0,
+                      itemCount: izinList.length,
                       itemBuilder: (BuildContext ctxList, int index){
-                        IzinListModel data = networkResponse.data![index];
+                        IzinListModel data = izinList[index];
                         return InkWell(
                           onTap: (){
                             IjinDialog.showIzinDetail(context, data);
