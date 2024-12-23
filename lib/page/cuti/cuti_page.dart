@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
+import 'package:eportal/page/add_on/loading.dart';
 import 'package:eportal/page/cuti/cuti_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
@@ -21,15 +22,23 @@ class CutiPage extends StatefulWidget {
 class _CutiPageState extends State<CutiPage> {
 
 
-
-  CutiResponse? _cutiResponse;
+  bool isLoading = true;
+  CutiDetail? _cutiDetail;
 
   void getData()async{
-    EasyLoading.show();
-    _cutiResponse = await NetworkRequest.getCuti();
-    EasyLoading.dismiss();
+    
+    if(!isLoading){
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    final networkResponse = await NetworkRequest.getCuti();
+    _cutiDetail = networkResponse.data;
+
     setState(() {
-      _cutiResponse;
+      _cutiDetail = networkResponse.data;
+      isLoading = false;
     });
   }
 
@@ -52,20 +61,6 @@ class _CutiPageState extends State<CutiPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomColor.background(),
-      floatingActionButton: InkWell(
-        onTap: (){
-          CutiDialog.showAddCUtiDialog(context, _cutiResponse?.data?.cutiRemaining??0);
-        },
-        child: Container(
-          width: 52,
-          height: 52,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(26),
-            color: CustomColor.primary()
-          ),
-          child: const Icon(Icons.add, color: Colors.white, size: 36,),
-        ),
-      ),
       body: Stack(
         children: [
           Positioned(
@@ -77,13 +72,73 @@ class _CutiPageState extends State<CutiPage> {
             )
           ),
           Positioned(
-            top: 0,
-            left: 0,
-            bottom: 0,
-            right: 0,
-            child: Column(
+            top: 6,
+            left: 12,
+            bottom: 6,
+            right: 12,
+            child: 
+            
+            isLoading?
+            ShimmerLoading.listShimmer(context):
+            Column(
               children: [
                 Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 4
+                  ),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                    border: Border.all(
+                      width: 0.3,
+                      color: Colors.grey
+                    )
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Expanded(
+                            flex: 1,
+                            child: SizedBox()),
+                          AutoSizeText('Data Cuti', style: CustomFont.headingTigaSemiBold(),),
+                          Expanded(
+                            flex: 1,
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(width: 0.3, color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(3)
+                                    ),
+                                    child: InkWell(
+                                      onTap: (){
+                                        CutiDialog.showAddCUtiDialog(context, _cutiDetail?.cutiRemaining??0);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.add, size: 16, ),
+                                          AutoSizeText('Ajukan', style: CustomFont.standartFont(),)
+                                        ],
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                /*Container(
                   height: ScreenSize.setHeightPercent(context, 10),
                   width: double.infinity,
                   padding: const EdgeInsets.all(8),
@@ -100,20 +155,19 @@ class _CutiPageState extends State<CutiPage> {
                       Text('Cuti', style: CustomFont.headingTigaSemiBoldSecondary(),),
                       Row(
                         children: [
-                          Text('Sisa Cuti : ${_cutiResponse?.data?.cutiRemaining??12}', style: CustomFont.headingEmpatSecondary(),),
+                          Text('Sisa Cuti : ${_cutiDetail?.cutiRemaining??12}', style: CustomFont.headingEmpatSecondary(),),
                         ],
                       )
                     ],
                   ),
-                ),
+                ),*/
                 Container(
                   margin: const EdgeInsets.only(top: 12),
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
                   child: ListView.builder(
                     shrinkWrap: true,
-                    itemCount: _cutiResponse?.data?.listCuti?.length??0,
+                    itemCount: _cutiDetail?.listCuti?.length??0,
                     itemBuilder: (BuildContext ctxList, int index){
-                      CutiListModel data = _cutiResponse!.data!.listCuti![index];
+                      CutiListModel data = _cutiDetail!.listCuti![index];
                       return InkWell(
                         onTap: (){
                           CutiDialog.detailCutiDialog(context, data);

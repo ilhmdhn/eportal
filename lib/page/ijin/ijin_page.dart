@@ -55,15 +55,6 @@ class _IjinPageState extends State<IjinPage> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        floatingActionButton: InkWell(
-          onTap: () {
-            IjinDialog.showIjinDialog(context);
-          },
-          child: Container(
-            margin: const EdgeInsets.only(right: 12, bottom: 12),
-            decoration: CustomContainer.buttonPrimary(),
-            child: const Icon(Icons.add, color: Colors.white, size: 40,),
-          )),
         backgroundColor: CustomColor.background(),
         body: Stack(
           children: [
@@ -76,15 +67,78 @@ class _IjinPageState extends State<IjinPage> {
               )
             ),
             Positioned(
-              top: 0,
-              right: 0,
-              bottom: 0,
-              left: 0,
+              top: 6,
+              right: 12,
+              bottom: 6,
+              left: 12,
               child: 
               isLoading?
               ShimmerLoading.listShimmer(context):
               Column(
                 children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 6, vertical: 4),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.white,
+                        border:
+                            Border.all(width: 0.3, color: Colors.grey)),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const Expanded(flex: 1, child: SizedBox()),
+                            AutoSizeText(
+                              'Data Izin',
+                              style: CustomFont.headingTigaSemiBold(),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 6, vertical: 3),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              width: 0.3,
+                                              color: Colors.grey),
+                                          borderRadius:
+                                              BorderRadius.circular(3)),
+                                      child: InkWell(
+                                        onTap: () {
+                                          IjinDialog.showIjinDialog(context);
+                                        },
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.add,
+                                              size: 16,
+                                            ),
+                                            AutoSizeText(
+                                              'Ajukan',
+                                              style: CustomFont
+                                                  .standartFont(),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                   Expanded(
                     child: ListView.builder(
                       itemCount: izinList.length,
