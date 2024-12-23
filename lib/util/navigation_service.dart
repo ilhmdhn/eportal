@@ -49,6 +49,10 @@ class NavigationService {
     getIt<NavigationService>().goBack();
   }
 
+  static void backWithData(data){
+    getIt<NavigationService>().goBackWithData(data);
+  }
+
   void goBack() => navigatorKey.currentState!.pop();
 
   void goBackWithData(data) => navigatorKey.currentState!.pop(data);

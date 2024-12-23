@@ -14,10 +14,9 @@ import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
-
+import 'package:intl/intl.dart';
 class CutiDialog {
 
   static int calculateDaysBetween(String startDate, String endDate) {
@@ -40,7 +39,7 @@ class CutiDialog {
     return newDate;
   }
 
-  static void showAddCUtiDialog(BuildContext ctx, int cutiRemaining) {
+  static Future<bool> showAddCUtiDialog(BuildContext ctx, int cutiRemaining) async{
     
     DateTime startDateTemp = DateTime.now().add(const Duration(days: 30));
     DateTime startDate = DateTime(startDateTemp.year, startDateTemp.month, startDateTemp.day);
@@ -54,7 +53,7 @@ class CutiDialog {
     
     updateMaxDate();
     
-    showDialog(
+    final result = await showDialog(
       context: ctx,
       builder: (BuildContext ctxDialog) {
         return StatefulBuilder(
@@ -77,28 +76,26 @@ class CutiDialog {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Align(
-                      alignment: Alignment.center,
-                      child: Text(
-                        'Pengajuan Cuti',
-                        style: CustomFont.headingTigaSemiBold(),
-                      )
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const SizedBox(width: 24,),
+                      Center(child: Text('Ajukan Cuti', style: CustomFont.headingTigaSemiBold(),)),
+                      InkWell(
+                        onTap: ()async{
+                          NavigationService.back();
+                        },
+                        child: const SizedBox(width: 24, child: 
+                        Icon(Icons.close),),
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 6,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Tipe Cuti',
-                        style: CustomFont.headingEmpatSemiBold(),
-                      ),
-                      Text(
-                        'Sisa cuti: $cutiRemaining',
-                        style: CustomFont.headingEmpatSemiBold(),
-                      ),
-                    ],
+                  Text(
+                    'Tipe Cuti',
+                    style: CustomFont.headingEmpatSemiBold(),
                   ),
                   const SizedBox(
                     height: 6,
@@ -190,59 +187,25 @@ class CutiDialog {
                             vertical: 6, horizontal: 12),
                           width: double.infinity,
                           decoration: BoxDecoration(
-                            border: Border.all(
-                              width: 1, color: Colors.grey)),
-                            child: maxDateProvider.isLoading
-                              ? Center(
-                                  child: LoadingAnimationWidget.waveDots(
-                                    color: CustomColor.primary(),
-                                    size: 20,
-                                  )
-                                )
-                                : 
-                                Text(
-                                  CustomConverter.dateToDay(
-                                    DateFormat('yyyy-MM-dd')
-                                      .format(maxDateProvider.date)
-                                    ),
-                                  style: CustomFont.headingEmpat(),
-                                )
-                              ),
-                          );
-                        },
-                      ),
-                  /*
-                  InkWell(
-                    onTap: () async {
-                      final selectedDate = await showDatePicker(
-                        builder: (BuildContext context, Widget? child) {
-                          return CustomDatePicker.primary(child!);
-                        },
-                        context: ctx,
-                        initialDate: startDate,
-                        firstDate: startDate,
-                        lastDate: limitToEndOfYear(startDate, cutiRemaining==0?1:cutiRemaining),
+                            border: Border.all(width: 1, color: Colors.grey)
+                          ),
+                          child: maxDateProvider.isLoading
+                          ? Center(
+                              child: LoadingAnimationWidget.waveDots(
+                                color: CustomColor.primary(),
+                                size: 20,
+                              )
+                            ): 
+                          Text(
+                            CustomConverter.dateToDay(
+                              DateFormat('yyyy-MM-dd').format(maxDateProvider.date)
+                            ),
+                            style: CustomFont.headingEmpat(),
+                          )
+                        ),
                       );
-
-                      if (selectedDate != null) {
-                        setState((){
-                          endDate = selectedDate;
-                          pickedCount = calculateDaysBetween(startDate.toString(), endDate.toString());
-                        });
-                      }
                     },
-                    child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey)),
-                        child: Text(
-                          CustomConverter.dateToDay(
-                                  DateFormat('yyyy-MM-dd').format(endDate)),
-                          style: CustomFont.headingEmpat(),
-                        )),
                   ),
-                  */
                   const SizedBox(
                     height: 12,
                   ),
@@ -279,64 +242,45 @@ class CutiDialog {
                     alignment: Alignment.centerRight,
                     child: Text('Cuti diambil: $pickedCount', style: CustomFont.headingLimaSemiBold(),)),
                   const SizedBox(
-                    height: 19,
+                    height: 12,
                   ),
-                  
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          NavigationService.back();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: CustomContainer.buttonCancel(),
-                          child: Text(
-                            'Batal',
-                            style: CustomFont.buttonSecondary(),
-                          ),
-                        ),
-                      ),
-                      InkWell(
-                        onTap: () async{
-                          final confirm = await ConfirmationDialog.confirmation(ctx, 'Ajukan cuti');
-                          if(confirm != true){
-                            return;
-                          }
-                          final response = await NetworkRequest.postCuti(DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
-                          if(response.state != true){
-                            if(ctx.mounted){
-                              NotificationStyle.warning(ctx, 'Gagal mengajukan cuti', response.message);
-                            }
-                            return;
-                          }
-                          if(ctx.mounted){
-                            NotificationStyle.info(ctx, 'Berhasil', response.message);
-                          }  
-                          NavigationService.back();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: CustomContainer.buttonPrimary(),
-                          child: Text(
-                            'Ajukan',
-                            style: CustomFont.buttonSecondary(),
-                          ),
-                        ),
-                      )
-                    ],
+                  InkWell(
+                    onTap: () async{
+                      final confirm = await ConfirmationDialog.confirmation(ctx, 'Ajukan cuti');
+                      if(confirm != true){
+                        return;
+                      }
+                      final response = await NetworkRequest.postCuti(DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
+                      if(response.state != true){
+                        if(ctx.mounted){
+                          NotificationStyle.warning(ctx, 'Gagal mengajukan cuti', response.message);
+                        }
+                        return;
+                      }
+                      if(ctx.mounted){
+                        NotificationStyle.info(ctx, 'Berhasil', response.message);
+                      }  
+                      NavigationService.backWithData(true);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 9),
+                      decoration: CustomContainer.buttonGreen(),
+                      child: Center(child: Text('Ajukan Cuti', style: CustomFont.headingDuaSemiBoldSecondary(),)),
+                    ),
                   )
                 ],
               ),
             ),
             );
             },
-          );
-        });
+        );
+      }
+    );
+
+    return result ?? false;
   }
 
-  static void detailCutiDialog(BuildContext ctx, CutiListModel data){
+  static Future<bool> detailCutiDialog(BuildContext ctx, CutiListModel data)async{
 
     bool isEditable = false;
 
@@ -347,7 +291,7 @@ class CutiDialog {
       isEditable = true;
     }
 
-    showDialog(
+    final result = await showDialog(
       context: ctx, 
       builder: (BuildContext ctxDialog){
         return AlertDialog(
@@ -360,7 +304,7 @@ class CutiDialog {
           content: Container(
             padding: const EdgeInsets.symmetric(
               vertical: 12,
-              horizontal: 6
+              horizontal: 12
             ),
             width: ScreenSize.setWidthPercent(ctx, 85),
             decoration: BoxDecoration(
@@ -369,6 +313,7 @@ class CutiDialog {
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 6),
@@ -378,275 +323,272 @@ class CutiDialog {
                       const Icon(Icons.close, size: 26, color: Colors.white,),
                       Text('Rincian Cuti', style: CustomFont.headingTigaSemiBold(),),
                       InkWell(
-                          onTap: () {
-                            NavigationService.back();
-                          },
-                          child: const Icon(
-                            Icons.close,
-                            color: Colors.grey,
-                            size: 26,
-                          ),
-                      )
+                        onTap: ()async{
+                          NavigationService.back();
+                        },
+                        child: const SizedBox(width: 24, child: 
+                        Icon(Icons.close),),
+                      ),
                     ],
                   ),
                 ),
-                Column(
+                const SizedBox(height: 9,),
+                AutoSizeText(
+                  'Kode Cuti',
+                  style: CustomFont.headingEmpatSemiBold(),
+                  maxLines: 1,
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey)
+                    ),
+                  child: Text(data.id,style: CustomFont.headingEmpat(),
+                  )
+                ),
+                const SizedBox(
+                height: 12,
+                ),
+                AutoSizeText(
+                  'Status',
+                  style: CustomFont.headingEmpatSemiBold(),
+                  maxLines: 1,
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey)
+                    ),
+                  child: AutoSizeText(
+                    data.state == 1 ? 'Menunggu' : data.state == 2 ? 'Disetujui' : 'Ditolak',
+                    style: GoogleFonts.poppins(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: data.state == 1? Colors.amber
+                      : data.state == 2? Colors.green.shade600
+                      : Colors.red
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.clip,
+                  )
+                ),
+                const SizedBox(
+                height: 12,
+                ),
+                AutoSizeText(
+                  'Mulai Cuti',
+                  style: CustomFont.headingEmpatSemiBold(),
+                  maxLines: 1,
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey)
+                    ),
+                  child: AutoSizeText( CustomConverter.dateTimeToDay(data.startCuti),
+                    style: CustomFont.headingEmpat(),
+                    maxLines: 2,
+                    overflow: TextOverflow.clip,
+                  )
+                ),
+                const SizedBox(
+                height: 12,
+                ),
+                AutoSizeText(
+                  'Selesai Cuti',
+                  style: CustomFont.headingEmpatSemiBold(),
+                  maxLines: 1,
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey)
+                    ),
+                  child: AutoSizeText( CustomConverter.dateTimeToDay(data.endCuti),
+                    style: CustomFont.headingEmpat(),
+                    maxLines: 2,
+                    overflow: TextOverflow.clip,
+                  )
+                ),
+                const SizedBox(
+                height: 12,
+                ),
+                AutoSizeText(
+                  'Lama Cuti',
+                  style: CustomFont.headingEmpatSemiBold(),
+                  maxLines: 1,
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey)
+                    ),
+                  child: AutoSizeText('${data.day} hari',
+                    style: CustomFont.headingEmpat(),
+                    maxLines: 2,
+                    overflow: TextOverflow.clip,
+                  )
+                ),
+                const SizedBox(
+                height: 12,
+                ),
+                AutoSizeText(
+                  'Tanggal Pengajuan',
+                  style: CustomFont.headingEmpatSemiBold(),
+                  maxLines: 1,
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 1, color: Colors.grey)
+                    ),
+                  child: AutoSizeText(CustomConverter.dateTimeToDay(data.requestDate),
+                    style: CustomFont.headingEmpat(),
+                    maxLines: 2,
+                    overflow: TextOverflow.clip,
+                  )
+                ),
+                const SizedBox(
+                height: 12,
+                ),
+                SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        AutoSizeText(
+                          'Alasan Cuti',
+                          style: CustomFont.headingLimaSemiBold(),
+                          maxLines: 1,
+                        ),
+                        TextField(
+                            minLines: 3,
+                            maxLines: 5,
+                            readOnly: true,
+                            style: CustomFont.headingLima(),
+                            controller: TextEditingController(text: data.cutiReason),
+                            decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.grey, width: 1.3),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.grey, width: 0.9),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 12))
+                            ),
+                      ],
+                    ),
+                  ),
+                data.state == 3?
+                SizedBox(
+                    width: double.infinity,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        AutoSizeText(
+                          'Alasan Penolakan:',
+                          style: CustomFont.headingLimaSemiBold(),
+                          maxLines: 1,
+                        ),
+                        TextField(
+                            minLines: 3,
+                            maxLines: 5,
+                            readOnly: true,
+                            style: CustomFont.headingLima(),
+                            controller: TextEditingController(text: data.rejectReason),
+                            decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.grey, width: 1.3),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  borderSide: const BorderSide(
+                                      color: Colors.grey, width: 0.9),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 12))
+                            ),
+                      ],
+                    ),
+                  )
+                :const SizedBox(),
+                isEditable?
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    const SizedBox(height: 9,),
-                    SizedBox(
-                        width: double.infinity,
+                    Container(
+                      margin: const EdgeInsets.only(top: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6),border: Border.all(width: 0.4, color: Colors.black)),
+                      child: InkWell(
+                        onTap: () {
+                          NavigationService.backWithData(true);
+                        },
                         child: Row(
-                          mainAxisSize: MainAxisSize.max,
                           children: [
-                            Expanded(
-                                flex: 1,
-                                child: AutoSizeText(
-                                  'Kode Cuti',
-                                  style: CustomFont.headingLimaSemiBold(),
-                                )),
-                            Expanded(
-                                flex: 2,
-                                child: AutoSizeText(
-                                  ': ${data.id}',
-                                  style: CustomFont.headingLima(),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.clip,
-                                )),
+                            Icon(
+                              Icons.edit,
+                              size: 16,
+                              color: Colors.amber.shade900,
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
+                            AutoSizeText(
+                              'Ubah',
+                              style: CustomFont.headingLima(),
+                            )
                           ],
                         ),
-                      ),
-                    const SizedBox(
-                        height: 6,
-                      ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                                flex: 1,
-                                child: AutoSizeText(
-                                  'Status',
-                                  style: CustomFont.headingLimaSemiBold(),
-                                )),
-                            Expanded(
-                                flex: 2,
-                                child: AutoSizeText(
-                                  ': ${data.state == 1?'Menunggu' : data.state == 2? 'Disetujui': 'Ditolak'}',
-                                  style: GoogleFonts.poppins(
-                                      fontSize: 14, 
-                                      fontWeight: FontWeight.w600,
-                                      color: data.state == 1? Colors.amber : data.state == 2? Colors.green.shade600 : Colors.red),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.clip,
-                                )),
-                          ],
-                        ),
-                      ),
-                    const SizedBox(
-                        height: 6,
-                      ),
-                    SizedBox(
-                      width: double.infinity,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: AutoSizeText('Mulai Cuti', style: CustomFont.headingLimaSemiBold(),)),
-                          Expanded(
-                            flex: 2, 
-                            child: AutoSizeText(': ${CustomConverter.dateToDay(data.startCuti.toString())}', style: CustomFont.headingLima(), maxLines: 2, overflow: TextOverflow.clip,)
-                          ),
-                        ],
                       ),
                     ),
-                    const SizedBox(height: 6,),
-                    SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(flex: 1, child: AutoSizeText('Selesai Cuti',
-                                  style: CustomFont.headingLimaSemiBold(),
-                                )),
-                            Expanded(
-                                flex: 2,
-                                child: AutoSizeText(
-                                  ': ${CustomConverter.dateToDay(data.endCuti.toString())}',
-                                    style: CustomFont.headingLima(),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.clip
-                                  )
-                            ),
-                          ],
-                        ),
-                      ),
-                    const SizedBox(
-                        height: 6,
-                      ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(flex: 1, child: AutoSizeText('Lama Cuti',
-                                  style: CustomFont.headingLimaSemiBold(),
-                                  maxLines: 1,
-                                )),
-                            Expanded(
-                              flex: 2,
-                              child: AutoSizeText(
-                                ': ${data.day} hari',
-                                    style: CustomFont.headingLima(),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.clip
-                              )
-                            ),
-                          ],
-                        ),
-                      ),
-                    const SizedBox(
-                        height: 6,
-                      ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            Expanded(
-                                flex: 1,
-                                child: AutoSizeText(
-                                  'Pengajuan Cuti',
-                                  style: CustomFont.headingLimaSemiBold(),
-                                  maxLines: 1,
-                                )),
-                            Expanded(
-                                flex: 2, child:  AutoSizeText(
-                                    ': ${CustomConverter.dateToDay(data.requestDate.toString())}',
-                                    style: CustomFont.headingLima(),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.clip)),
-                          ],
-                        ),
-                      ),
-                    const SizedBox(
-                        height: 6,
-                      ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            AutoSizeText(
-                              'Alasan Cuti:',
-                              style: CustomFont.headingLimaSemiBold(),
-                              maxLines: 1,
-                            ),
-                            TextField(
-                                minLines: 3,
-                                maxLines: 5,
-                                readOnly: true,
-                                style: CustomFont.headingLima(),
-                                controller: TextEditingController(text: data.cutiReason),
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 0.9),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 12))
-                                ),
-                          ],
-                        ),
-                      ),
-                    data.state == 3?
-                    SizedBox(
-                        width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.max,
-                          children: [
-                            AutoSizeText(
-                              'Alasan Penolakan:',
-                              style: CustomFont.headingLimaSemiBold(),
-                              maxLines: 1,
-                            ),
-                            TextField(
-                                minLines: 3,
-                                maxLines: 5,
-                                readOnly: true,
-                                style: CustomFont.headingLima(),
-                                controller: TextEditingController(text: data.rejectReason),
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 1.3),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(6.0),
-                                      borderSide: const BorderSide(
-                                          color: Colors.grey, width: 0.9),
-                                    ),
-                                    contentPadding: const EdgeInsets.symmetric(
-                                        vertical: 8, horizontal: 12))
-                                ),
-                          ],
-                        ),
-                      )
-                    :const SizedBox(),
-                    isEditable?
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        InkWell(
-                          onTap: (){
-                            Navigator.pop(ctx);
-                            Future.delayed(const Duration(milliseconds: 300), () {
-                              if(ctx.mounted){
-                                editCutiDialog(ctx, data);
-                              }else{
-                                ShowToast.error('Halaman tidak dapat ditampilkan');
-                              }
-                            });
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.only(top: 9),
-                            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
-                            decoration: BoxDecoration(
-                              color: Colors.yellow.shade700,
-                              borderRadius: BorderRadius.circular(12)
-                            ),
-                            child: Row(
-                              children: [
-                                Text('Ubah', style: CustomFont.headingEmpatBoldSecondary(),),
-                                const SizedBox(width: 3,),
-                                const Icon(Icons.edit_note_sharp, color: Colors.white, size: 21,)
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ):
-                    const SizedBox()
                   ],
-                ),
+                ):
+                const SizedBox(),
               ],
             ),
           ),
         );
-      });
+      }
+    );
+
+    return result??false;
   }
 
-  static void editCutiDialog(BuildContext ctx, CutiListModel data){
+  static Future<bool> editCutiDialog(BuildContext ctx, CutiListModel data)async{
 
     DateTime startDate = data.startCuti;
     DateTime endDate = data.endCuti;
@@ -655,7 +597,7 @@ class CutiDialog {
     TextEditingController tfReason = TextEditingController();
     tfReason.text = data.cutiReason;
 
-    showDialog(
+    final result = await showDialog(
       context: ctx, 
       builder: (BuildContext ctx){
         return StatefulBuilder(
@@ -679,12 +621,21 @@ class CutiDialog {
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Ajukan Ulang Cuti',
-                          style: CustomFont.headingTigaSemiBold(),
-                        )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Icon(Icons.close, size: 26, color: Colors.white,),
+                        Text('Ajukan Ulang Cuti', style: CustomFont.headingTigaSemiBold(),),
+                        InkWell(
+                          onTap: ()async{
+                            NavigationService.back();
+                          },
+                          child: const SizedBox(width: 24, child: 
+                            Icon(Icons.close),
+                          ),
+                        ),
+                      ],
+                     ),
                     const SizedBox(
                       height: 12,
                     ),
@@ -835,86 +786,94 @@ class CutiDialog {
                       style: CustomFont.headingEmpatSemiBold(),
                     ),
                     TextField(
-                        minLines: 3,
-                        maxLines: 5,
-                        controller: tfReason,
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(6.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.grey, width: 2.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(6.0),
-                              borderSide: const BorderSide(
-                                  color: Colors.grey, width: 1.0),
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12))),
+                      minLines: 3,
+                      maxLines: 5,
+                      controller: tfReason,
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                          borderSide: const BorderSide(
+                            color: Colors.grey, width: 2.0
+                          ),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(6.0),
+                          borderSide: const BorderSide(
+                            color: Colors.grey, width: 1.0
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 8, 
+                          horizontal: 12
+                        )
+                      )
+                    ),
                     const SizedBox(
                       height: 3,
                     ),
                     Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'Cuti diambil: $pickedCount',
-                          style: CustomFont.headingLimaSemiBold(),
-                        )),
-                    const SizedBox(
-                      height: 19,
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        'Cuti diambil: $pickedCount',
+                        style: CustomFont.headingLimaSemiBold(),
+                      )
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            NavigationService.back();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: CustomContainer.buttonCancel(),
-                            child: Text(
-                              'Batal',
-                              style: CustomFont.buttonSecondary(),
-                            ),
+                    const SizedBox(height: 12,),
+                    InkWell(
+                      onTap: () async{
+                        final confirm = await ConfirmationDialog.confirmation(ctx, 'Ubah data cuti');
+                        if(confirm != true){
+                          return;
+                        }
+                        final response = await NetworkRequest.putCuti(data.id, DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
+                        if (response.state != true) {
+                          if (ctx.mounted) {
+                            NotificationStyle.warning(ctx, 'Gagal mengajukan ulang cuti', response.message);
+                          }
+                          return;
+                        }
+                        if (ctx.mounted) {
+                          NotificationStyle.info(ctx, 'Berhasil', response.message);
+                        }
+                        NavigationService.backWithData(true);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 9),
+                        decoration: CustomContainer.buttonGreen(),
+                        child: Center(
+                          child: Text(
+                            'Ajukan Ulang',
+                            style: CustomFont.headingTigaSemiBoldSecondary(),
                           ),
                         ),
-                        InkWell(
-                          onTap: () async{
-                            final confirm = await ConfirmationDialog.confirmation(ctx, 'Ubah data cuti');
-                            if(confirm != true){
-                              return;
-                            }
-                            final response = await NetworkRequest.putCuti(data.id, DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
-                            if (response.state != true) {
-                              if (ctx.mounted) {
-                                NotificationStyle.warning(ctx, 'Gagal mengajukan ulang cuti', response.message);
-                              }
-                              return;
-                            }
-                            if (ctx.mounted) {
-                              NotificationStyle.info(ctx, 'Berhasil', response.message);
-                            }
-                            NavigationService.back();
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 6),
-                            decoration: CustomContainer.buttonPrimary(),
-                            child: Text(
-                              'Ajukan',
-                              style: CustomFont.buttonSecondary(),
-                            ),
-                          ),
-                        )
-                      ],
+                      ),
                     )
                   ],
                 ),
               ),
             );
           });
-      });
+      }
+    );
+    return result??false;
+  }
+
+  static Future<bool> testReturn(BuildContext ctx)async{
+    final result = await showDialog<bool>(
+      context: ctx, 
+      builder: (BuildContext ctxDialog){
+        return AlertDialog(
+          content: Column(
+            children: [
+              ElevatedButton(
+                onPressed: (){
+                  Navigator.pop(ctx, false);
+                }, child: Text('back'))
+            ],
+          ),
+        );
+      }
+    );
+    return result??false;
   }
 }

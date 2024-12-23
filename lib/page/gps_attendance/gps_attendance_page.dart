@@ -141,7 +141,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                             options: MapOptions(
                               backgroundColor: CustomColor.background(),
                               initialCenter: currentLocation,
-                              initialZoom: 13.0,
+                              initialZoom: 6.0,
                             ),
                             children: [
                               TileLayer(

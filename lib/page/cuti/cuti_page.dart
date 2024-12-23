@@ -49,7 +49,21 @@ class _CutiPageState extends State<CutiPage> {
   }
 
 
-    @override
+  void refreshData()async{
+    EasyLoading.show();
+
+    final refreshResponse = await NetworkRequest.getCuti();
+
+    if(refreshResponse.state){
+      setState(() {
+        _cutiDetail = refreshResponse.data;
+      });
+    }
+
+    EasyLoading.dismiss();
+  }
+
+  @override
   void dispose() {
     if (EasyLoading.isShow) {
       EasyLoading.dismiss();
@@ -118,8 +132,11 @@ class _CutiPageState extends State<CutiPage> {
                                       borderRadius: BorderRadius.circular(3)
                                     ),
                                     child: InkWell(
-                                      onTap: (){
-                                        CutiDialog.showAddCUtiDialog(context, _cutiDetail?.cutiRemaining??0);
+                                      onTap: ()async{
+                                        final refresh = await CutiDialog.showAddCUtiDialog(context, _cutiDetail?.cutiRemaining??0);
+                                        if(refresh){
+                                          refreshData();
+                                        }
                                       },
                                       child: Row(
                                         children: [
@@ -169,8 +186,16 @@ class _CutiPageState extends State<CutiPage> {
                     itemBuilder: (BuildContext ctxList, int index){
                       CutiListModel data = _cutiDetail!.listCuti![index];
                       return InkWell(
-                        onTap: (){
-                          CutiDialog.detailCutiDialog(context, data);
+                        onTap: ()async {
+                          final edit = await CutiDialog.detailCutiDialog(context, data);
+                          if(edit){
+                            if(context.mounted){
+                              final refresh = await CutiDialog.editCutiDialog(context, data);
+                              if(refresh){
+                                refreshData();
+                              }
+                            }
+                          }
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 6),
@@ -178,6 +203,7 @@ class _CutiPageState extends State<CutiPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.white,
+                            border: Border.all(width: 0.3, color: Colors.black),
                             borderRadius: BorderRadius.circular(12)
                           ),
                           child: Row(
@@ -187,8 +213,9 @@ class _CutiPageState extends State<CutiPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   AutoSizeText(CustomConverter.dateToDay(data.startCuti.toString()), style: CustomFont.headingLimaSemiBold(),),
-                                  AutoSizeText('mulai cuti: ${CustomConverter.dateToDay(data.startCuti.toString())}', style: CustomFont.headingLima(),),
-                                  AutoSizeText('selesai cuti: ${CustomConverter.dateToDay(data.endCuti.toString())}', style: CustomFont.headingLima())
+                                  AutoSizeText('Lama cuti: ${data.day} hari', style: CustomFont.headingLima(),),
+                                  AutoSizeText(data.cutiReason, style: CustomFont.headingLima(),),
+                                  // AutoSizeText('selesai cuti: ${CustomConverter.dateToDay(data.endCuti.toString())}', style: CustomFont.headingLima())
                                 ],
                               ),
                               Expanded(
