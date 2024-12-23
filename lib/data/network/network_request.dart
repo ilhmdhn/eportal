@@ -11,6 +11,7 @@ import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
 import 'package:eportal/data/network/response/overtime_response.dart';
 import 'package:eportal/data/network/response/sallary_response.dart';
+import 'package:eportal/data/network/response/substitution_response.dart';
 import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/converter.dart';
@@ -460,6 +461,44 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       return BaseResponse.fromJson(convertedResult);
     } catch (e) {
+      return BaseResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<SubstitutionResponse> getLipeng()async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/libur_pengganti');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return SubstitutionResponse.fromJson(convertedResult);
+    }catch(e){
+      NavigationService.error(description: e.toString());
+      return SubstitutionResponse(
+        state: false, 
+        message: e.toString()
+      );
+    }
+  }
+
+  static Future<BaseResponse> postLipeng(DateTime dateSource, DateTime dateDest, String reason, bool isOvertime) async {
+    try {
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/libur_pengganti');
+      final apiResponse = await http.post(
+        url, 
+        headers: {'authorization': key},
+        body: jsonEncode({
+          'source_date': DateFormat('yyyy-MM-dd').format(dateSource),
+          'reason': reason,
+          'furlough_date': DateFormat('yyyy-MM-dd').format(dateDest),
+          'overtime': isOvertime? 1:0,
+        })
+      );
+      final convertedResult = json.decode(apiResponse.body);
+      return BaseResponse.fromJson(convertedResult);
+    } catch (e) {
+      NavigationService.error(description: e.toString());
       return BaseResponse(state: false, message: e.toString());
     }
   }

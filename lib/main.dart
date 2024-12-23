@@ -33,6 +33,7 @@ void main() async{
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
   
   });
+  
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
     createNotif(message.data['Title'], message.data['Body']);
   });
@@ -100,11 +101,15 @@ void configLoading() {
     ..displayDuration = const Duration(milliseconds: 2000)
     ..indicatorType = EasyLoadingIndicatorType.fadingCircle
     ..loadingStyle = EasyLoadingStyle.custom
+
     ..progressColor = CustomColor.primary()
     // ..backgroundColor = Colors.green
     ..backgroundColor = Colors.transparent
-    ..indicatorColor = Colors.yellow
+    ..indicatorColor = CustomColor.primary()
+    ..indicatorSize = 56
+    ..backgroundColor = Colors.transparent
     ..textColor = Colors.yellow
+    ..boxShadow = <BoxShadow>[]
     ..maskColor = Colors.blue.withOpacity(0.5)
     ..userInteractions = false
     ..dismissOnTap = false;

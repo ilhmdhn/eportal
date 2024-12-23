@@ -167,7 +167,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                 children: [
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: AutoSizeText('31', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                    child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                   
                                   ),
                                 ],
@@ -195,7 +195,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                children: [
                                  Align(
                                   alignment: Alignment.centerLeft,
-                                  child: AutoSizeText('31', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                  child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                  
                                  ),
                                ],
@@ -223,7 +223,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                 children: [
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: AutoSizeText('31', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                    child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                   
                                   ),
                                 ],
@@ -256,7 +256,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                 children: [
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: AutoSizeText('31', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                    child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                   
                                   ),
                                 ],
@@ -284,7 +284,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                children: [
                                  Align(
                                   alignment: Alignment.centerLeft,
-                                  child: AutoSizeText('31', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                  child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                  ),
                                ],
                              )
@@ -309,7 +309,7 @@ class _AttendancePageState extends State<AttendancePage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  AutoSizeText('31', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                  AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                 ],
                               )
                             ],
@@ -326,14 +326,12 @@ class _AttendancePageState extends State<AttendancePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AutoSizeText('Daftar Absensi', style: CustomFont.headingEmpatSemiBold(),),
-                    InkWell(
+                    const InkWell(
                       child: Icon(Icons.sort_rounded),
                     )
                   ],
                 ),
                 Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: ListView.builder(
                       itemCount: attendanceListResponse?.listAbsen.length??0,
                       itemBuilder: (BuildContext ctxList, index){
@@ -446,7 +444,7 @@ class _AttendancePageState extends State<AttendancePage> {
                           ],
                         );
                       }),
-                  ),
+                  
                 )
               ])
           ),

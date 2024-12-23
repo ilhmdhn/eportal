@@ -25,6 +25,7 @@ class NavigationService {
     final observer = GetIt.I<CustomNavigatorObserver>();
     final previousRoute = observer.getPreviousRouteName();
     ShowToast.warning('Previous route namez: $previousRoute');
+    // var route = ModalRoute.of(context);
 
     return navigatorKey.currentState!.pushReplacementNamed(ErrorPage.nameRoute, arguments: {'namePage': previousRoute, 'desc': description} 
     );
