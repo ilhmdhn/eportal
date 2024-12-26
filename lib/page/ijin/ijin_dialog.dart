@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:camera/camera.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
+import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
@@ -18,6 +18,7 @@ import 'package:eportal/data/network/response/base_response.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/time_diff.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 
 class IjinDialog{
-  static void showIjinDialog(BuildContext ctx){
+  static Future<bool> showIjinDialog(BuildContext ctx)async{
 
     String selectedType = 'Izin Terlambat';
 
@@ -79,7 +80,7 @@ class IjinDialog{
       return difference;
     }
 
-    showDialog(
+    final result = await showDialog<bool>(
       context: ctx,
       builder: (BuildContext ctx){
         return StatefulBuilder(
@@ -98,91 +99,86 @@ class IjinDialog{
               return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 12),
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: Colors.grey)),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(3),
-                                child: Row(
-                                  children: [
-                                    InkWell(
-                                      onTap: (){
-                                        pickImage(ImageSource.camera);
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(7)
-                                        ),
-                                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                        child: AutoSizeText('Camera', minFontSize: 1, maxLines: 1, style: CustomFont.headingLimaSecondary(),),
-                                      ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 12),
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 1, color: Colors.grey)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(3),
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  onTap: (){
+                                    pickImage(ImageSource.camera);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(7)
                                     ),
-                                    const SizedBox(width: 6,),
-                                    InkWell(
-                                      onTap: (){
-                                        pickImage(ImageSource.gallery);
-                                      },
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(7)
-                                        ),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 6, vertical: 4),
-                                        child: AutoSizeText('Gallery', minFontSize: 1, maxLines: 1, style: CustomFont.headingLimaSecondary(),),
-                                      ),
-                                    ),
-                                    isNotNullOrEmpty(selectedImage?.path)
-                                      ? Row(
-                                        children: [
-                                          const SizedBox(width: 12,),
-                                          InkWell(
-                                              onTap: () {
-                                                CustomViewer.filePhoto(
-                                                    ctx, selectedImage!);
-                                              },
-                                              child: AutoSizeText(
-                                                'image.jpg',
-                                                style:
-                                                    CustomFont.headingLimaWarning(),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 4,
-                                            ),
-                                            InkWell(
-                                              onTap: ()async{
-                                                final deleteResponse = await ConfirmationDialog.confirmation(ctx, 'Hapus gambar dipilih?');
-                                                if(deleteResponse){
-                                                  setState((){
-                                                    File(selectedImage!.path).delete();
-                                                    selectedImage = null;
-                                                  });
-                                                }
-                                              },
-                                              child: const Icon(Icons.close, color: Colors.red, size: 24,),
-                                            )
-                                        ],
-                                      )
-                                      : const SizedBox(
-                                          width: 0,
-                                        )
-                                  ],
+                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                                    child: AutoSizeText('Camera', minFontSize: 1, maxLines: 1, style: CustomFont.headingLimaSecondary(),),
+                                  ),
                                 ),
-                              ),
-                            ],
+                                const SizedBox(width: 6,),
+                                InkWell(
+                                  onTap: (){
+                                    pickImage(ImageSource.gallery);
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius: BorderRadius.circular(7)
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6, vertical: 4),
+                                    child: AutoSizeText('Gallery', minFontSize: 1, maxLines: 1, style: CustomFont.headingLimaSecondary(),),
+                                  ),
+                                ),
+                                isNotNullOrEmpty(selectedImage?.path)
+                                  ? Row(
+                                    children: [
+                                      const SizedBox(width: 12,),
+                                      InkWell(
+                                          onTap: () {
+                                            CustomViewer.filePhoto(
+                                                ctx, selectedImage!);
+                                          },
+                                          child: AutoSizeText(
+                                            'image.jpg',
+                                            style:
+                                                CustomFont.headingLimaWarning(),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        InkWell(
+                                          onTap: ()async{
+                                            final deleteResponse = await ConfirmationDialog.confirmation(ctx, 'Hapus gambar dipilih?');
+                                            if(deleteResponse){
+                                              setState((){
+                                                File(selectedImage!.path).delete();
+                                                selectedImage = null;
+                                              });
+                                            }
+                                          },
+                                          child: const Icon(Icons.close, color: Colors.red, size: 24,),
+                                        )
+                                    ],
+                                  )
+                                  : const SizedBox(
+                                      width: 0,
+                                    )
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 );
@@ -200,52 +196,55 @@ class IjinDialog{
                     height: 2,
                   ),
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                     decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.grey)),
+                      border: Border.all(width: 1, color: Colors.grey)
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                            flex: 1,
-                            child: Row(
-                              children: [
-                                Radio(
-                                    value: true,
-                                    activeColor: CustomColor.primary(),
-                                    groupValue: isDoctorLetterAvailable,
-                                    onChanged: (state) {
-                                      setState(() {
-                                        isDoctorLetterAvailable = state!;
-                                      });
-                                    }),
-                                AutoSizeText(
-                                  'Ada',
-                                  style: CustomFont.headingLima(),
-                                )
-                              ],
-                            )),
+                          flex: 1,
+                          child: Row(
+                            children: [
+                              Radio(
+                                value: true,
+                                activeColor: CustomColor.primary(),
+                                groupValue: isDoctorLetterAvailable,
+                                onChanged: (state) {
+                                  setState(() {
+                                    isDoctorLetterAvailable = state!;
+                                  });
+                                }
+                              ),
+                              AutoSizeText(
+                                'Ada',
+                                style: CustomFont.headingLima(),
+                              )
+                            ],
+                          )
+                        ),
                         Expanded(
-                            flex: 1,
-                            child: Row(
-                              children: [
-                                Radio(
-                                    value: false,
-                                    activeColor: CustomColor.primary(),
-                                    groupValue: isDoctorLetterAvailable,
-                                    onChanged: (state) {
-                                      setState(() {
-                                        isDoctorLetterAvailable = state!;
-                                      });
-                                    }),
+                          flex: 1,
+                          child: Row(
+                            children: [
+                              Radio(
+                                value: false,
+                                activeColor: CustomColor.primary(),
+                                groupValue: isDoctorLetterAvailable,
+                                onChanged: (state) {
+                                  setState(() {
+                                    isDoctorLetterAvailable = state!;
+                                  });
+                                }),
                                 AutoSizeText(
                                   'Tidak Ada',
                                   style: CustomFont.headingLima(),
                                 )
-                              ],
-                            )),
+                            ],
+                          )
+                        ),
                       ],
                     ),
                   ),
@@ -568,9 +567,14 @@ class IjinDialog{
                                 child: Container(
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(7),
-                                    color: Colors.grey),
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      width: 0.3,
+                                      color: Colors.black
+                                    )
+                                  ),
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                                  child: Text('Pilih File', style: CustomFont.headingLimaSecondary(),),
+                                  child: Text('Pilih File', style: CustomFont.headingLima(),),
                                 ),
                               ),
                               (file?.count??0) > 0?
@@ -742,8 +746,7 @@ class IjinDialog{
                                     updateMaxDate();
                                   },
                                   menuStyle: const MenuStyle(
-                                    backgroundColor:
-                                        WidgetStatePropertyAll<Color>(Colors.white),
+                                    backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
                                   ),
                                   width: ScreenSize.setWidthPercent(ctx, 85) - 24,
                                   menuHeight: ScreenSize.setHeightPercent(ctx, 30),
@@ -820,7 +823,7 @@ class IjinDialog{
                           if(ctx.mounted){
                             NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
                           }
-                          NavigationService.back();
+                          NavigationService.backWithData(true);
                         },
                         child: Container(
                           margin: const EdgeInsets.only(top: 12),
@@ -838,9 +841,11 @@ class IjinDialog{
         );
       }
     );
+
+    return result??false;
   }
 
-  static void showIzinDetail(BuildContext ctx, IzinListModel data) {
+  static Future<bool> showIzinDetail(BuildContext ctx, IzinListModel data) async{
     final baseUrl = dotenv.env['SERVER_URL'];
 
     Widget reasonIzinWidget() {
@@ -906,7 +911,7 @@ class IjinDialog{
       );
     }
 
-     Widget invitationImage() {
+    Widget invitationImage() {
       return SizedBox(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -950,20 +955,22 @@ class IjinDialog{
             height: 2,
           ),
           TextField(
-              readOnly: true,
-              controller: TextEditingController(text: content),
-              maxLines: 2,
-              minLines: 1,
-              decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: const BorderSide(color: Colors.grey, width: 2.0),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(6.0),
-                  borderSide: const BorderSide(color: Colors.grey, width: 1.0),
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12)))
+            readOnly: true,
+            controller: TextEditingController(text: content),
+            maxLines: 2,
+            minLines: 1,
+            decoration: InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: const BorderSide(color: Colors.grey, width: 2.0),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6.0),
+                borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+              ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12)
+            )
+          )
         ],
       );
     }
@@ -1056,7 +1063,7 @@ class IjinDialog{
       }
     }
 
-    showDialog(
+    final result = await showDialog(
       context: ctx,
       builder: (BuildContext ctxDialog) {
         return AlertDialog(
@@ -1152,11 +1159,10 @@ class IjinDialog{
                Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  data.startDate!.isAfter(DateTime.now()) && (data.state == 1 || data.state == 2)?
+                  TimeDiff.dateSameOrAfterNow(data.startDate!) && (data.state == 1 || data.state == 2)?
                   InkWell(
                     onTap: () async{
-                      NavigationService.back();
-                      IjinDialog.showEditIjinDialog(ctx, data);
+                      NavigationService.backWithData(true);
                     },
                     child: Container(
                       decoration: CustomContainer.buttonYellow(),
@@ -1170,7 +1176,7 @@ class IjinDialog{
                     ),
                   ): const SizedBox(),
                   const SizedBox(width: 6,),
-                  data.startDate!.isAfter(DateTime.parse(DateFormat('yyyy-MM-dd').format(DateTime.now()))) && (data.state != 3 && data.state != 4)?
+                  TimeDiff.dateSameOrAfterNow(data.startDate!) && data.state != 4?
                   InkWell(
                     onTap: () async{
                       final cancelState = await ConfirmationDialog.confirmation(ctx, 'Batalkan Izin?');
@@ -1181,6 +1187,7 @@ class IjinDialog{
                             NotificationStyle.info(ctx, 'Berhasil', 'Izin dibatalkan');
                           }
                           NavigationService.back();
+                          NavigationService.replacePage(IjinPage.nameRoute);
                         }else{
                           if (ctx.mounted) {
                             NotificationStyle.info(ctx, 'Gagal', 'Gagal membatalkan izin');
@@ -1202,11 +1209,13 @@ class IjinDialog{
         );
       },
     );
+
+    return result??false;
   }
 
-  static void showEditIjinDialog(BuildContext ctx, IzinListModel data) {
+  static Future<bool> showEditIjinDialog(BuildContext ctx, IzinListModel data) async{
     
-        final baseUrl = dotenv.env['SERVER_URL'];
+    final baseUrl = dotenv.env['SERVER_URL'];
     
     TimeOfDay startTime = data.startTime??TimeOfDay.now();
     TimeOfDay endTime = data.finishTime ?? TimeOfDay.now();
@@ -1247,7 +1256,7 @@ class IjinDialog{
       return difference;
     }
 
-    showDialog(
+    final result = await showDialog(
         context: ctx,
         builder: (BuildContext ctx) {
           return StatefulBuilder(
@@ -1265,124 +1274,119 @@ class IjinDialog{
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 6, horizontal: 12),
-                        decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey)),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(3),
-                              child: Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      pickImage(ImageSource.camera);
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(7)),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 4),
-                                      child: AutoSizeText(
-                                        'Camera',
-                                        minFontSize: 1,
-                                        maxLines: 1,
-                                        style:
-                                            CustomFont.headingLimaSecondary(),
-                                      ),
-                                    ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6, horizontal: 12),
+                    decoration: BoxDecoration(
+                        border: Border.all(width: 1, color: Colors.grey)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(3),
+                          child: Row(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  pickImage(ImageSource.camera);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius:
+                                          BorderRadius.circular(7)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 4),
+                                  child: AutoSizeText(
+                                    'Camera',
+                                    minFontSize: 1,
+                                    maxLines: 1,
+                                    style:
+                                        CustomFont.headingLimaSecondary(),
                                   ),
-                                  const SizedBox(
-                                    width: 6,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 6,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  pickImage(ImageSource.gallery);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey,
+                                      borderRadius:
+                                          BorderRadius.circular(7)),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 4),
+                                  child: AutoSizeText(
+                                    'Gallery',
+                                    minFontSize: 1,
+                                    maxLines: 1,
+                                    style:
+                                        CustomFont.headingLimaSecondary(),
                                   ),
-                                  InkWell(
-                                    onTap: () {
-                                      pickImage(ImageSource.gallery);
-                                    },
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.grey,
-                                          borderRadius:
-                                              BorderRadius.circular(7)),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 4),
-                                      child: AutoSizeText(
-                                        'Gallery',
-                                        minFontSize: 1,
-                                        maxLines: 1,
-                                        style:
-                                            CustomFont.headingLimaSecondary(),
-                                      ),
-                                    ),
-                                  ),
-                                  isNotNullOrEmpty(selectedImage?.path)
-                                      ? Row(
-                                          children: [
-                                            const SizedBox(
-                                              width: 12,
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                CustomViewer.filePhoto(
-                                                    ctx, selectedImage!);
-                                              },
-                                              child: AutoSizeText(
-                                                'image.jpg',
-                                                style: CustomFont
-                                                    .headingLimaWarning(),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 4,
-                                            ),
-                                            InkWell(
-                                              onTap: () async {
-                                                final deleteResponse =
-                                                    await ConfirmationDialog
-                                                        .confirmation(ctx,
-                                                            'Hapus gambar dipilih?');
-                                                if (deleteResponse) {
-                                                  setState(() {
-                                                    File(selectedImage!.path)
-                                                        .delete();
-                                                    selectedImage = null;
-                                                  });
-                                                }
-                                              },
-                                              child: const Icon(
-                                                Icons.close,
-                                                color: Colors.red,
-                                                size: 24,
-                                              ),
-                                            )
-                                          ],
-                                        )
-                                      : InkWell(
-                                          onTap: (){
-                                            CustomViewer.networkPhoto(ctx, Uri.parse('$baseUrl/${data.invitationUrl}').toString());
+                                ),
+                              ),
+                              isNotNullOrEmpty(selectedImage?.path)
+                                  ? Row(
+                                      children: [
+                                        const SizedBox(
+                                          width: 12,
+                                        ),
+                                        InkWell(
+                                          onTap: () {
+                                            CustomViewer.filePhoto(
+                                                ctx, selectedImage!);
                                           },
-                                          child: Row(
-                                            children: [
-                                              const SizedBox(width: 6,),
-                                              AutoSizeText('uploaded.png', style: CustomFont.headingEmpatColorful(),)
-                                            ],
+                                          child: AutoSizeText(
+                                            'image.jpg',
+                                            style: CustomFont
+                                                .headingLimaWarning(),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 4,
+                                        ),
+                                        InkWell(
+                                          onTap: () async {
+                                            final deleteResponse =
+                                                await ConfirmationDialog
+                                                    .confirmation(ctx,
+                                                        'Hapus gambar dipilih?');
+                                            if (deleteResponse) {
+                                              setState(() {
+                                                File(selectedImage!.path)
+                                                    .delete();
+                                                selectedImage = null;
+                                              });
+                                            }
+                                          },
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.red,
+                                            size: 24,
                                           ),
                                         )
-                                ],
-                              ),
-                            ),
-                          ],
+                                      ],
+                                    )
+                                  : InkWell(
+                                      onTap: (){
+                                        CustomViewer.networkPhoto(ctx, Uri.parse('$baseUrl/${data.invitationUrl}').toString());
+                                      },
+                                      child: Row(
+                                        children: [
+                                          const SizedBox(width: 6,),
+                                          AutoSizeText('uploaded.png', style: CustomFont.headingEmpatColorful(),)
+                                        ],
+                                      ),
+                                    )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               );
@@ -1793,13 +1797,18 @@ class IjinDialog{
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(7),
-                                      color: Colors.grey),
+                                    borderRadius: BorderRadius.circular(7),
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      width: 0.3,
+                                      color: Colors.black
+                                    )
+                                  ),
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 6, vertical: 4),
                                   child: Text(
                                     'Pilih File',
-                                    style: CustomFont.headingLimaSecondary(),
+                                    style: CustomFont.headingLima(),
                                   ),
                                 ),
                               ),
@@ -2148,7 +2157,7 @@ class IjinDialog{
                             }
                             NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
                           }
-                          NavigationService.back();
+                          NavigationService.backWithData(true);
                         },
                         child: Container(
                           margin: const EdgeInsets.only(top: 12),
@@ -2169,5 +2178,7 @@ class IjinDialog{
           });
       }
     );
+
+    return result ?? false;
   }
 }

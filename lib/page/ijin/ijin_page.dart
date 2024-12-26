@@ -30,8 +30,7 @@ class _IjinPageState extends State<IjinPage> {
       setState(() {
         isLoading = true;
       });
-    }
-    
+  }    
     final networkResponse = await NetworkRequest.getIzin();
     
     setState(() {
@@ -40,9 +39,26 @@ class _IjinPageState extends State<IjinPage> {
     });
   }
 
+  void refreshData() async {
+    EasyLoading.show();
+    final networkResponse = await NetworkRequest.getIzin();
+    EasyLoading.dismiss();
+    setState(() {
+      izinList = networkResponse.data??[];  
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose(){
+    if(EasyLoading.isShow){
+      EasyLoading.dismiss();
+    }
+    super.dispose();
   }
 
   @override
@@ -103,8 +119,7 @@ class _IjinPageState extends State<IjinPage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 6, vertical: 3),
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
                                       decoration: BoxDecoration(
                                           border: Border.all(
                                               width: 0.3,
@@ -112,8 +127,11 @@ class _IjinPageState extends State<IjinPage> {
                                           borderRadius:
                                               BorderRadius.circular(3)),
                                       child: InkWell(
-                                        onTap: () {
-                                          IjinDialog.showIjinDialog(context);
+                                        onTap: () async {
+                                          final refresh = await IjinDialog.showIjinDialog(context);
+                                          if(refresh){
+                                            refreshData();
+                                          }
                                         },
                                         child: Row(
                                           children: [
@@ -139,55 +157,61 @@ class _IjinPageState extends State<IjinPage> {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 12,),
                   Expanded(
                     child: ListView.builder(
                       itemCount: izinList.length,
                       itemBuilder: (BuildContext ctxList, int index){
                         IzinListModel data = izinList[index];
                         return InkWell(
-                          onTap: (){
-                            IjinDialog.showIzinDetail(context, data);
+                          onTap: ()async{
+                            final edit = await IjinDialog.showIzinDetail(context, data);
+                            if(edit){
+                              if(context.mounted){
+                                final refresh = await IjinDialog.showEditIjinDialog(context, data);
+                                if(refresh){
+                                  refreshData();
+                                }
+                              }
+                            }
                           },
                           child: Container(
                             padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 6),
-                            margin: const EdgeInsets.only(bottom: 6, left: 9, right: 9),
+                            margin: const EdgeInsets.only(bottom: 6),
                             decoration: BoxDecoration(
                               color: Colors.white,
+                              border: Border.all(
+                                width: 0.3,
+                                color: Colors.black
+                              ),
                               borderRadius: BorderRadius.circular(12)
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: AutoSizeText(
-                                        data.type == 1?
-                                        'Izin Terlambat':
-                                        data.type == 2?
-                                        'Izin Pulang Cepat':
-                                        data.type == 3?
-                                        'Izin Keluar Kantor':
-                                        data.type == 4?
-                                        'Izin Tidak Masuk Kerja':
-                                        data.type == 5?
-                                        'Izin Sakit':
-                                        data.type == 6?
-                                        'Izin Lain':
-                                        data.type == 7?
-                                        'Izin Menikah':
-                                        data.type == 8?
-                                        'Izin Melahirkan':
-                                        'Izin tidak diketahui',
-                                        style: CustomFont.headingEmpatSemiBold(), maxLines: 1,
-                                      ),
-                                    ),
-                                    AutoSizeText(CustomConverter.dateToDay(data.startDate.toString(),), style: CustomFont.standartFont(), maxLines: 1,
-                                    )
-                                  ],
+                                AutoSizeText(
+                                  data.type == 1?
+                                  'Izin Terlambat':
+                                  data.type == 2?
+                                  'Izin Pulang Cepat':
+                                  data.type == 3?
+                                  'Izin Keluar Kantor':
+                                  data.type == 4?
+                                  'Izin Tidak Masuk Kerja':
+                                  data.type == 5?
+                                  'Izin Sakit':
+                                  data.type == 6?
+                                  'Izin Lain':
+                                  data.type == 7?
+                                  'Izin Menikah':
+                                  data.type == 8?
+                                  'Izin Melahirkan':
+                                  'Izin tidak diketahui',
+                                  style: CustomFont.headingEmpatSemiBold(), maxLines: 1,
                                 ),
-                                Row(
+                                AutoSizeText(CustomConverter.dateToDay(data.startDate.toString(),), style: CustomFont.headingLima(), maxLines: 1,),
+                                AutoSizeText(data.reason??'', style: CustomFont.headingLima(), maxLines: 1,),
+                                /*Row(
                                   children: [
                                     Text('Status:', style: CustomFont.headingEmpat(),),
                                     Text(data.state == 1?' Menunggu': data.state == 2? ' Disetujui': data.state == 3? 'Ditolak' : data.state == 4?'Dibatalkan':'', 
@@ -198,7 +222,7 @@ class _IjinPageState extends State<IjinPage> {
                                             GoogleFonts.poppins(fontSize: 16, color:Colors.black)
                                     ),
                                   ],
-                                )
+                                )*/
                               ],
                             ),
                           ),

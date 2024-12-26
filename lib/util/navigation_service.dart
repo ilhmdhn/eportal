@@ -30,6 +30,9 @@ class NavigationService {
     return navigatorKey.currentState!.pushReplacementNamed(ErrorPage.nameRoute, arguments: {'namePage': previousRoute, 'desc': description} 
     );
   }
+  Future<dynamic> pushReplacementNamed(String routeName){
+    return navigatorKey.currentState!.pushReplacementNamed(routeName);
+  }
   
   static void moveRemoveUntil(routeName){
     getIt<NavigationService>().pushNamedAndRemoveUntil(routeName);
@@ -54,6 +57,8 @@ class NavigationService {
   }
 
   void goBack() => navigatorKey.currentState!.pop();
+
+  static void replacePage(String routeName) => getIt<NavigationService>().pushReplacementNamed(routeName);
 
   void goBackWithData(data) => navigatorKey.currentState!.pop(data);
 }

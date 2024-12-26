@@ -11,6 +11,7 @@ import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/page/sallary/sallary_page.dart';
+import 'package:eportal/page/ssp/ssp_page.dart';
 import 'package:eportal/provider/list_outlet_provider.dart';
 import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/util/init_firebase.dart';
@@ -89,7 +90,8 @@ class MyApp extends StatelessWidget {
           OvertimePage.nameRoute: (context) => const OvertimePage(),
           ErrorPage.nameRoute: (context) => const ErrorPage(),
           SallaryPage.nameRoute: (context) => const SallaryPage(),
-          SubstitutePage.nameRoute: (context) => const SubstitutePage()
+          SubstitutePage.nameRoute: (context) => const SubstitutePage(),
+          SspPage.nameRoute: (context) => const SspPage(),
         },
       ),
     );

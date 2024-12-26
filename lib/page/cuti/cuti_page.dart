@@ -155,29 +155,6 @@ class _CutiPageState extends State<CutiPage> {
                     ],
                   ),
                 ),
-                /*Container(
-                  height: ScreenSize.setHeightPercent(context, 10),
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: CustomColor.primary(),
-                    borderRadius: const BorderRadius.only(
-                      bottomRight: Radius.circular(20),
-                      bottomLeft: Radius.circular(20)
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('Cuti', style: CustomFont.headingTigaSemiBoldSecondary(),),
-                      Row(
-                        children: [
-                          Text('Sisa Cuti : ${_cutiDetail?.cutiRemaining??12}', style: CustomFont.headingEmpatSecondary(),),
-                        ],
-                      )
-                    ],
-                  ),
-                ),*/
                 Container(
                   margin: const EdgeInsets.only(top: 12),
                   child: ListView.builder(
@@ -199,41 +176,41 @@ class _CutiPageState extends State<CutiPage> {
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 6),
-                          width: double.infinity,
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(width: 0.3, color: Colors.black),
                             borderRadius: BorderRadius.circular(12)
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  AutoSizeText(CustomConverter.dateToDay(data.startCuti.toString()), style: CustomFont.headingLimaSemiBold(),),
-                                  AutoSizeText('Lama cuti: ${data.day} hari', style: CustomFont.headingLima(),),
-                                  AutoSizeText(data.cutiReason, style: CustomFont.headingLima(),),
-                                  // AutoSizeText('selesai cuti: ${CustomConverter.dateToDay(data.endCuti.toString())}', style: CustomFont.headingLima())
+                                  Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      AutoSizeText(CustomConverter.dateToDay(data.startCuti.toString()), style: CustomFont.headingLimaSemiBold(),),
+                                      AutoSizeText('Lama cuti: ${data.day} hari', style: CustomFont.headingLima(),),
+                                    ],
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(
+                                      child: AutoSizeText(
+                                        data.state == 1?'Menunggu' : data.state == 2? 'Disetujui': 'Ditolak',
+                                        style: GoogleFonts.poppins(
+                                          color: data.state == 1 ? Colors.amber.shade600 : data.state == 2? Colors.green.shade700: Colors.red.shade700,
+                                          fontWeight: FontWeight.w500
+                                        ),
+                                        textAlign: TextAlign.end,
+                                      ),
+                                    ),
+                                  )
                                 ],
                               ),
-                              Expanded(
-                                child: SizedBox(
-                                  child: AutoSizeText(
-                                    data.state == 1?'Menunggu' : data.state == 2? 'Disetujui': 'Ditolak',
-                                    style: GoogleFonts.poppins(
-                                      color: data.state == 1
-                                              ? Colors.amber.shade600
-                                              : data.state == 2
-                                                  ? Colors.green.shade700
-                                                  : Colors.red.shade700,
-                                      fontWeight: FontWeight.w500
-                                    ),
-                                    textAlign: TextAlign.end,
-                                  ),
-                                ),
-                              )
+                              Text(data.cutiReason, style: CustomFont.headingLima(), maxLines: 1, overflow: TextOverflow.ellipsis,),
                             ],
                           ),
                         ),

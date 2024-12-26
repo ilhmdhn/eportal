@@ -50,6 +50,8 @@ class CutiListModel{
   DateTime requestDate;
   int day;
   int state;
+  bool editable;
+  bool cancelable;
   String rejectReason;
   String cutiReason;
 
@@ -62,6 +64,8 @@ class CutiListModel{
     DateTime? endCuti,
     DateTime? requestDate,
     this.day = 1,
+    this.editable = false,
+    this.cancelable = false,
     this.state = 1,
     this.rejectReason = '',
     this.cutiReason = '',
@@ -76,6 +80,8 @@ class CutiListModel{
       year: json['Year'],
       nip: json['NIP'],
       name: json['Name'],
+      editable: json['editable'],
+      cancelable: json['cancellable'],
       startCuti: DateTime.parse(json['StartDate']),
       endCuti: DateTime.parse(json['EndDate']),
       requestDate: DateTime.parse(json['RequestDate']),

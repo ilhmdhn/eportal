@@ -216,106 +216,106 @@ class OvertimeDialog{
                         ),
                         contentPadding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12)
-                        )
-                      ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Text(
-                        'Ditugaskan oleh',
-                        style: CustomFont.headingEmpatSemiBold(),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      DropdownMenu<String>(
-                        onSelected: (value){
-                          setState((){
-                            instructorSelected = value!;
-                          });
-                        },
-                        menuStyle: const MenuStyle(
-                        backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
-                        ),
-                        width: ScreenSize.setWidthPercent(ctx, 85) - 24,
-                        initialSelection: listInstructor.first,
-                        dropdownMenuEntries: listInstructor.map<DropdownMenuEntry<String>>((String value) {
-                        return DropdownMenuEntry<String>(
-                            value: value, label: value);
-                      }).toList(),
-                      ),
-                      instructorSelected == 'Lainnya' || !listInstructor.contains(instructorSelected)?
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Penugas',
-                              style: CustomFont.headingEmpatSemiBold(),
-                            ),
-                            const SizedBox(
-                              height: 2,
-                            ),
-                            TextField(
-                              minLines: 1,
-                              maxLines: 1,
-                              onChanged: (value){
-                                setState((){
-                                  instructorSelected = value;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: const BorderSide(
-                                    color: Colors.grey, width: 2.0
-                                  ),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: const BorderSide(
-                                  color: Colors.grey, width: 1.0),
-                                ),
-                                contentPadding:const EdgeInsets.symmetric(vertical: 8, horizontal: 12))
-                            ),
-                          ],
-                        ):
-                        SizedBox(),
-                        const SizedBox(height: 12,),
-                        InkWell(
-                      onTap: () async {
-                        if(instructorSelected == 'Pilih' || instructorSelected == 'Lainnya' || isNullOrEmpty(instructorSelected)){
-                          ShowToast.warning('Lengkapi data');
-                          return;
-                        }
-                        final confirm = await ConfirmationDialog.confirmation(ctx, 'Ajukan lembur?');
-                        if (confirm != true) {
-                          return;
-                        }
-
-                        final networkResponse = await NetworkRequest.postLembur(startDate, startTime, endTime, tfReason.text, instructorSelected);
-
-                        if(networkResponse.state != true){
-                          if(ctx.mounted){
-                            NotificationStyle.warning(ctx, "Gagal", networkResponse.message);
-                          }
-                          return;
-                        }else{
-                          if(ctx.mounted){
-                            NotificationStyle.info(ctx, "Berhasil", 'Lembur Diajukan');
-                          }
-                          NavigationService.back();
-                        }  
+                      )
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      'Ditugaskan oleh',
+                      style: CustomFont.headingEmpatSemiBold(),
+                    ),
+                    const SizedBox(
+                      height: 2,
+                    ),
+                    DropdownMenu<String>(
+                      onSelected: (value){
+                        setState((){
+                          instructorSelected = value!;
+                        });
                       },
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: CustomContainer.buttonGreen(),
-                        child: Center(
-                          child: Text('Ajukan',style: CustomFont.buttonSecondary(),
+                      menuStyle: const MenuStyle(
+                      backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
+                      ),
+                      width: ScreenSize.setWidthPercent(ctx, 85) - 24,
+                      initialSelection: listInstructor.first,
+                      dropdownMenuEntries: listInstructor.map<DropdownMenuEntry<String>>((String value) {
+                      return DropdownMenuEntry<String>(
+                          value: value, label: value);
+                    }).toList(),
+                    ),
+                    instructorSelected == 'Lainnya' || !listInstructor.contains(instructorSelected)?
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Penugas',
+                            style: CustomFont.headingEmpatSemiBold(),
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          TextField(
+                            minLines: 1,
+                            maxLines: 1,
+                            onChanged: (value){
+                              setState((){
+                                instructorSelected = value;
+                              });
+                            },
+                            decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(6.0),
+                                borderSide: const BorderSide(
+                                  color: Colors.grey, width: 2.0
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(6.0),
+                                borderSide: const BorderSide(
+                                color: Colors.grey, width: 1.0),
+                              ),
+                              contentPadding:const EdgeInsets.symmetric(vertical: 8, horizontal: 12))
+                          ),
+                        ],
+                      ):
+                      SizedBox(),
+                      const SizedBox(height: 12,),
+                      InkWell(
+                        onTap: () async {
+                          if(instructorSelected == 'Pilih' || instructorSelected == 'Lainnya' || isNullOrEmpty(instructorSelected)){
+                            ShowToast.warning('Lengkapi data');
+                            return;
+                          }
+                          final confirm = await ConfirmationDialog.confirmation(ctx, 'Ajukan lembur?');
+                          if (confirm != true) {
+                            return;
+                          }
+
+                          final networkResponse = await NetworkRequest.postLembur(startDate, startTime, endTime, tfReason.text, instructorSelected);
+
+                          if(networkResponse.state != true){
+                            if(ctx.mounted){
+                              NotificationStyle.warning(ctx, "Gagal", networkResponse.message);
+                            }
+                            return;
+                          }else{
+                            if(ctx.mounted){
+                              NotificationStyle.info(ctx, "Berhasil", 'Lembur Diajukan');
+                            }
+                            NavigationService.back();
+                          }  
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: CustomContainer.buttonGreen(),
+                          child: Center(
+                            child: Text('Ajukan',style: CustomFont.buttonSecondary(),
+                            ),
                           ),
                         ),
-                      ),
-                    )
+                      )
                     ],
                   ),
                 ),

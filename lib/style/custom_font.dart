@@ -168,7 +168,7 @@ class CustomFont{
 
   static TextStyle headingLimaWarning() {
     return GoogleFonts.poppins(
-        fontSize: 14, color: Colors.red, fontWeight: FontWeight.w600);
+        fontSize: 14, color: Colors.red, fontWeight: FontWeight.w500);
   }
 
   static TextStyle headingLimaColor() {
