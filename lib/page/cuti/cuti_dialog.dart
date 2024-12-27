@@ -193,9 +193,7 @@ class CutiDialog {
                                         )
                                       ): 
                                     Text(
-                                      CustomConverter.dateToDay(
-                                        DateFormat('yyyy-MM-dd').format(maxDateProvider.date)
-                                      ),
+                                      CustomConverter.dateTimeToDay(endDate),
                                       style: CustomFont.headingEmpat(),
                                     )
                                   ),
