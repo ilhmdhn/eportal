@@ -37,6 +37,8 @@ class IzinListModel{
   DateTime? finishDate;
   String? year;
   int? type;
+  bool? editable;
+  bool? cancelable;
   TimeOfDay? startTime;
   TimeOfDay? finishTime;
   String? doctorLetter;
@@ -54,6 +56,8 @@ class IzinListModel{
     this.startDate,
     this.finishDate,
     this.year,
+    this.editable,
+    this.cancelable,
     this.type,
     this.startTime,
     this.finishTime,
@@ -72,6 +76,8 @@ class IzinListModel{
       nip: json['NIP'],
       name: json['Name'],
       startDate: DateTime.parse(json['Tanggal']),
+      editable: json['editable'],
+      cancelable: json['cancellable'],
       finishDate: DateTime.parse(json['TanggalSelesai']),
       year: json['Tahun'],
       type: json['Type'],

@@ -200,10 +200,10 @@ class _CutiPageState extends State<CutiPage> {
                                     child: SizedBox(
                                       child: AutoSizeText(
                                         data.state == 1?'Menunggu' : data.state == 2? 'Disetujui': 'Ditolak',
-                                        style: GoogleFonts.poppins(
-                                          color: data.state == 1 ? Colors.amber.shade600 : data.state == 2? Colors.green.shade700: Colors.red.shade700,
-                                          fontWeight: FontWeight.w500
-                                        ),
+                                        style: 
+                                        data.state == 1? CustomFont.headingEmpatWaiting():
+                                        data.state == 1? CustomFont.headingEmpatApprove():
+                                        data.state == 1? CustomFont.headingEmpatReject():CustomFont.headingEmpatReject(),
                                         textAlign: TextAlign.end,
                                       ),
                                     ),

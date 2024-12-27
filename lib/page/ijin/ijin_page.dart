@@ -165,14 +165,9 @@ class _IjinPageState extends State<IjinPage> {
                         IzinListModel data = izinList[index];
                         return InkWell(
                           onTap: ()async{
-                            final edit = await IjinDialog.showIzinDetail(context, data);
-                            if(edit){
-                              if(context.mounted){
-                                final refresh = await IjinDialog.showEditIjinDialog(context, data);
-                                if(refresh){
-                                  refreshData();
-                                }
-                              }
+                            final refresh = await IjinDialog.showIzinDetail(context, data);
+                            if(refresh){
+                              refreshData();
                             }
                           },
                           child: Container(
@@ -189,40 +184,46 @@ class _IjinPageState extends State<IjinPage> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                AutoSizeText(
-                                  data.type == 1?
-                                  'Izin Terlambat':
-                                  data.type == 2?
-                                  'Izin Pulang Cepat':
-                                  data.type == 3?
-                                  'Izin Keluar Kantor':
-                                  data.type == 4?
-                                  'Izin Tidak Masuk Kerja':
-                                  data.type == 5?
-                                  'Izin Sakit':
-                                  data.type == 6?
-                                  'Izin Lain':
-                                  data.type == 7?
-                                  'Izin Menikah':
-                                  data.type == 8?
-                                  'Izin Melahirkan':
-                                  'Izin tidak diketahui',
-                                  style: CustomFont.headingEmpatSemiBold(), maxLines: 1,
-                                ),
-                                AutoSizeText(CustomConverter.dateToDay(data.startDate.toString(),), style: CustomFont.headingLima(), maxLines: 1,),
-                                AutoSizeText(data.reason??'', style: CustomFont.headingLima(), maxLines: 1,),
-                                /*Row(
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Text('Status:', style: CustomFont.headingEmpat(),),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        AutoSizeText(
+                                          data.type == 1?
+                                          'Izin Terlambat':
+                                          data.type == 2?
+                                          'Izin Pulang Cepat':
+                                          data.type == 3?
+                                          'Izin Keluar Kantor':
+                                          data.type == 4?
+                                          'Izin Tidak Masuk Kerja':
+                                          data.type == 5?
+                                          'Izin Sakit':
+                                          data.type == 6?
+                                          'Izin Lain':
+                                          data.type == 7?
+                                          'Izin Menikah':
+                                          data.type == 8?
+                                          'Izin Melahirkan':
+                                          'Izin tidak diketahui',
+                                          style: CustomFont.headingEmpatSemiBold(), maxLines: 1,
+                                        ),
+                                        AutoSizeText(CustomConverter.dateToDay(data.startDate.toString(),), style: CustomFont.headingLima(), maxLines: 1,),
+                                      ],
+                                    ),                                 
                                     Text(data.state == 1?' Menunggu': data.state == 2? ' Disetujui': data.state == 3? 'Ditolak' : data.state == 4?'Dibatalkan':'', 
-                                    style:  data.state == 1? GoogleFonts.poppins(fontSize: 16, color: Colors.yellow.shade700):
-                                            data.state == 2? GoogleFonts.poppins(fontSize: 16, color: Colors.green):
-                                            data.state == 3? GoogleFonts.poppins(fontSize: 16, color: Colors.red):
-                                            data.state == 4? GoogleFonts.poppins(fontSize: 16, color: Colors.red):
+                                    style:  data.state == 1? CustomFont.headingEmpatWaiting():
+                                            data.state == 2? CustomFont.headingEmpatApprove():
+                                            data.state == 3? CustomFont.headingEmpatReject():
+                                            data.state == 4? CustomFont.headingEmpatReject():
                                             GoogleFonts.poppins(fontSize: 16, color:Colors.black)
                                     ),
+                                 
                                   ],
-                                )*/
+                                ),
+                                Text(data.reason??'', style: CustomFont.headingLima(), maxLines: 1, overflow: TextOverflow.ellipsis,),
                               ],
                             ),
                           ),

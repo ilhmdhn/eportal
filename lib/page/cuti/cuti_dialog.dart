@@ -4,6 +4,7 @@ import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/provider/max_date.dart';
+import 'package:eportal/style/custom_button.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -11,9 +12,7 @@ import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
@@ -25,18 +24,6 @@ class CutiDialog {
     int difference = (end.difference(start).inDays) + 1;
 
     return difference;
-  }
-
-  static DateTime limitToEndOfYear(DateTime startDate, int daysToAdd) {
-    DateTime endOfYear = DateTime(startDate.year, 12, 31);
-
-    DateTime newDate = startDate.add(Duration(days: daysToAdd - 1));
-
-    if (newDate.isAfter(endOfYear)) {
-      return endOfYear;
-    }
-
-    return newDate;
   }
 
   static Future<bool> showAddCUtiDialog(BuildContext ctx, int cutiRemaining) async{
@@ -67,6 +54,9 @@ class CutiDialog {
             contentPadding: const EdgeInsets.all(0),
             content: Container(
               padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+              constraints: BoxConstraints(
+                maxHeight: ScreenSize.setHeightPercent(ctx, 70)
+              ),
               width: ScreenSize.setWidthPercent(ctx, 85),
               decoration: BoxDecoration(
                   color: Colors.white,
@@ -93,179 +83,190 @@ class CutiDialog {
                   const SizedBox(
                     height: 6,
                   ),
-                  Text(
-                    'Tipe Cuti',
-                    style: CustomFont.headingEmpatSemiBold(),
-                  ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  DropdownMenu<String>(
-                    menuStyle: const MenuStyle(
-                      backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
-                    ),
-                    width: ScreenSize.setWidthPercent(ctx, 85) - 24,
-                    initialSelection: listCutiType.first,
-                    dropdownMenuEntries: listCutiType
-                      .map<DropdownMenuEntry<String>>((String value) {
-                        return DropdownMenuEntry<String>(
-                          value: value, label: value
-                        );
-                      }).toList(),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  AutoSizeText(
-                    'Mulai Cuti',
-                    style: CustomFont.headingEmpatSemiBold(),
-                    maxLines: 1,
-                  ),
-                  InkWell(
-                    onTap: ()async{
-                      final selectedDate = await showDatePicker(
-                        builder: (BuildContext context, Widget? child) {
-                          return CustomDatePicker.primary(child!);
-                      },
-                        context: ctx,
-                        initialDate: startDate,
-                        firstDate: DateTime.now().subtract(const Duration(days: 30)),
-                        lastDate: DateTime.now().add(const Duration(days: 365)),
-                      );
-
-                      if (selectedDate != null) {
-                        setState((){
-                          
-                          startDate = selectedDate;
-                          endDate = selectedDate;
-                          updateMaxDate();
-                          pickedCount = calculateDaysBetween(startDate.toString(), endDate.toString());
-                        });
-                      }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 1,
-                          color: Colors.grey
-                        )
-                      ),
-                      child: Text(CustomConverter.dateToDay(DateFormat('yyyy-MM-dd').format(startDate)), style: CustomFont.headingEmpat(),)),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  AutoSizeText(
-                    'Selesai Cuti',
-                    style: CustomFont.headingEmpatSemiBold(),
-                    maxLines: 1,
-                  ),
-                  Consumer<MaxDateProvider>(
-                    builder: (ctxMaxDate, maxDateProvider, child) {
-                      return InkWell(
-                        onTap: () async {
-                          final selectedDate = await showDatePicker(
-                            builder: (BuildContext context, Widget? child) {
-                              return CustomDatePicker.primary(child!);
-                            },
-                              context: ctx,
-                              initialDate: endDate,
-                              firstDate: startDate,
-                              lastDate: maxDateProvider.date,
-                          );
-                          if (selectedDate != null) {
-                            setState(() {
-                              endDate = selectedDate;
-                              pickedCount = calculateDaysBetween(startDate.toString(), endDate.toString());
-                            });
-                          }
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 6, horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 1, color: Colors.grey)
-                          ),
-                          child: maxDateProvider.isLoading
-                          ? Center(
-                              child: LoadingAnimationWidget.waveDots(
-                                color: CustomColor.primary(),
-                                size: 20,
-                              )
-                            ): 
-                          Text(
-                            CustomConverter.dateToDay(
-                              DateFormat('yyyy-MM-dd').format(maxDateProvider.date)
+                  Flexible(
+                    child: Scrollbar(
+                      child: SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Tipe Cuti',
+                              style: CustomFont.headingEmpatSemiBold(),
                             ),
-                            style: CustomFont.headingEmpat(),
-                          )
+                            const SizedBox(
+                              height: 6,
+                            ),
+                            DropdownMenu<String>(
+                              menuStyle: const MenuStyle(
+                                backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
+                              ),
+                              width: ScreenSize.setWidthPercent(ctx, 85) - 24,
+                              initialSelection: listCutiType.first,
+                              dropdownMenuEntries: listCutiType
+                                .map<DropdownMenuEntry<String>>((String value) {
+                                  return DropdownMenuEntry<String>(
+                                    value: value, label: value
+                                  );
+                                }).toList(),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            AutoSizeText(
+                              'Mulai Cuti',
+                              style: CustomFont.headingEmpatSemiBold(),
+                              maxLines: 1,
+                            ),
+                            InkWell(
+                              onTap: ()async{
+                                final selectedDate = await showDatePicker(
+                                  builder: (BuildContext context, Widget? child) {
+                                    return CustomDatePicker.primary(child!);
+                                },
+                                  context: ctx,
+                                  initialDate: startDate,
+                                  firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                                  lastDate: DateTime.now().add(const Duration(days: 365)),
+                                );
+                            
+                                if (selectedDate != null) {
+                                  setState((){
+                                    
+                                    startDate = selectedDate;
+                                    endDate = selectedDate;
+                                    updateMaxDate();
+                                    pickedCount = calculateDaysBetween(startDate.toString(), endDate.toString());
+                                  });
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    width: 1,
+                                    color: Colors.grey
+                                  )
+                                ),
+                                child: Text(CustomConverter.dateToDay(DateFormat('yyyy-MM-dd').format(startDate)), style: CustomFont.headingEmpat(),)),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            AutoSizeText(
+                              'Selesai Cuti',
+                              style: CustomFont.headingEmpatSemiBold(),
+                              maxLines: 1,
+                            ),
+                            Consumer<MaxDateProvider>(
+                              builder: (ctxMaxDate, maxDateProvider, child) {
+                                return InkWell(
+                                  onTap: () async {
+                                    final selectedDate = await showDatePicker(
+                                      builder: (BuildContext context, Widget? child) {
+                                        return CustomDatePicker.primary(child!);
+                                      },
+                                        context: ctx,
+                                        initialDate: endDate,
+                                        firstDate: startDate,
+                                        lastDate: maxDateProvider.date,
+                                    );
+                                    if (selectedDate != null) {
+                                      setState(() {
+                                        endDate = selectedDate;
+                                        pickedCount = calculateDaysBetween(startDate.toString(), endDate.toString());
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 6, horizontal: 12),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(width: 1, color: Colors.grey)
+                                    ),
+                                    child: maxDateProvider.isLoading
+                                    ? Center(
+                                        child: LoadingAnimationWidget.waveDots(
+                                          color: CustomColor.primary(),
+                                          size: 20,
+                                        )
+                                      ): 
+                                    Text(
+                                      CustomConverter.dateToDay(
+                                        DateFormat('yyyy-MM-dd').format(maxDateProvider.date)
+                                      ),
+                                      style: CustomFont.headingEmpat(),
+                                    )
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Text(
+                              'Alasan Cuti',
+                              style: CustomFont.headingEmpatSemiBold(),
+                            ),
+                            TextField(
+                              minLines: 3,
+                              maxLines: 5,
+                              controller: tfReason,
+                              decoration: InputDecoration(
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  borderSide: const BorderSide(
+                                    color: Colors.grey, width: 2.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(6.0),
+                                  borderSide: const BorderSide(
+                                    color: Colors.grey, width: 1.0),
+                                ),
+                                contentPadding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 12
+                                )
+                              )
+                            ),
+                            
+                            const SizedBox(
+                              height: 3,
+                            ),
+                            
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: Text('Cuti diambil: $pickedCount', style: CustomFont.headingLimaSemiBold(),)),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            InkWell(
+                              onTap: () async{
+                                final confirm = await ConfirmationDialog.confirmation(ctx, 'Ajukan cuti');
+                                if(confirm != true){
+                                  return;
+                                }
+                                final response = await NetworkRequest.postCuti(DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
+                                if(response.state != true){
+                                  if(ctx.mounted){
+                                    NotificationStyle.warning(ctx, 'Gagal mengajukan cuti', response.message);
+                                  }
+                                  return;
+                                }
+                                if(ctx.mounted){
+                                  NotificationStyle.info(ctx, 'Berhasil', response.message);
+                                }  
+                                NavigationService.backWithData(true);
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(vertical: 9),
+                                decoration: CustomContainer.buttonGreen(),
+                                child: Center(child: Text('Ajukan Cuti', style: CustomFont.headingDuaSemiBoldSecondary(),)),
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Text(
-                    'Alasan Cuti',
-                    style: CustomFont.headingEmpatSemiBold(),
-                  ),
-                  TextField(
-                    minLines: 3,
-                    maxLines: 5,
-                    controller: tfReason,
-                    decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6.0),
-                        borderSide: const BorderSide(
-                          color: Colors.grey, width: 2.0),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(6.0),
-                        borderSide: const BorderSide(
-                          color: Colors.grey, width: 1.0),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(
-                        vertical: 8, horizontal: 12
-                      )
-                    )
-                  ),
-
-                  const SizedBox(
-                    height: 3,
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Text('Cuti diambil: $pickedCount', style: CustomFont.headingLimaSemiBold(),)),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  InkWell(
-                    onTap: () async{
-                      final confirm = await ConfirmationDialog.confirmation(ctx, 'Ajukan cuti');
-                      if(confirm != true){
-                        return;
-                      }
-                      final response = await NetworkRequest.postCuti(DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
-                      if(response.state != true){
-                        if(ctx.mounted){
-                          NotificationStyle.warning(ctx, 'Gagal mengajukan cuti', response.message);
-                        }
-                        return;
-                      }
-                      if(ctx.mounted){
-                        NotificationStyle.info(ctx, 'Berhasil', response.message);
-                      }  
-                      NavigationService.backWithData(true);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 9),
-                      decoration: CustomContainer.buttonGreen(),
-                      child: Center(child: Text('Ajukan Cuti', style: CustomFont.headingDuaSemiBoldSecondary(),)),
                     ),
                   )
                 ],
@@ -281,16 +282,6 @@ class CutiDialog {
   }
 
   static Future<bool> detailCutiDialog(BuildContext ctx, CutiListModel data)async{
-
-    bool isEditable = false;
-
-    final cutiDate = data.startCuti;
-    final today = DateTime.now();
-
-    if(cutiDate.isAfter(today) && data.state != 3){
-      isEditable = true;
-    }
-
     final result = await showDialog(
       context: ctx, 
       builder: (BuildContext ctxDialog){
@@ -305,6 +296,9 @@ class CutiDialog {
             padding: const EdgeInsets.symmetric(
               vertical: 12,
               horizontal: 12
+            ),
+            constraints: BoxConstraints(
+              maxHeight: ScreenSize.setHeightPercent(ctx, 70)
             ),
             width: ScreenSize.setWidthPercent(ctx, 85),
             decoration: BoxDecoration(
@@ -333,251 +327,240 @@ class CutiDialog {
                   ),
                 ),
                 const SizedBox(height: 9,),
-                AutoSizeText(
-                  'Kode Cuti',
-                  style: CustomFont.headingEmpatSemiBold(),
-                  maxLines: 1,
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey)
-                    ),
-                  child: Text(data.id,style: CustomFont.headingEmpat(),
-                  )
-                ),
-                const SizedBox(
-                height: 12,
-                ),
-                AutoSizeText(
-                  'Status',
-                  style: CustomFont.headingEmpatSemiBold(),
-                  maxLines: 1,
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey)
-                    ),
-                  child: AutoSizeText(
-                    data.state == 1 ? 'Menunggu' : data.state == 2 ? 'Disetujui' : 'Ditolak',
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: data.state == 1? Colors.amber
-                      : data.state == 2? Colors.green.shade600
-                      : Colors.red
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.clip,
-                  )
-                ),
-                const SizedBox(
-                height: 12,
-                ),
-                AutoSizeText(
-                  'Mulai Cuti',
-                  style: CustomFont.headingEmpatSemiBold(),
-                  maxLines: 1,
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey)
-                    ),
-                  child: AutoSizeText( CustomConverter.dateTimeToDay(data.startCuti),
-                    style: CustomFont.headingEmpat(),
-                    maxLines: 2,
-                    overflow: TextOverflow.clip,
-                  )
-                ),
-                const SizedBox(
-                height: 12,
-                ),
-                AutoSizeText(
-                  'Selesai Cuti',
-                  style: CustomFont.headingEmpatSemiBold(),
-                  maxLines: 1,
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey)
-                    ),
-                  child: AutoSizeText( CustomConverter.dateTimeToDay(data.endCuti),
-                    style: CustomFont.headingEmpat(),
-                    maxLines: 2,
-                    overflow: TextOverflow.clip,
-                  )
-                ),
-                const SizedBox(
-                height: 12,
-                ),
-                AutoSizeText(
-                  'Lama Cuti',
-                  style: CustomFont.headingEmpatSemiBold(),
-                  maxLines: 1,
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey)
-                    ),
-                  child: AutoSizeText('${data.day} hari',
-                    style: CustomFont.headingEmpat(),
-                    maxLines: 2,
-                    overflow: TextOverflow.clip,
-                  )
-                ),
-                const SizedBox(
-                height: 12,
-                ),
-                AutoSizeText(
-                  'Tanggal Pengajuan',
-                  style: CustomFont.headingEmpatSemiBold(),
-                  maxLines: 1,
-                ),
-                const SizedBox(
-                  height: 2,
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: Colors.grey)
-                    ),
-                  child: AutoSizeText(CustomConverter.dateTimeToDay(data.requestDate),
-                    style: CustomFont.headingEmpat(),
-                    maxLines: 2,
-                    overflow: TextOverflow.clip,
-                  )
-                ),
-                const SizedBox(
-                height: 12,
-                ),
-                SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        AutoSizeText(
-                          'Alasan Cuti',
-                          style: CustomFont.headingLimaSemiBold(),
-                          maxLines: 1,
-                        ),
-                        TextField(
-                            minLines: 3,
-                            maxLines: 5,
-                            readOnly: true,
-                            style: CustomFont.headingLima(),
-                            controller: TextEditingController(text: data.cutiReason),
-                            decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.grey, width: 1.3),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.grey, width: 0.9),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 12))
-                            ),
-                      ],
-                    ),
-                  ),
-                data.state == 3?
-                SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        AutoSizeText(
-                          'Alasan Penolakan:',
-                          style: CustomFont.headingLimaSemiBold(),
-                          maxLines: 1,
-                        ),
-                        TextField(
-                            minLines: 3,
-                            maxLines: 5,
-                            readOnly: true,
-                            style: CustomFont.headingLima(),
-                            controller: TextEditingController(text: data.rejectReason),
-                            decoration: InputDecoration(
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.grey, width: 1.3),
-                                ),
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(6.0),
-                                  borderSide: const BorderSide(
-                                      color: Colors.grey, width: 0.9),
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 8, horizontal: 12))
-                            ),
-                      ],
-                    ),
-                  )
-                :const SizedBox(),
-                isEditable?
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6),border: Border.all(width: 0.4, color: Colors.black)),
-                      child: InkWell(
-                        onTap: () {
-                          NavigationService.backWithData(true);
-                        },
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.edit,
-                              size: 16,
-                              color: Colors.amber.shade900,
-                            ),
-                            const SizedBox(
-                              width: 3,
-                            ),
-                            AutoSizeText(
-                              'Ubah',
-                              style: CustomFont.headingLima(),
+                Flexible(
+                  child: Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            'Kode Cuti',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey)
+                              ),
+                            child: Text(data.id,style: CustomFont.headingEmpat(),
                             )
-                          ],
-                        ),
+                          ),
+                          const SizedBox(
+                          height: 12,
+                          ),
+                          AutoSizeText(
+                            'Status',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey)
+                              ),
+                            child: AutoSizeText(
+                              data.state == 1 ? 'Menunggu' : data.state == 2 ? 'Disetujui' : 'Ditolak',
+                              style: 
+                                data.state == 1? CustomFont.headingEmpatWaiting():
+                                data.state == 2? CustomFont.headingEmpatApprove():
+                                CustomFont.headingEmpatReject(),
+                              maxLines: 2,
+                              overflow: TextOverflow.clip,
+                            )
+                          ),
+                          const SizedBox(
+                          height: 12,
+                          ),
+                          AutoSizeText(
+                            'Mulai Cuti',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey)
+                              ),
+                            child: AutoSizeText( CustomConverter.dateTimeToDay(data.startCuti),
+                              style: CustomFont.headingEmpat(),
+                              maxLines: 2,
+                              overflow: TextOverflow.clip,
+                            )
+                          ),
+                          const SizedBox(
+                          height: 12,
+                          ),
+                          AutoSizeText(
+                            'Selesai Cuti',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey)
+                              ),
+                            child: AutoSizeText( CustomConverter.dateTimeToDay(data.endCuti),
+                              style: CustomFont.headingEmpat(),
+                              maxLines: 2,
+                              overflow: TextOverflow.clip,
+                            )
+                          ),
+                          const SizedBox(
+                          height: 12,
+                          ),
+                          AutoSizeText(
+                            'Lama Cuti',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey)
+                              ),
+                            child: AutoSizeText('${data.day} hari',
+                              style: CustomFont.headingEmpat(),
+                              maxLines: 2,
+                              overflow: TextOverflow.clip,
+                            )
+                          ),
+                          const SizedBox(
+                          height: 12,
+                          ),
+                          AutoSizeText(
+                            'Tanggal Pengajuan',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(width: 1, color: Colors.grey)
+                              ),
+                            child: AutoSizeText(CustomConverter.dateTimeToDay(data.requestDate),
+                              style: CustomFont.headingEmpat(),
+                              maxLines: 2,
+                              overflow: TextOverflow.clip,
+                            )
+                          ),
+                          const SizedBox(
+                          height: 12,
+                          ),
+                          SizedBox(
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  AutoSizeText(
+                                    'Alasan Cuti',
+                                    style: CustomFont.headingLimaSemiBold(),
+                                    maxLines: 1,
+                                  ),
+                                  TextField(
+                                      minLines: 3,
+                                      maxLines: 5,
+                                      readOnly: true,
+                                      style: CustomFont.headingLima(),
+                                      controller: TextEditingController(text: data.cutiReason),
+                                      decoration: InputDecoration(
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(6.0),
+                                            borderSide: const BorderSide(
+                                                color: Colors.grey, width: 1.3),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(6.0),
+                                            borderSide: const BorderSide(
+                                                color: Colors.grey, width: 0.9),
+                                          ),
+                                          contentPadding: const EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 12))
+                                      ),
+                                ],
+                              ),
+                            ),
+                          data.state == 3?
+                          SizedBox(
+                              width: double.infinity,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  AutoSizeText(
+                                    'Alasan Penolakan:',
+                                    style: CustomFont.headingLimaSemiBold(),
+                                    maxLines: 1,
+                                  ),
+                                  TextField(
+                                      minLines: 3,
+                                      maxLines: 5,
+                                      readOnly: true,
+                                      style: CustomFont.headingLima(),
+                                      controller: TextEditingController(text: data.rejectReason),
+                                      decoration: InputDecoration(
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(6.0),
+                                            borderSide: const BorderSide(
+                                                color: Colors.grey, width: 1.3),
+                                          ),
+                                          enabledBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.circular(6.0),
+                                            borderSide: const BorderSide(
+                                                color: Colors.grey, width: 0.9),
+                                          ),
+                                          contentPadding: const EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 12))
+                                      ),
+                                ],
+                              ),
+                            )
+                          :const SizedBox(),
+                          const SizedBox(height: 12,),
+                          data.editable?
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  NavigationService.backWithData(true);
+                                },
+                                child: CustomButton.edit()
+                              ),
+                            ],
+                          ):
+                          const SizedBox(),
+                        ],
                       ),
                     ),
-                  ],
-                ):
-                const SizedBox(),
+                  ),
+                ),
               ],
             ),
           ),
@@ -610,9 +593,11 @@ class CutiDialog {
               actionsPadding: const EdgeInsets.all(0),
               contentPadding: const EdgeInsets.all(0),
               content: Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                 width: ScreenSize.setWidthPercent(ctx, 85),
+                constraints: BoxConstraints(
+                  maxHeight: ScreenSize.setHeightPercent(ctx, 70)
+                ),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -639,211 +624,189 @@ class CutiDialog {
                     const SizedBox(
                       height: 12,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: AutoSizeText(
-                            'Mulai Cuti',
-                            style: CustomFont.headingEmpatSemiBold(),
-                            maxLines: 1,
-                          ),
-                        ),
-                        Expanded(
-                          child: AutoSizeText(
-                            'Cuti sebelumnya: $cutiPicked',
-                            textAlign: TextAlign.end,
-                            style: CustomFont.headingEmpatSemiBold(),
-                            maxLines: 1,
-                          ),
-                        ),
-                      ],
-                    ),
-                    InkWell(
-                      onTap: () async {
-                        final selectedDate = await showDatePicker(
-                          builder: (BuildContext context, Widget? child) {
-                            return CustomDatePicker.primary(child!);
-                          },
-                          context: ctx,
-                          initialDate: startDate,
-                          firstDate:
-                              DateTime.now().subtract(const Duration(days: 30)),
-                          lastDate:
-                              DateTime.now().add(const Duration(days: 365)),
-                        );
-
-                        if (selectedDate != null) {
-                          setState(() {
-                            startDate = selectedDate;
-                            endDate = selectedDate;
-                            pickedCount = calculateDaysBetween(
-                                startDate.toString(), endDate.toString());
-                          });
-                        }
-                      },
-                      child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: Colors.grey)),
-                          child: Text(
-                            CustomConverter.dateToDay(
-                                DateFormat('yyyy-MM-dd').format(startDate)),
-                            style: CustomFont.headingEmpat(),
-                          )),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    AutoSizeText(
-                      'Selesai Cuti',
-                      style: CustomFont.headingEmpatSemiBold(),
-                      maxLines: 1,
-                    ),
-                    Consumer<MaxDateProvider>(
-                      builder: (ctxMaxDate, maxDateProvider, child) {
-                        return InkWell(
-                          onTap: () async {
-                            final selectedDate = await showDatePicker(
-                              builder: (BuildContext context, Widget? child) {
-                                return CustomDatePicker.primary(child!);
-                              },
-                              context: ctx,
-                              initialDate: endDate,
-                              firstDate: startDate,
-                              lastDate: maxDateProvider.date,
-                            );
-                            if (selectedDate != null) {
-                              setState(() {
-                                endDate = selectedDate;
-                                pickedCount = calculateDaysBetween(
-                                    startDate.toString(), endDate.toString());
-                              });
-                            }
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 6, horizontal: 12),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(width: 1, color: Colors.grey)),
-                              child: maxDateProvider.isLoading
-                                  ? Center(
-                                      child: LoadingAnimationWidget.waveDots(
-                                      color: CustomColor.primary(),
-                                      size: 20,
-                                    ))
-                                  : Text(
+                    Flexible(
+                      child: Scrollbar(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: AutoSizeText(
+                                      'Mulai Cuti',
+                                      style: CustomFont.headingEmpatSemiBold(),
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: AutoSizeText(
+                                      'Cuti sebelumnya: $cutiPicked',
+                                      textAlign: TextAlign.end,
+                                      style: CustomFont.headingEmpatSemiBold(),
+                                      maxLines: 1,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              InkWell(
+                                onTap: () async {
+                                  final selectedDate = await showDatePicker(
+                                    builder: (BuildContext context, Widget? child) {
+                                      return CustomDatePicker.primary(child!);
+                                    },
+                                    context: ctx,
+                                    initialDate: startDate,
+                                    firstDate:
+                                        DateTime.now().subtract(const Duration(days: 30)),
+                                    lastDate:
+                                        DateTime.now().add(const Duration(days: 365)),
+                                  );
+                              
+                                  if (selectedDate != null) {
+                                    setState(() {
+                                      startDate = selectedDate;
+                                      endDate = selectedDate;
+                                      pickedCount = calculateDaysBetween(
+                                          startDate.toString(), endDate.toString());
+                                    });
+                                  }
+                                },
+                                child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 6, horizontal: 12),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                        border: Border.all(width: 1, color: Colors.grey)),
+                                    child: Text(
                                       CustomConverter.dateToDay(
-                                          DateFormat('yyyy-MM-dd')
-                                              .format(maxDateProvider.date)),
+                                          DateFormat('yyyy-MM-dd').format(startDate)),
                                       style: CustomFont.headingEmpat(),
                                     )),
-                        );
-                      },
-                    ),
-                    /*InkWell(
-                      onTap: () async {
-                        final selectedDate = await showDatePicker(
-                          builder: (BuildContext context, Widget? child) {
-                            return CustomDatePicker.primary(child!);
-                          },
-                          context: ctx,
-                          initialDate: startDate,
-                          firstDate: startDate,
-                          lastDate: limitToEndOfYear(startDate,
-                              cutiPicked == 0 ? 1 : cutiPicked),
-                        );
-
-                        if (selectedDate != null) {
-                          setState(() {
-                            endDate = selectedDate;
-                            pickedCount = calculateDaysBetween(
-                                startDate.toString(), endDate.toString());
-                          });
-                        }
-                      },
-                      child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 6, horizontal: 12),
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                              border: Border.all(width: 1, color: Colors.grey)),
-                          child: Text(
-                            CustomConverter.dateToDay(
-                                DateFormat('yyyy-MM-dd').format(endDate)),
-                            style: CustomFont.headingEmpat(),
-                          )),
-                    ),*/
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    Text(
-                      'Alasan Cuti',
-                      style: CustomFont.headingEmpatSemiBold(),
-                    ),
-                    TextField(
-                      minLines: 3,
-                      maxLines: 5,
-                      controller: tfReason,
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6.0),
-                          borderSide: const BorderSide(
-                            color: Colors.grey, width: 2.0
-                          ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6.0),
-                          borderSide: const BorderSide(
-                            color: Colors.grey, width: 1.0
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          vertical: 8, 
-                          horizontal: 12
-                        )
-                      )
-                    ),
-                    const SizedBox(
-                      height: 3,
-                    ),
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: Text(
-                        'Cuti diambil: $pickedCount',
-                        style: CustomFont.headingLimaSemiBold(),
-                      )
-                    ),
-                    const SizedBox(height: 12,),
-                    InkWell(
-                      onTap: () async{
-                        final confirm = await ConfirmationDialog.confirmation(ctx, 'Ubah data cuti');
-                        if(confirm != true){
-                          return;
-                        }
-                        final response = await NetworkRequest.putCuti(data.id, DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
-                        if (response.state != true) {
-                          if (ctx.mounted) {
-                            NotificationStyle.warning(ctx, 'Gagal mengajukan ulang cuti', response.message);
-                          }
-                          return;
-                        }
-                        if (ctx.mounted) {
-                          NotificationStyle.info(ctx, 'Berhasil', response.message);
-                        }
-                        NavigationService.backWithData(true);
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 9),
-                        decoration: CustomContainer.buttonGreen(),
-                        child: Center(
-                          child: Text(
-                            'Ajukan Ulang',
-                            style: CustomFont.headingTigaSemiBoldSecondary(),
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              AutoSizeText(
+                                'Selesai Cuti',
+                                style: CustomFont.headingEmpatSemiBold(),
+                                maxLines: 1,
+                              ),
+                              Consumer<MaxDateProvider>(
+                                builder: (ctxMaxDate, maxDateProvider, child) {
+                                  return InkWell(
+                                    onTap: () async {
+                                      final selectedDate = await showDatePicker(
+                                        builder: (BuildContext context, Widget? child) {
+                                          return CustomDatePicker.primary(child!);
+                                        },
+                                        context: ctx,
+                                        initialDate: endDate,
+                                        firstDate: startDate,
+                                        lastDate: maxDateProvider.date,
+                                      );
+                                      if (selectedDate != null) {
+                                        setState(() {
+                                          endDate = selectedDate;
+                                          pickedCount = calculateDaysBetween(
+                                              startDate.toString(), endDate.toString());
+                                        });
+                                      }
+                                    },
+                                    child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 6, horizontal: 12),
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                            border:
+                                                Border.all(width: 1, color: Colors.grey)),
+                                        child: maxDateProvider.isLoading
+                                            ? Center(
+                                                child: LoadingAnimationWidget.waveDots(
+                                                color: CustomColor.primary(),
+                                                size: 20,
+                                              ))
+                                            : Text(
+                                                CustomConverter.dateToDay(
+                                                    DateFormat('yyyy-MM-dd')
+                                                        .format(maxDateProvider.date)),
+                                                style: CustomFont.headingEmpat(),
+                                              )),
+                                  );
+                                },
+                              ),
+                              const SizedBox(
+                                height: 12,
+                              ),
+                              Text(
+                                'Alasan Cuti',
+                                style: CustomFont.headingEmpatSemiBold(),
+                              ),
+                              TextField(
+                                minLines: 3,
+                                maxLines: 5,
+                                controller: tfReason,
+                                decoration: InputDecoration(
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.grey, width: 2.0
+                                    ),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(6.0),
+                                    borderSide: const BorderSide(
+                                      color: Colors.grey, width: 1.0
+                                    ),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 8, 
+                                    horizontal: 12
+                                  )
+                                )
+                              ),
+                              const SizedBox(
+                                height: 3,
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  'Cuti diambil: $pickedCount',
+                                  style: CustomFont.headingLimaSemiBold(),
+                                )
+                              ),
+                              const SizedBox(height: 12,),
+                              InkWell(
+                                onTap: () async{
+                                  final confirm = await ConfirmationDialog.confirmation(ctx, 'Ubah data cuti');
+                                  if(confirm != true){
+                                    return;
+                                  }
+                                  final response = await NetworkRequest.putCuti(data.id, DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
+                                  if (response.state != true) {
+                                    if (ctx.mounted) {
+                                      NotificationStyle.warning(ctx, 'Gagal mengajukan ulang cuti', response.message);
+                                    }
+                                    return;
+                                  }
+                                  if (ctx.mounted) {
+                                    NotificationStyle.info(ctx, 'Berhasil', response.message);
+                                  }
+                                  NavigationService.backWithData(true);
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 9),
+                                  decoration: CustomContainer.buttonGreen(),
+                                  child: Center(
+                                    child: Text(
+                                      'Ajukan Ulang',
+                                      style: CustomFont.headingTigaSemiBoldSecondary(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -853,25 +816,6 @@ class CutiDialog {
               ),
             );
           });
-      }
-    );
-    return result??false;
-  }
-
-  static Future<bool> testReturn(BuildContext ctx)async{
-    final result = await showDialog<bool>(
-      context: ctx, 
-      builder: (BuildContext ctxDialog){
-        return AlertDialog(
-          content: Column(
-            children: [
-              ElevatedButton(
-                onPressed: (){
-                  Navigator.pop(ctx, false);
-                }, child: Text('back'))
-            ],
-          ),
-        );
       }
     );
     return result??false;

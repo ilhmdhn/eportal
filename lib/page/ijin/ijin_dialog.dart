@@ -6,8 +6,8 @@ import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
-import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/provider/max_date.dart';
+import 'package:eportal/style/custom_button.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -18,7 +18,6 @@ import 'package:eportal/data/network/response/base_response.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:eportal/util/time_diff.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -656,6 +655,9 @@ class IjinDialog{
                 actionsPadding: const EdgeInsets.all(0),
                 contentPadding: const EdgeInsets.all(0),
                 content: Container(
+                  constraints: BoxConstraints(
+                    maxHeight: ScreenSize.setHeightPercent(ctx, 70)
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   width: ScreenSize.setWidthPercent(ctx, 85),
                   decoration: BoxDecoration(
@@ -685,80 +687,81 @@ class IjinDialog{
                           height: 12,
                       ),
                       Flexible(
-                        child: SingleChildScrollView(
-                          
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AutoSizeText(
-                                'Tanggal',
-                                style: CustomFont.headingEmpatSemiBold(),
-                                maxLines: 1,
-                              ),
-                              const SizedBox(
-                                height: 2,
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  final selectedDate = await showDatePicker(
-                                    builder: (BuildContext context, Widget? child) {
-                                      return CustomDatePicker.primary(child!);
-                                    },
-                                    context: ctx,
-                                    initialDate: startDate,
-                                    firstDate: DateTime.now().subtract(const Duration(days: 30)),
-                                    lastDate: DateTime.now().add(const Duration(days: 365)),
-                                  );
-                                        
-                                  if (selectedDate != null) {
-                                    setState(() {
-                                      startDate = selectedDate;
-                                      updateMaxDate();
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 6, horizontal: 12),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(width: 1, color: Colors.grey)),
-                                    child: Text(
-                                      CustomConverter.dateToDay(
-                                          DateFormat('yyyy-MM-dd').format(startDate)),
-                                      style: CustomFont.headingEmpat(),
-                                    )),
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              AutoSizeText(
-                                'Tipe Izin',
-                                style: CustomFont.headingEmpatSemiBold(),
-                                maxLines: 1,
-                              ),
-                              DropdownMenu<String>(
-                                  onSelected: (value) {
-                                    setState((){
-                                      selectedType = value!;
-                                    });
-                                    updateMaxDate();
+                        child: Scrollbar(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AutoSizeText(
+                                  'Tanggal',
+                                  style: CustomFont.headingEmpatSemiBold(),
+                                  maxLines: 1,
+                                ),
+                                const SizedBox(
+                                  height: 2,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    final selectedDate = await showDatePicker(
+                                      builder: (BuildContext context, Widget? child) {
+                                        return CustomDatePicker.primary(child!);
+                                      },
+                                      context: ctx,
+                                      initialDate: startDate,
+                                      firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                                      lastDate: DateTime.now().add(const Duration(days: 365)),
+                                    );
+                                          
+                                    if (selectedDate != null) {
+                                      setState(() {
+                                        startDate = selectedDate;
+                                        updateMaxDate();
+                                      });
+                                    }
                                   },
-                                  menuStyle: const MenuStyle(
-                                    backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
-                                  ),
-                                  width: ScreenSize.setWidthPercent(ctx, 85) - 24,
-                                  menuHeight: ScreenSize.setHeightPercent(ctx, 30),
-                                  initialSelection: tipeIjin.first,
-                                  dropdownMenuEntries: tipeIjin
-                                      .map<DropdownMenuEntry<String>>((String value) {
-                                    return DropdownMenuEntry<String>(
-                                        value: value, label: value);
-                                  }).toList(),
-                              ),
-                              formByType(selectedType),
-                            ],
+                                  child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 6, horizontal: 12),
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                          border: Border.all(width: 1, color: Colors.grey)),
+                                      child: Text(
+                                        CustomConverter.dateToDay(
+                                            DateFormat('yyyy-MM-dd').format(startDate)),
+                                        style: CustomFont.headingEmpat(),
+                                      )),
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                AutoSizeText(
+                                  'Tipe Izin',
+                                  style: CustomFont.headingEmpatSemiBold(),
+                                  maxLines: 1,
+                                ),
+                                DropdownMenu<String>(
+                                    onSelected: (value) {
+                                      setState((){
+                                        selectedType = value!;
+                                      });
+                                      updateMaxDate();
+                                    },
+                                    menuStyle: const MenuStyle(
+                                      backgroundColor: WidgetStatePropertyAll<Color>(Colors.white),
+                                    ),
+                                    width: ScreenSize.setWidthPercent(ctx, 85) - 24,
+                                    menuHeight: ScreenSize.setHeightPercent(ctx, 30),
+                                    initialSelection: tipeIjin.first,
+                                    dropdownMenuEntries: tipeIjin
+                                        .map<DropdownMenuEntry<String>>((String value) {
+                                      return DropdownMenuEntry<String>(
+                                          value: value, label: value);
+                                    }).toList(),
+                                ),
+                                formByType(selectedType),
+                              ],
+                            ),
                           ),
                         ),
                       ),
@@ -797,12 +800,12 @@ class IjinDialog{
                             }
                             networkResponse = await NetworkRequest.postIzin('5',DateFormat('yyyy-MM-dd').format(startDate),DateFormat('yyyy-MM-dd').format(endDate), CustomConverter.time(startTime), CustomConverter.time(endTime), tfReason.text, doctorLetter);
                           } else if(selectedType == 'Izin Menikah'){
-                            if(isNotNullOrEmpty(selectedImage?.path)){
+                            if(isNullOrEmpty(selectedImage?.path)){
                               return ShowToast.error('Undangan tidak ada');
                             }
                             networkResponse = await NetworkRequest.postIjinBukti('7', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), selectedImage!.path);
                           } else if(selectedType == 'Izin Melahirkan'){
-                            if (isNotNullOrEmpty(file?.paths[0])) {
+                            if (isNullOrEmpty(file?.paths[0])) {
                               return ShowToast.error('Dokumen hpl tidak ada');
                             }
                             networkResponse = await NetworkRequest.postIjinBukti('8', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), file!.paths[0]!);                            
@@ -1076,40 +1079,44 @@ class IjinDialog{
           content: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
             width: ScreenSize.setWidthPercent(ctx, 85),
+            constraints: BoxConstraints(
+              maxHeight: ScreenSize.setHeightPercent(ctx, 70)
+            ),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20)
             ),
             child: Column(
-              mainAxisSize: MainAxisSize.min, // Batasi ukuran berdasarkan konten
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                  const SizedBox(
-                    width: 24,
-                  ),
-                  AutoSizeText(
-                    data.type == 1?
-                    'Izin Terlambat':
-                    data.type == 2?
-                    'Izin Pulang Cepat':
-                    data.type == 3?
-                    'Izin Keluar Kantor':
-                    data.type == 4?
-                    'Izin Tidak Masuk Kerja':
-                    data.type == 5?
-                    'Izin Sakit':
-                    data.type == 6?
-                    'Izin Lain':
-                    data.type == 7?
-                    'Izin Menikah':
-                    data.type == 8?
-                    'Izin Melahirkan':
-                    'Izin Tidak diketahui',
-                    style: CustomFont.headingTigaSemiBold(),
-                  ),
-                  InkWell(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    AutoSizeText(
+                      data.type == 1?
+                      'Izin Terlambat':
+                      data.type == 2?
+                      'Izin Pulang Cepat':
+                      data.type == 3?
+                      'Izin Keluar Kantor':
+                      data.type == 4?
+                      'Izin Tidak Masuk Kerja':
+                      data.type == 5?
+                      'Izin Sakit':
+                      data.type == 6?
+                      'Izin Lain':
+                      data.type == 7?
+                      'Izin Menikah':
+                      data.type == 8?
+                      'Izin Melahirkan':
+                      'Izin Tidak diketahui',
+                      style: CustomFont.headingTigaSemiBold(),
+                    ),
+                    InkWell(
                       onTap: () async {
                         NavigationService.back();
                       },
@@ -1118,91 +1125,109 @@ class IjinDialog{
                         child: Icon(Icons.close),
                       ),
                     ),
-                 ],
-               ),
-               const SizedBox(height: 12,),
-               universalDescription('Tanggal', CustomConverter.dateToDay(data.startDate.toString())),
-               const SizedBox(height: 12,),
-               detailWidget(),
-               data.state == 3?
-               Column(
-                children: [
-                  const SizedBox(height: 12,),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Alasan Ditolak', style: CustomFont.headingEmpatSemiBoldRed(),
-                      ),
-                      const SizedBox(
-                        height: 2,
-                      ),
-                      TextField(
-                        minLines: 3,
-                        maxLines: 5,
-                        readOnly: true,
-                        controller: TextEditingController(text: data.rejectReason??''),
-                        decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6.0),
-                          borderSide: const BorderSide(color: Colors.grey, width: 2.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(6.0),
-                          borderSide: const BorderSide(color: Colors.grey, width: 1.0),
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12))),
-                    ],
-                  ),
-                ],
-               ): const SizedBox(),
+                  ],
+                ),
                 const SizedBox(height: 12,),
-               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TimeDiff.dateSameOrAfterNow(data.startDate!) && (data.state == 1 || data.state == 2)?
-                  InkWell(
-                    onTap: () async{
-                      NavigationService.backWithData(true);
-                    },
-                    child: Container(
-                      decoration: CustomContainer.buttonYellow(),
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                      child: Row(
+                Flexible(
+                  child: Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Icon(Icons.edit, color: Colors.white, size: 16,),
-                          Text('Ubah', style: CustomFont.headingEmpatSecondary(),),
+                          universalDescription('Tanggal', CustomConverter.dateToDay(data.startDate.toString())),
+                          const SizedBox(height: 12,),
+                          Text('Status', style: CustomFont.headingEmpatSemiBold(),),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              border: Border.all(
+                                color: Colors.grey, width: 1.0
+                              )
+                            ),
+                            child: 
+                              data.state == 1? Text('Menunggu', style: CustomFont.headingEmpatWarning()):
+                              data.state == 2? Text('Desetujui', style: CustomFont.headingEmpatApprove()):
+                              data.state == 3? Text('Ditolak', style: CustomFont.headingEmpatReject()):
+                              data.state == 4? Text('Dibatalkan', style: CustomFont.headingEmpatReject()):const SizedBox()
+                          ),
+                          const SizedBox(height: 12,),
+                          detailWidget(),
+                          data.state == 3?
+                          Column(
+                            children: [
+                              const SizedBox(height: 12,),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Alasan Ditolak', style: CustomFont.headingEmpatSemiBoldRed(),
+                                  ),
+                                  const SizedBox(
+                                    height: 2,
+                                  ),
+                                  TextField(
+                                    minLines: 3,
+                                    maxLines: 5,
+                                    readOnly: true,
+                                    controller: TextEditingController(text: data.rejectReason??''),
+                                    decoration: InputDecoration(
+                                    focusedBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: const BorderSide(color: Colors.grey, width: 2.0),
+                                    ),
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(6.0),
+                                      borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                                    ),
+                                    contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12))),
+                                ],
+                              ),
+                            ],
+                          ): const SizedBox(),
+                          const SizedBox(height: 12,),
+                          Row(
+                           mainAxisAlignment: MainAxisAlignment.end,
+                           children: [
+                             data.editable == true?
+                             InkWell(
+                               onTap: (){
+                                 NavigationService.back();
+                                 IjinDialog.showEditIjinDialog(ctx, data);
+                               },
+                               child: CustomButton.edit()
+                             ): const SizedBox(),
+                             const SizedBox(width: 6,),
+                             data.cancelable == true?
+                             InkWell(
+                               onTap: () async{
+                                 final cancelState = await ConfirmationDialog.confirmation(ctx, 'Batalkan Izin?');
+                                 if(cancelState){
+                                   final cancelResponse = await NetworkRequest.cancelIzin(data.id??'');
+                                   if(cancelResponse.state == true){
+                                     if(ctx.mounted){
+                                       NotificationStyle.info(ctx, 'Berhasil', 'Izin dibatalkan');
+                                     }
+                                     NavigationService.backWithData(true);
+                                   }else{
+                                     if (ctx.mounted) {
+                                       NotificationStyle.info(ctx, 'Gagal', 'Gagal membatalkan izin');
+                                     }
+                                   }
+                                 }
+                               },
+                               child: CustomButton.cancel()
+                             ): const SizedBox()
+                           ],
+                          ),
                         ],
                       ),
                     ),
-                  ): const SizedBox(),
-                  const SizedBox(width: 6,),
-                  TimeDiff.dateSameOrAfterNow(data.startDate!) && data.state != 4?
-                  InkWell(
-                    onTap: () async{
-                      final cancelState = await ConfirmationDialog.confirmation(ctx, 'Batalkan Izin?');
-                      if(cancelState){
-                        final cancelResponse = await NetworkRequest.cancelIzin(data.id??'');
-                        if(cancelResponse.state == true){
-                          if(ctx.mounted){
-                            NotificationStyle.info(ctx, 'Berhasil', 'Izin dibatalkan');
-                          }
-                          NavigationService.back();
-                          NavigationService.replacePage(IjinPage.nameRoute);
-                        }else{
-                          if (ctx.mounted) {
-                            NotificationStyle.info(ctx, 'Gagal', 'Gagal membatalkan izin');
-                          }
-                        }
-                      }
-                    },
-                    child: Container(
-                      decoration: CustomContainer.buttonCancel(),
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                      child: Text('Batalkan', style: CustomFont.headingEmpatSecondary(),),
-                    ),
-                  ): const SizedBox()
-                ],
-               )
+                  ),
+                )
               ],
             ),
           ),
@@ -1275,14 +1300,13 @@ class IjinDialog{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 6, horizontal: 12),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: Colors.grey)),
+                    padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                    decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
+                          
                           padding: const EdgeInsets.all(3),
                           child: Row(
                             children: [
@@ -1926,6 +1950,7 @@ class IjinDialog{
                 actionsPadding: const EdgeInsets.all(0),
                 contentPadding: const EdgeInsets.all(0),
                 content: Container(
+                  constraints: BoxConstraints(maxHeight: ScreenSize.setHeightPercent(ctx, 70)),
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
                   width: ScreenSize.setWidthPercent(ctx, 85),
                   decoration: BoxDecoration(
@@ -1979,54 +2004,56 @@ class IjinDialog{
                         height: 12,
                       ),
                       Flexible(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              AutoSizeText(
-                                'Tanggal',
-                                style: CustomFont.headingEmpatSemiBold(),
-                                maxLines: 1,
-                              ),
-                              const SizedBox(
-                                height: 2,
-                              ),
-                              InkWell(
-                                onTap: () async {
-                                  final selectedDate = await showDatePicker(
-                                    builder:(BuildContext context, Widget? child) {
-                                      return CustomDatePicker.primary(child!);
-                                    },
-                                    context: ctx,
-                                    initialDate: startDate,
-                                    firstDate: DateTime.now().subtract(const Duration(days: 30)),
-                                    lastDate: DateTime.now().add(const Duration(days: 365)),
-                                  );
-
-                                  if (selectedDate != null) {
-                                    setState(() {
-                                      startDate = selectedDate;
-                                      endDate =selectedDate;
-                                      updateMaxDate();
-                                    });
-                                  }
-                                },
-                                child: Container(
-                                    padding: const EdgeInsets.symmetric( vertical: 6, horizontal: 12),
-                                    width: double.infinity,
-                                    decoration: BoxDecoration(border: Border.all( width: 1, color: Colors.grey)),
-                                    child: Text(
-                                      CustomConverter.dateToDay(
-                                          DateFormat('yyyy-MM-dd').format(startDate)),
-                                      style: CustomFont.headingEmpat(),
-                                    )),
-                              ),
-                              const SizedBox(
-                                height: 12,
-                              ),
-                              formByType(),
-                            ],
+                        child: Scrollbar(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                AutoSizeText(
+                                  'Tanggal',
+                                  style: CustomFont.headingEmpatSemiBold(),
+                                  maxLines: 1,
+                                ),
+                                const SizedBox(
+                                  height: 2,
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    final selectedDate = await showDatePicker(
+                                      builder:(BuildContext context, Widget? child) {
+                                        return CustomDatePicker.primary(child!);
+                                      },
+                                      context: ctx,
+                                      initialDate: startDate,
+                                      firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                                      lastDate: DateTime.now().add(const Duration(days: 365)),
+                                    );
+                          
+                                    if (selectedDate != null) {
+                                      setState(() {
+                                        startDate = selectedDate;
+                                        endDate =selectedDate;
+                                        updateMaxDate();
+                                      });
+                                    }
+                                  },
+                                  child: Container(
+                                      padding: const EdgeInsets.symmetric( vertical: 6, horizontal: 12),
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(border: Border.all( width: 1, color: Colors.grey)),
+                                      child: Text(
+                                        CustomConverter.dateToDay(
+                                            DateFormat('yyyy-MM-dd').format(startDate)),
+                                        style: CustomFont.headingEmpat(),
+                                      )),
+                                ),
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                formByType(),
+                              ],
+                            ),
                           ),
                         ),
                       ),

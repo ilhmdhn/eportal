@@ -71,9 +71,6 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 16, color: Colors.amber.shade900);
   }
 
-  static TextStyle headingEmpatApprove() {
-    return GoogleFonts.poppins(fontSize: 16, color: Colors.green, fontWeight: FontWeight.w500);
-  }
 
   static TextStyle headingTigaBold() {
     return GoogleFonts.poppins(fontSize: 18, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
@@ -130,6 +127,14 @@ class CustomFont{
         fontSize: 16, color: Colors.black, fontWeight: FontWeight.w500);
   }
 
+    static TextStyle headingEmpatWaiting() {
+    return GoogleFonts.poppins(fontSize: 16, color: Colors.amber.shade600);
+  }
+
+  static TextStyle headingEmpatApprove() {
+    return GoogleFonts.poppins(fontSize: 16, color: Colors.green, fontWeight: FontWeight.w500);
+  }
+
   static TextStyle headingEmpatReject() {
     return GoogleFonts.poppins(
         fontSize: 16, color: Colors.red, fontWeight: FontWeight.w500);
@@ -154,6 +159,10 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black);
   }
 
+  static TextStyle headingLimaAmber() {
+    return GoogleFonts.poppins(fontSize: 14, color: Colors.amber.shade900);
+  }
+
   static TextStyle headingLimaSecondary() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.white);
   }
@@ -167,8 +176,11 @@ class CustomFont{
   }
 
   static TextStyle headingLimaWarning() {
-    return GoogleFonts.poppins(
-        fontSize: 14, color: Colors.red, fontWeight: FontWeight.w500);
+    return GoogleFonts.poppins(fontSize: 14, color: Colors.red, fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle headingLimaRed() {
+    return GoogleFonts.poppins(fontSize: 14, color: Colors.red, fontWeight: FontWeight.w500);
   }
 
   static TextStyle headingLimaColor() {
