@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/overtime_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
+import 'package:eportal/style/custom_button.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -14,8 +15,6 @@ import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class OvertimeDialog{
@@ -458,38 +457,15 @@ class OvertimeDialog{
                       height: 12,
                     ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            AutoSizeText('Status', style: CustomFont.headingEmpatSemiBold(), maxLines: 1,),
-                            Text('Menunggu Persetujuan', style: CustomFont.headingEmpatWarning(),),
-                          ], 
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
-                              width: 0.4,
-                              color: Colors.black
-                            )
-                          ),
-                          child: InkWell(
-                            onTap: (){
-                              NavigationService.back();
-                              OvertimeDialog.editOvertimeDialog(ctx, data);
-                            },
-                            child: Row(
-                              children: [
-                                Icon(Icons.edit, size: 16, color: Colors.amber.shade900,),
-                                const SizedBox(width: 3,),
-                                AutoSizeText('Ubah', style: CustomFont.headingLima(),)
-                              ],
-                            ),
-                          ),
+                        InkWell(
+                          onTap: (){
+                            NavigationService.back();
+                            OvertimeDialog.editOvertimeDialog(ctx, data);
+                          },
+                          child: CustomButton.edit()
                         )
                       ],
                     ),

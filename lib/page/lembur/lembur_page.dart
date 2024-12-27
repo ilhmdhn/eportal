@@ -145,49 +145,35 @@ class OvertimePageState extends State<OvertimePage> {
                           onTap: (){
                             OvertimeDialog.showOvertimeDetail(context, data);
                           },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  AutoSizeText(CustomConverter.dateTimeToDay(data.date), style: CustomFont.headingLimaSemiBold()),
-                                  const SizedBox(height: 6,),
-                                  Row(
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      AutoSizeText(CustomConverter.time(data.startTime), style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500),),
-                                      Text(' - ', style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500)),
-                                      AutoSizeText(CustomConverter.time(data.finishTime), style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500)),
+                                      AutoSizeText(CustomConverter.dateTimeToDay(data.date), style: CustomFont.headingLimaSemiBold()),
+                                      const SizedBox(height: 2,),
+                                      Row(
+                                        children: [
+                                          AutoSizeText(CustomConverter.time(data.startTime), style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500),),
+                                          Text(' - ', style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500)),
+                                          AutoSizeText(CustomConverter.time(data.finishTime), style: GoogleFonts.poppins(fontSize: 13, color: CustomColor.fontStandart(), fontWeight: FontWeight.w500)),
+                                        ],
+                                      )
                                     ],
-                                  )
+                                  ),
+                                  data.state == 1? Text('Menunggu', style: CustomFont.headingEmpatWaiting()):
+                                  data.state == 2? Text('Disetujui', style: CustomFont.headingEmpatApprove()):
+                                  data.state == 3? Text('Ditolak', style: CustomFont.headingEmpatReject())
+                                  :
+                                  const SizedBox()
                                 ],
                               ),
-                              data.state == 2?
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Icon(Icons.approval, color: Colors.green.shade800, size: 19),
-                                  Text('Disetujui', style: GoogleFonts.poppins(fontSize: 14, color: Colors.green.shade800, fontWeight: FontWeight.w600))
-                                ],
-                              ):
-                              data.state == 1?
-                              Column(
-
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Icon(Icons.wifi_protected_setup_rounded, size: 19, color: Colors.amber.shade800,),
-                                  Text('Menunggu', style: GoogleFonts.poppins(fontSize: 14, color: Colors.amber.shade800, fontWeight: FontWeight.w600))
-                                ],
-                              ):
-                              data.state == 3?
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Icon(Icons.cancel_outlined, color: Colors.red.shade800, size: 19),
-                                  Text('Ditolak', style: GoogleFonts.poppins(fontSize: 14, color: Colors.red.shade800, fontWeight: FontWeight.w600))
-                                ],
-                              ):
-                              SizedBox()
+                              Text(data.reason, style: CustomFont.headingLima(), overflow: TextOverflow.ellipsis, maxLines: 1,)
                             ],
                           ),
                         ),

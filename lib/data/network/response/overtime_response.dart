@@ -32,6 +32,8 @@ class OvertimeModel{
   String name;
   DateTime date;
   int state;
+  bool editable;
+  bool cancelable;
   String reason;
   String rejectReason;
   TimeOfDay startTime;
@@ -43,6 +45,8 @@ class OvertimeModel{
     required this.outlet,
     required this.nip,
     required this.name,
+    required this.editable,
+    required this.cancelable,
     required this.date,
     required this.state,
     required this.reason,
@@ -53,22 +57,13 @@ class OvertimeModel{
   });
 
   factory OvertimeModel.fromJson(Map<String, dynamic>json){
-    // print('DEBUGGING Cek Datanya ID ${json['ID']}');
-    // print('DEBUGGING Cek Datanya Outlet ${json['Outlet']}');
-    // print('DEBUGGING Cek Datanya NIP ${json['NIP']}');
-    // print('DEBUGGING Cek Datanya Name ${json['Name']}');
-    // print('DEBUGGING Cek Datanya Tanggal ${DateTime.parse(json['Tanggal'])}');
-    // print('DEBUGGING Cek Datanya Status ${json['Status']}');
-    // print('DEBUGGING Cek Datanya Keperluan ${json['Keperluan']}');
-    // print('DEBUGGING Cek Datanya RejectComment ${json['RejectComment']??''}');
-    // print('DEBUGGING Cek Datanya WaktuMulai ${json['Form']['WaktuMulai']}');
-    // print('DEBUGGING Cek Datanya WaktuSelesai ${json['Form']['WaktuSelesai']}');
-    // print('DEBUGGING Cek Datanya Penugas ${json['Form']['Penugas']}');
     return OvertimeModel(
         id: json['ID'],
         outlet: json['Outlet'],
         nip: json['NIP'],
         name: json['Name'],
+        editable: json['editable'],
+        cancelable: json['cancellable'],
         date: DateTime.parse(json['Tanggal']),
         state: json['Status'],
         reason: json['Keperluan'],

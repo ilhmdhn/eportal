@@ -128,7 +128,7 @@ class CustomFont{
   }
 
     static TextStyle headingEmpatWaiting() {
-    return GoogleFonts.poppins(fontSize: 16, color: Colors.amber.shade600);
+    return GoogleFonts.poppins(fontSize: 16, color: Colors.amber.shade800);
   }
 
   static TextStyle headingEmpatApprove() {
