@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
+import 'package:eportal/page/cuti/cuti_page.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/style/custom_button.dart';
@@ -791,7 +792,8 @@ class CutiDialog {
                                   if (ctx.mounted) {
                                     NotificationStyle.info(ctx, 'Berhasil', response.message);
                                   }
-                                  NavigationService.backWithData(true);
+                                  NavigationService.back();
+                                  NavigationService.replacePage(CutiPage.nameRoute);
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(vertical: 9),

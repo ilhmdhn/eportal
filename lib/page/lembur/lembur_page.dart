@@ -9,6 +9,7 @@ import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class OvertimePage extends StatefulWidget {
@@ -38,6 +39,17 @@ class OvertimePageState extends State<OvertimePage> {
         listOvertime = networkResponse.data!;
       });
     }
+  }
+
+  void refreshData()async{
+    EasyLoading.show();
+    final refreshResponse = await NetworkRequest.getOvertime();
+    if(refreshResponse.state){
+      setState(() {
+        listOvertime = refreshResponse.data??[];
+      });
+    }
+    EasyLoading.dismiss();
   }
 
   @override
@@ -104,8 +116,11 @@ class OvertimePageState extends State<OvertimePage> {
                                       borderRadius: BorderRadius.circular(3)
                                     ),
                                     child: InkWell(
-                                      onTap: (){
-                                        OvertimeDialog.showOvertimeDialog(context);
+                                      onTap: ()async{
+                                        final refresh = await OvertimeDialog.showOvertimeDialog(context);
+                                        if(refresh){
+                                          refreshData();
+                                        }
                                       },
                                       child: Row(
                                         children: [

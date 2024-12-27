@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/overtime_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
+import 'package:eportal/page/lembur/lembur_page.dart';
 import 'package:eportal/style/custom_button.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
@@ -18,7 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class OvertimeDialog{
-  static void showOvertimeDialog(BuildContext ctx){
+  static Future<bool> showOvertimeDialog(BuildContext ctx)async{
     final listInstructor = DummyData.getInstructorOvertime();
     String instructorSelected = listInstructor.first;
     DateTime startDate = DateTime.now();
@@ -26,7 +27,7 @@ class OvertimeDialog{
     TimeOfDay endTime = TimeOfDay.now();
     TextEditingController tfReason = TextEditingController();
     
-    showDialog(
+    final result = await showDialog(
       context: ctx, 
       builder: (BuildContext ctx){
         return StatefulBuilder(
@@ -311,7 +312,7 @@ class OvertimeDialog{
                                       if(ctx.mounted){
                                         NotificationStyle.info(ctx, "Berhasil", 'Lembur Diajukan');
                                       }
-                                      NavigationService.back();
+                                      NavigationService.backWithData(true);
                                     }  
                                   },
                                   child: Container(
@@ -336,6 +337,7 @@ class OvertimeDialog{
           }
         );
       });
+    return result??false;
   }
 
   static void showOvertimeDetail(BuildContext ctx, OvertimeModel data){
@@ -863,9 +865,10 @@ class OvertimeDialog{
                                   } else {
                                     if (ctx.mounted) {
                                       NotificationStyle.info(
-                                          ctx, "Berhasil", 'Lembur Diajukan');
+                                          ctx, "Berhasil", networkResponse.message);
                                     }
                                     NavigationService.back();
+                                    NavigationService.replacePage(OvertimePage.nameRoute);
                                   }
                                 },
                                 child: Container(

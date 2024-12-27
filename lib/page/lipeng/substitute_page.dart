@@ -8,6 +8,7 @@ import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SubstitutePage extends StatefulWidget {
   static const nameRoute = '/substitute';
@@ -42,6 +43,17 @@ class _SubstitutePageState extends State<SubstitutePage> {
     });
   }
 
+  void refreshData()async{
+    EasyLoading.show();
+
+    final networkResponse = await NetworkRequest.getLipeng();
+    setState(() {
+      listLipeng = networkResponse.data??[];
+    });
+
+    EasyLoading.dismiss();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -69,9 +81,7 @@ class _SubstitutePageState extends State<SubstitutePage> {
             right: 12,
             top: 6,
             left: 12,
-            child: listLipeng.isEmpty?
-              const SizedBox():
-              Column(
+            child: Column(
                 children: [
                   Container(
                   width: double.infinity,
@@ -108,8 +118,11 @@ class _SubstitutePageState extends State<SubstitutePage> {
                                     borderRadius: BorderRadius.circular(3)
                                   ),
                                   child: InkWell(
-                                    onTap: (){
-                                      SubstituteDialog.showAddLipengDialog(context);
+                                    onTap: ()async {
+                                      final refresh = await SubstituteDialog.showAddLipengDialog(context);
+                                      if(refresh){
+                                        refreshData();
+                                      }
                                     },
                                     child: Row(
                                       children: [
@@ -128,73 +141,51 @@ class _SubstitutePageState extends State<SubstitutePage> {
                   ),
                 ),
                 const SizedBox(height: 12,),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: listLipeng.length,
-                      itemBuilder: (ctxList, index){
-                        final data = listLipeng[index];
-                        return Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                          margin: const EdgeInsets.only(bottom: 3),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(
-                              width: 0.3,
-                              color: Colors.black
-                            ),
-                            borderRadius: BorderRadius.circular(12)
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: listLipeng.length,
+                    itemBuilder: (ctxList, index){
+                      final data = listLipeng[index];
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                        margin: const EdgeInsets.only(bottom: 3),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 0.3,
+                            color: Colors.black
                           ),
-                          child: InkWell(
-                            onTap: (){
-                              SubstituteDialog.showDetailLipengDialog(context, data);
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      AutoSizeText(CustomConverter.dateTimeToDay(data.dateFurlough), style: CustomFont.headingLimaSemiBold(),),
-                                      Text(data.reason, style: CustomFont.standartFont(), maxLines: 1, overflow: TextOverflow.ellipsis,)
-                                    ],
+                          borderRadius: BorderRadius.circular(12)
+                        ),
+                        child: InkWell(
+                          onTap: (){
+                            SubstituteDialog.showDetailLipengDialog(context, data);
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: AutoSizeText(CustomConverter.dateTimeToDay(data.dateFurlough), style: CustomFont.headingEmpatSemiBold(),),
                                   ),
-                                ),
-                                data.state == 1 ?
-                                SizedBox(
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.filter_list_alt, color: Colors.yellow.shade900,),
-                                      Text('Menunggu', style: CustomFont.headingLimaWarning())
-                                    ],
-                                  ),
-                                ):
-                                data.state == 2 ?
-                                SizedBox(
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.check, color: Colors.green.shade900,),
-                                      Text('Disetujui', style: CustomFont.headingLimaWarning())
-                                    ],
-                                  ),
-                                ):
-                                data.state == 3 ?
-                                Column(
-                                  children: [
-                                    Icon(Icons.close, color: Colors.red.shade900,),
-                                    Text('Ditolak', style: CustomFont.headingLimaWarning())
-                                  ],
-                                ):
-                                const SizedBox()
-                              ],
-                            ),
+                                  data.state == 1 ? Text('Menunggu', style: CustomFont.headingEmpatWaiting()):
+                                  data.state == 2 ? Text('Disetujui', style: CustomFont.headingEmpatApprove()):
+                                  data.state == 3 ? Text('Ditolak', style: CustomFont.headingEmpatReject()):
+                                  const SizedBox()
+                                ],
+                              ),
+                              Text(data.reason, style: CustomFont.headingLima(), maxLines: 1, overflow: TextOverflow.ellipsis,)
+                            ],
                           ),
-                        );
-                      }
-                    ),
+                        ),
+                      );
+                    }
                   ),
-                ],
-              )
+                ),
+              ],
+            )
           ),
         ],
       ),

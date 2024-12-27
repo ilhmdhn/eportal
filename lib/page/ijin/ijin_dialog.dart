@@ -6,6 +6,7 @@ import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
+import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/style/custom_button.dart';
 import 'package:eportal/style/custom_container.dart';
@@ -2184,7 +2185,8 @@ class IjinDialog{
                             }
                             NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
                           }
-                          NavigationService.backWithData(true);
+                          NavigationService.back();
+                          NavigationService.replacePage(IjinPage.nameRoute);
                         },
                         child: Container(
                           margin: const EdgeInsets.only(top: 12),

@@ -27,6 +27,8 @@ class SubstitutionModel{
   String name;
   int overtime;
   DateTime dateSource;
+  bool editable;
+  bool cancelable;
   DateTime dateFurlough;
   String reason;
   String rejectReason;
@@ -38,6 +40,8 @@ class SubstitutionModel{
     required this.nip,
     required this.name,
     required this.overtime,
+    required this.editable,
+    required this.cancelable,
     required this.dateSource,
     required this.dateFurlough,
     required this.reason,
@@ -52,6 +56,8 @@ class SubstitutionModel{
         nip: json['nip'], 
         overtime: json['overtime'],
         name: json['name'], 
+        editable: json['editable'], 
+        cancelable: json['cancellable'], 
         dateSource: DateTime.parse(json['date_source']), 
         dateFurlough: DateTime.parse(json['date_furlough']), 
         reason: json['reason'], 
