@@ -65,6 +65,7 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
   }
 
   void initLocation()async{
+    print('DEBUGGING INIT LOCATION');
     PermissionStatus permissionGranted = await _location.hasPermission();
 
     if(permissionGranted == PermissionStatus.denied){
@@ -72,6 +73,8 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
       if(permissionGranted != PermissionStatus.granted){
         ShowToast.error('Izinkan akses lokasi terlebih dulu');
         return;
+      }else{
+        initLocation();
       }
     }else{
       _permissionEnabled = true;
@@ -246,11 +249,13 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                               alignment: Alignment.center,
                                               child: InkWell(
                                                 onTap: ()async {
-                                                  await ph.openAppSettings();
-                                                  setState(() {
+                                                  final state = await ph.openAppSettings();
+                                                  if(state){
+                                                    setState(() {
                                                     
-                                                  });
-                                                  initLocation();
+                                                    });
+                                                    initLocation();
+                                                  }
                                                 },
                                                 child: Container(
                                                   decoration: CustomContainer.buttonPrimary(),

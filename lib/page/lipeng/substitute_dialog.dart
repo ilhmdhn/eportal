@@ -309,6 +309,7 @@ class SubstituteDialog{
                   child: Scrollbar(
                     child: SingleChildScrollView(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AutoSizeText(
                             'Tanggal Libur',
@@ -523,6 +524,7 @@ class SubstituteDialog{
                       child: Scrollbar(
                         child: SingleChildScrollView(
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AutoSizeText(
                                 'Tanggal Libur',

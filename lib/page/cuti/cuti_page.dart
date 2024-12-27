@@ -9,7 +9,6 @@ import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CutiPage extends StatefulWidget {
   static const nameRoute = '/cuti';

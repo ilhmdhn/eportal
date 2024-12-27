@@ -7,6 +7,7 @@ import 'package:eportal/data/model/profile.dart';
 import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
+import 'package:eportal/page/dialog/viewer_dialog.dart';
 import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/page/lembur/lembur_page.dart';
@@ -40,7 +41,7 @@ class _DashboardPageState extends State<DashboardPage> {
   bool darkMode = false;
   List<String> getPhotos = DummyData.getImage();
   static final baseUrl = dotenv.env['SERVER_URL'];
-  Uri photoUrl = Uri.parse('$baseUrl/uploads/ProfilePicture/${Profile.getProfile().nip}.jpg}');
+  Uri photoUrl = Uri.parse('$baseUrl/uploads/ProfilePicture/${Profile.getProfile().nip}.jpg');
   @override
   Widget build(BuildContext context) {
     bool biometricState = SharedPreferencesData.getBiometric();
@@ -69,10 +70,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                 fit: BoxFit.cover,
                                 errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red,),
                               ),
-                              /*Image.network(
-                                'https://img.freepik.com/free-photo/smiling-young-male-professional-standing-with-arms-crossed-while-making-eye-contact-against-isolated-background_662251-838.jpg?semt=ais_hybrid',
-                                fit: BoxFit.cover,
-                              ),*/
                             ),
                           ),
                           const SizedBox(
@@ -254,21 +251,18 @@ class _DashboardPageState extends State<DashboardPage> {
                                   ),
                                   Row( crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      ClipOval(
-                                        child: SizedBox.fromSize(
-                                          size: const Size.fromRadius(31),
-                                          child: CachedNetworkImage(
-                                            imageUrl: photoUrl.toString(),
-                                            placeholder: (context, url) =>
-                                                CircularProgressIndicator(
-                                              color: CustomColor.primary(),
-                                            ),
-                                            fit: BoxFit.cover,
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    const Icon(
-                                              Icons.error,
-                                              color: Colors.red,
+                                      InkWell(
+                                        onTap: (){
+                                          CustomViewer.networkPhoto(context, photoUrl.toString());
+                                        },
+                                        child: ClipOval(
+                                          child: SizedBox.fromSize(
+                                            size: const Size.fromRadius(31),
+                                            child: CachedNetworkImage(
+                                              imageUrl: photoUrl.toString(),
+                                              placeholder: (context, url) => CircularProgressIndicator(color: CustomColor.primary()),
+                                              fit: BoxFit.cover,
+                                              errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red,),
                                             ),
                                           ),
                                         ),
@@ -288,8 +282,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                             ),
                                             AutoSizeText(
                                               Profile.getProfile().jabatan,
-                                              style: CustomFont
-                                                  .dashboardPosition(),
+                                              style: CustomFont.dashboardPosition(),
                                               overflow: TextOverflow.clip,
                                             ),
                                           ],
