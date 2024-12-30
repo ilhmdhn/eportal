@@ -6,6 +6,7 @@ import 'package:eportal/page/add_on/loading.dart';
 import 'package:eportal/page/ssp/ssp_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/checker.dart';
+import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -140,12 +141,59 @@ class _SspPage extends State<SspPage> {
                     ],
                   ),
                 ),
+                const SizedBox(height: 12,),
                 Expanded(
                   child: ListView.builder(
-                    itemCount: 0,
+                    itemCount: listData.length,
                     itemBuilder: (BuildContext ctxList, int index){
+                      final data = listData[index];
                       return Container(
-                        
+                        margin: const EdgeInsets.only(bottom: 6),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          border: Border.all(
+                            width: 0.3,
+                            color: Colors.black
+                          ),
+                          borderRadius: BorderRadius.circular(12)
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 6, horizontal: 8
+                        ),
+                        child: InkWell(
+                          onTap: ()async{
+                            final result = await SspDialog.detailSsp(context, data);
+                          },
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        AutoSizeText(
+                                          data.type == 1? 'Pernikahan':
+                                          data.type == 2? 'Kelahiran':
+                                          data.type == 3? 'Kematian Keluarga':
+                                          data.type == 4? 'Kematian Orang Tua':''
+                                        , style: CustomFont.headingEmpatSemiBold(),),
+                                        AutoSizeText(CustomConverter.dateTimeToDay(data.releaseDate), style: CustomFont.headingLimaSemiBold(),),
+                                        isNotNullOrEmpty(data.note)? Text(data.note, style: CustomFont.headingLima(), overflow: TextOverflow.ellipsis,): const SizedBox()
+                                      ],
+                                    ),
+                                  Flexible(
+                                    fit: FlexFit.loose,
+                                    child: 
+                                    data.state == 1? Text('Menunggu', style: CustomFont.headingEmpatWaiting(),):
+                                    data.state == 2? Text('Disetujui', style: CustomFont.headingEmpatApprove(),):
+                                    data.state == 3? Text('Ditolak', style: CustomFont.headingEmpatReject(),): const SizedBox()
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       );
                     },
                   ))

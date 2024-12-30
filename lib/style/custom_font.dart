@@ -187,6 +187,15 @@ class CustomFont{
     return GoogleFonts.poppins(
         fontSize: 14, color: CustomColor.primary(),);
   }
+  
+  static TextStyle headingLimaColorUnderlined() {
+    return GoogleFonts.poppins(
+      fontSize: 14,
+      decoration: TextDecoration.underline,
+      decorationColor: CustomColor.primary(),
+      color: CustomColor.primary(),
+    );
+  }
 
   static TextStyle announcement() {
     return GoogleFonts.dancingScript(fontSize: 31, fontWeight: FontWeight.w800 ,color: Colors.blue.shade900);

@@ -132,4 +132,8 @@ class CustomConverter{
 
     return time;
   }
+
+  static String generateLink(String link){
+    return Uri.parse(link).toString();
+  }
 }

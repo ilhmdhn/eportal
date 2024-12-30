@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/network/response/ssp_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
+import 'package:eportal/style/custom_button.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_date_picker.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -1109,5 +1111,357 @@ class SspDialog{
     );
 
     return result??false;
+  }
+
+  static Future<bool> detailSsp(BuildContext ctx, SspModel data)async{
+    
+    Widget wedding(){
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AutoSizeText(
+            'Nama Pasangan',
+            style: CustomFont.headingEmpatSemiBold(),
+            maxLines: 1,
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.grey)),
+            child: Text(
+              data.namaPasangan,
+              style: CustomFont.headingEmpat(),
+            )),
+          const SizedBox(
+            height: 12,
+          ),
+          AutoSizeText(
+            'Buku Nikah',
+            style: CustomFont.headingEmpatSemiBold(),
+            maxLines: 1,
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            width: double.infinity,
+            decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
+            child: InkWell(
+              onTap: (){
+                CustomViewer.networkPhoto(ctx, CustomConverter.generateLink(data.bukuNikah));
+              },
+              child: Text('buku nikah.png',style: CustomFont.headingLimaColorUnderlined(),))
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          isNotNullOrEmpty(data.note)?
+          Column(
+            children: [
+              AutoSizeText(
+                'Catatan Tambahan',
+                style: CustomFont.headingEmpatSemiBold(),
+                maxLines: 1,
+              ),
+              const SizedBox(
+                height: 2,
+              ),
+              TextField(
+                minLines: 3,
+                maxLines: 5,
+                readOnly: true,
+                style: CustomFont.headingLima(),
+                controller: TextEditingController(text: data.note),
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                    borderSide: const BorderSide(color: Colors.grey, width: 1.3),
+                  ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(6.0),
+                  borderSide: const BorderSide(color: Colors.grey, width: 0.9),
+                ),
+                contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12))),
+            ],
+          ): const SizedBox()
+        ],
+      );
+    }
+
+    Widget birth(){
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          AutoSizeText(
+            'Nama Anak',
+            style: CustomFont.headingEmpatSemiBold(),
+            maxLines: 1,
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            width: double.infinity,
+            decoration: BoxDecoration(
+                border: Border.all(width: 1, color: Colors.grey)),
+            child: Text(
+              data.namaAnak,
+              style: CustomFont.headingEmpat(),
+            )
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          AutoSizeText(
+            'Jenis Kelamin',
+            style: CustomFont.headingEmpatSemiBold(),
+            maxLines: 1,
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 1, 
+                color: Colors.grey
+              )
+            ),
+            child: InkWell(
+              onTap: () {
+                CustomViewer.networkPhoto(ctx, CustomConverter.generateLink(data.bukuNikah));
+              },
+              child: Text(data.genderAnak == 1?'Laki - Laki': 'Perempuan',
+                style: CustomFont.headingLimaColorUnderlined(),
+              )
+            )
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          AutoSizeText(
+            'Anak ke',
+            style: CustomFont.headingEmpatSemiBold(),
+            maxLines: 1,
+          ),
+          const SizedBox(
+            height: 2,
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+            width: double.infinity,
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 1, 
+                color: Colors.grey
+              )
+            ),
+            child: Text(data.urutanAnak.toString(),style: CustomFont.headingLimaColorUnderlined(),)
+          ),
+          const SizedBox(
+            height: 12,
+          ),
+          isNotNullOrEmpty(data.note)
+          ? Column(
+              children: [
+                AutoSizeText(
+                  'Catatan Tambahan',
+                  style: CustomFont.headingEmpatSemiBold(),
+                  maxLines: 1,
+                ),
+                const SizedBox(
+                  height: 2,
+                ),
+                TextField(
+                  minLines: 3,
+                  maxLines: 5,
+                  readOnly: true,
+                  style: CustomFont.headingLima(),
+                  controller: TextEditingController(text: data.note),
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(6.0),
+                      borderSide: const BorderSide(color: Colors.grey, width: 1.3),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(6.0),
+                    borderSide: const BorderSide(
+                    color: Colors.grey, width: 0.9),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12))
+                ),
+              ],
+            )
+              : const SizedBox()
+        ],
+      );
+    }
+
+    final result = await showDialog(
+      context: ctx, 
+      builder: (BuildContext ctxDialog){
+        return AlertDialog(
+          iconPadding: const EdgeInsets.all(0),
+          insetPadding: const EdgeInsets.all(0),
+          titlePadding: const EdgeInsets.all(0),
+          buttonPadding: const EdgeInsets.all(0),
+          actionsPadding: const EdgeInsets.all(0),
+          contentPadding: const EdgeInsets.all(0),
+          content: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            width: ScreenSize.setWidthPercent(ctx, 85),
+            constraints: BoxConstraints(maxHeight: ScreenSize.setHeightPercent(ctx, 70), minHeight: 0),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(width: 0.3, color: Colors.grey)
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const SizedBox(
+                      width: 24,
+                    ),
+                    Center(
+                      child: Text(
+                        data.type == 1? 'Pernikahan':
+                        data.type == 2? 'Kelahiran':
+                        data.type == 3? 'Kematian Keluarga':
+                        data.type == 4? 'Kematian Orang Tua':'',
+                        style: CustomFont.headingTigaSemiBold(),
+                      )
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        NavigationService.back();
+                      },
+                      child: const SizedBox(
+                        width: 24,
+                        child: Icon(Icons.close),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Flexible(
+                  child: Scrollbar(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          AutoSizeText(
+                            'Kode SSP',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1, 
+                                color: Colors.grey
+                              )
+                            ),
+                          child: Text(data.id, style: CustomFont.headingEmpat(),)),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          AutoSizeText(
+                            'Status',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          const SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 6, 
+                              horizontal: 12
+                            ),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 1, 
+                                color: Colors.grey
+                              )
+                            ),
+                            child: 
+                            data.state == 2 ?
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                AutoSizeText('Disetujui', style: CustomFont.headingEmpatApprove(),),
+                                Row(
+                                  children: [
+                                    AutoSizeText('lihat', style: CustomFont.headingLima()),
+                                    const SizedBox(width: 3,),
+                                    InkWell(
+                                      onTap: (){
+                                        CustomViewer.pdfNetwork(ctx, Uri.parse(data.pdf).toString());
+                                      },
+                                      child: AutoSizeText('ssp.pdf', style: CustomFont.headingLimaColorUnderlined())),
+                                  ],
+                                )
+                              ],
+                            ):
+                            AutoSizeText(
+                              data.state == 1? 'Menunggu': 'Ditolak',
+                              style: data.state == 1
+                                ? CustomFont.headingEmpatWaiting(): CustomFont.headingEmpatReject(),
+                                maxLines: 2,
+                                overflow: TextOverflow.clip,
+                            )
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          data.type == 1?
+                          wedding():
+                          data.type == 2?
+                          wedding(): 
+                          const SizedBox(),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          data.editable?
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              InkWell(
+                                child: CustomButton.edit(),
+                              ),
+                            ],
+                          ): const SizedBox()
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }
+    );
+
+    return result ?? false;
   }
 }
