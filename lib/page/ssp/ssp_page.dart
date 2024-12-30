@@ -1,9 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/network/network_request.dart';
+import 'package:eportal/data/network/response/ssp_response.dart';
+import 'package:eportal/page/add_on/loading.dart';
 import 'package:eportal/page/ssp/ssp_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 class SspPage extends StatefulWidget {
   const SspPage({super.key});
@@ -14,6 +19,51 @@ class SspPage extends StatefulWidget {
 }
 
 class _SspPage extends State<SspPage> {
+
+  List<SspModel> listData = [];
+  bool isLoading = true;
+
+  void getData()async{
+    if(!isLoading){
+      setState(() {
+        isLoading = true;
+      });
+    }
+
+    final networkResponse = await NetworkRequest.getSsp();
+    
+    setState(() {
+      isLoading = false;
+    });
+    
+    if(isNotNullOrEmptyList(networkResponse.data)){
+      setState(() {
+        listData = networkResponse.data??[];
+      });
+    }
+  }
+
+  void refreshData() async {
+
+    EasyLoading.show();
+
+    final networkResponse = await NetworkRequest.getSsp();
+
+    EasyLoading.dismiss();
+
+    if (isNotNullOrEmptyList(networkResponse.data)) {
+      setState(() {
+        listData = networkResponse.data ?? [];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +78,10 @@ class _SspPage extends State<SspPage> {
               child: Image.asset('assets/image/joe.png'),
             )
           ),
+          isLoading?
+          Expanded(
+            child: ShimmerLoading.listShimmer(context)
+          ):
           Positioned(
             top: 6,
             right: 12,
@@ -85,7 +139,16 @@ class _SspPage extends State<SspPage> {
                       )
                     ],
                   ),
-                ),    
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: 0,
+                    itemBuilder: (BuildContext ctxList, int index){
+                      return Container(
+                        
+                      );
+                    },
+                  ))
               ],
             )
           )

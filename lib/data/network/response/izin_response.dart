@@ -24,10 +24,6 @@ class IzinResponse {
   }
 }
 
-class IzinDetail{
-  
-}
-
 class IzinListModel{
   String? id;
   String? outlet;
@@ -82,9 +78,7 @@ class IzinListModel{
       year: json['Tahun'],
       type: json['Type'],
       startTime: isNullOrEmpty(json['StartTime']) ?TimeOfDay.now(): CustomConverter.stringToTime(json['StartTime']),
-      finishTime: isNullOrEmpty(json['EndTime'])
-          ? TimeOfDay.now()
-          : CustomConverter.stringToTime(json['EndTime']),
+      finishTime: isNullOrEmpty(json['EndTime'])? TimeOfDay.now(): CustomConverter.stringToTime(json['EndTime']),
       doctorLetter: json['SuratDokter'],
       invitationUrl: json['Invitation'],
       hlpUrl: json['HPL'],

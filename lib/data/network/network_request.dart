@@ -11,6 +11,7 @@ import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
 import 'package:eportal/data/network/response/overtime_response.dart';
 import 'package:eportal/data/network/response/sallary_response.dart';
+import 'package:eportal/data/network/response/ssp_response.dart';
 import 'package:eportal/data/network/response/substitution_response.dart';
 import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/util/checker.dart';
@@ -520,6 +521,19 @@ class NetworkRequest{
     } catch (e) {
       NavigationService.error(description: e.toString());
       return BaseResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<SspResponse> getSsp()async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/ssp');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return SspResponse.fromJson(convertedResult);
+    }catch(e){
+      NavigationService.error(description: e.toString());
+      return SspResponse(state: false, message: e.toString());
     }
   }
 }

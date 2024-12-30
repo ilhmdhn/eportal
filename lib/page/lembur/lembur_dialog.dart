@@ -502,39 +502,6 @@ class OvertimeDialog{
                             decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey)),
                             child: Text(data.assigner, style: CustomFont.headingEmpat(),)
                           ),
-                          data.state == 1?
-                          Column(
-                            children: [
-                             const SizedBox(
-                               height: 12,
-                             ),
-                             Row(
-                               mainAxisAlignment: MainAxisAlignment.end,
-                               crossAxisAlignment: CrossAxisAlignment.end,
-                               children: [
-                                 InkWell(
-                                   onTap: (){
-                                     NavigationService.back();
-                                     OvertimeDialog.editOvertimeDialog(ctx, data);
-                                   },
-                                   child: CustomButton.edit()
-                                 )
-                               ],
-                             ),
-                            ],
-                          ):
-                          data.state == 2?
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                             const SizedBox(
-                              height: 12,
-                              ),
-                              AutoSizeText('Status', style: CustomFont.headingEmpatSemiBold(), maxLines: 1,),
-                              Text( 'Disetujui', style: CustomFont.headingEmpatApprove(),
-                                                 ),
-                            ], 
-                          ):
                           data.state == 3?
                           Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -568,6 +535,29 @@ class OvertimeDialog{
                                   )
                                 )
                               ),
+                              data.editable
+                              ? Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const SizedBox(
+                                      height: 12,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.end,
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            NavigationService.back();
+                                            OvertimeDialog.editOvertimeDialog(ctx, data);
+                                          },
+                                          child: CustomButton.edit(),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : const SizedBox()
                             ],
                           ):
                           const SizedBox(),
@@ -830,7 +820,7 @@ class OvertimeDialog{
                                         ),
                                       ],
                                     )
-                                  : SizedBox(),
+                                  : const SizedBox(),
                               const SizedBox(
                                 height: 12,
                               ),
@@ -842,8 +832,7 @@ class OvertimeDialog{
                                     ShowToast.warning('Lengkapi data');
                                     return;
                                   }
-                                  final confirm = await ConfirmationDialog.confirmation(
-                                      ctx, 'Ubah data lembur?');
+                                  final confirm = await ConfirmationDialog.confirmation(ctx, 'Ubah data lembur?');
                                   if (confirm != true) {
                                     return;
                                   }
@@ -858,8 +847,7 @@ class OvertimeDialog{
                               
                                   if (networkResponse.state != true) {
                                     if (ctx.mounted) {
-                                      NotificationStyle.warning(
-                                          ctx, "Gagal", networkResponse.message);
+                                      NotificationStyle.warning(ctx, "Gagal", networkResponse.message);
                                     }
                                     return;
                                   } else {
