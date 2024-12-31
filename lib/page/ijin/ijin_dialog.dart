@@ -895,7 +895,7 @@ class IjinDialog{
             ),
             InkWell(
               onTap: (){
-                CustomViewer.pdfNetwork(ctx, Uri.parse('$baseUrl/${data.hlpUrl}').toString());
+                CustomViewer.detectImageOrPdf(ctx, Uri.parse('$baseUrl/${data.hlpUrl}').toString());
               },
               child: Container(
                 width: double.infinity,
@@ -907,7 +907,7 @@ class IjinDialog{
                     color: Colors.grey, width: 1.0
                   )
                 ),
-                child: Text('hpl.pdf', style: CustomFont.headingEmpatColorful()),
+                child: Text('hpl', style: CustomFont.headingLimaColorUnderlined()),
               ),
             ),
           ],
@@ -929,7 +929,7 @@ class IjinDialog{
             ),
             InkWell(
               onTap: () {
-                CustomViewer.networkPhoto(
+                CustomViewer.detectImageOrPdf(
                     ctx, Uri.parse('$baseUrl/${data.invitationUrl}').toString());
               },
               child: Container(
@@ -940,8 +940,8 @@ class IjinDialog{
                     borderRadius: BorderRadius.circular(6),
                     border: Border.all(color: Colors.grey, width: 1.0)),
                 child: Text(
-                  'invitation.png',
-                  style: CustomFont.headingEmpat(),
+                  'invitation',
+                  style: CustomFont.headingLimaColorUnderlined(),
                 ),
               ),
             ),
@@ -1398,12 +1398,12 @@ class IjinDialog{
                                     )
                                   : InkWell(
                                       onTap: (){
-                                        CustomViewer.networkPhoto(ctx, Uri.parse('$baseUrl/${data.invitationUrl}').toString());
+                                        CustomViewer.detectImageOrPdf(ctx, Uri.parse('$baseUrl/${data.invitationUrl}').toString());
                                       },
                                       child: Row(
                                         children: [
                                           const SizedBox(width: 6,),
-                                          AutoSizeText('uploaded.png', style: CustomFont.headingEmpatColorful(),)
+                                          AutoSizeText('uploaded', style: CustomFont.headingLimaColorUnderlined(),)
                                         ],
                                       ),
                                     )
@@ -1884,12 +1884,12 @@ class IjinDialog{
                                     )
                                   : InkWell(
                                     onTap: (){
-                                      CustomViewer.pdfNetwork(ctx, Uri.parse('$baseUrl/${data.hlpUrl}').toString());
+                                      CustomViewer.detectImageOrPdf(ctx, Uri.parse('$baseUrl/${data.hlpUrl}').toString());
                                     },
                                     child: Row(
                                       children: [
                                         const SizedBox(width: 6,),
-                                        AutoSizeText('uploaded.pdf', style: CustomFont.headingEmpatColorful(),),
+                                        AutoSizeText('uploaded', style: CustomFont.headingLimaColorUnderlined(),),
                                       ],
                                     ),
                                   )

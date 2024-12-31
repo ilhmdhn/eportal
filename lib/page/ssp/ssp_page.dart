@@ -163,6 +163,12 @@ class _SspPage extends State<SspPage> {
                         child: InkWell(
                           onTap: ()async{
                             final result = await SspDialog.detailSsp(context, data);
+                            if(result){
+                              final refresh = await SspDialog.editSsp(context, data);
+                              if(refresh){
+                                refreshData();
+                              }
+                            }
                           },
                           child: Column(
                             children: [

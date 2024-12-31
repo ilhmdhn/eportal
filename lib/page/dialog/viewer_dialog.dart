@@ -38,6 +38,14 @@ class CustomViewer{
     );
   }
 
+  static detectImageOrPdf(BuildContext ctx, url)async{
+    if(url.toLowerCase().endsWith('.pdf')){
+      pdfNetwork(ctx, url);
+    }else{
+      networkPhoto(ctx, url);
+    }
+  }
+
   static pdfNetwork(BuildContext ctx, String url) async {
     final noScreenshot = NoScreenshot.instance;
     await noScreenshot.screenshotOff();

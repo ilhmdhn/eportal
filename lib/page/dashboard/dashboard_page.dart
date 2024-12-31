@@ -253,7 +253,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     children: [
                                       InkWell(
                                         onTap: (){
-                                          CustomViewer.networkPhoto(context, photoUrl.toString());
+                                          CustomViewer.detectImageOrPdf(context, photoUrl.toString());
                                         },
                                         child: ClipOval(
                                           child: SizedBox.fromSize(

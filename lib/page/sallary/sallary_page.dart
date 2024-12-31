@@ -80,7 +80,7 @@ class _SallaryPageState extends State<SallaryPage> {
                               return ShowToast.error('Generate PDF File failed');
                             }
                             if(context.mounted){
-                              CustomViewer.pdfNetwork(context, Uri.parse(linkResponse.data??'').toString());
+                              CustomViewer.detectImageOrPdf(context, Uri.parse(linkResponse.data??'').toString());
                             }
                           },
                           child: Container(
