@@ -3,6 +3,7 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/page/add_on/loading.dart';
+import 'package:eportal/page/cuti/cuti_dialog.dart';
 import 'package:eportal/page/ijin/ijin_dialog.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -69,6 +70,24 @@ class _IjinPageState extends State<IjinPage> {
   
   @override
   Widget build(BuildContext context) {
+
+    int approve = 0;
+    int waiting = 0;
+    int reject = 0;
+    int cancel = 0;
+
+    for (var value in izinList) {
+      if(value.state == 1){
+        waiting += value.finishDate!.difference(value.startDate!).inDays + 1;
+      }else if(value.state == 2){
+        approve += value.finishDate!.difference(value.startDate!).inDays + 1;
+      }else if(value.state == 3){
+        reject += value.finishDate!.difference(value.startDate!).inDays + 1;
+      }else if(value.state == 4){
+        cancel += value.finishDate!.difference(value.startDate!).inDays + 1;
+      }
+    }
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: CustomColor.background(),
@@ -154,6 +173,125 @@ class _IjinPageState extends State<IjinPage> {
                             )
                           ],
                         ),
+                        const SizedBox(height: 6,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.6,
+                                  color: Colors.green.shade600
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                                color: Colors.white,
+                              ),
+                              child: Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: AutoSizeText('Disetujui', style: CustomFont.headingLimaGreen(), maxLines: 1, minFontSize: 1,)
+                                  ),
+                                  const SizedBox(height: 4,),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(approve.toString(), style: CustomFont.headingLimaGreen(),)
+                                  )
+                                ],
+                              ),
+                            )
+                          ),
+                          const SizedBox(width: 6,),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.6,
+                                  color: Colors.amber.shade900
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                                color: Colors.white,
+                              ),
+                              child: Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: AutoSizeText('Menunggu', style: CustomFont.headingLimaYellow(), maxLines: 1, minFontSize: 1,)
+                                  ),
+                                  const SizedBox(height: 4,),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(waiting.toString() , style: CustomFont.headingLimaYellow(),)
+                                  )
+                                ],
+                              ),
+                            )
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                            child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.6,
+                                  color: Colors.red.shade600
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: AutoSizeText('Ditolak', style: CustomFont.headingLimaRed(), maxLines: 1, minFontSize: 1)
+                                ),
+                                const SizedBox(height: 4,),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(reject.toString(), style: CustomFont.headingLimaRed(),)
+                                ),
+                              ],
+                            ),
+                          )),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                              child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 3),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 0.6,
+                                  color: Colors.red.shade600),
+                              borderRadius: BorderRadius.circular(6),
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              children: [
+                                Align(
+                                    alignment: Alignment.topLeft,
+                                    child: AutoSizeText('Batal', style: CustomFont.headingLimaRed(), maxLines: 1, minFontSize: 1,)),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(
+                                    cancel.toString(),
+                                    style: CustomFont.headingLimaRed(),
+                                  )
+                                ),
+                              ],
+                            ),
+                          )),
+                        ],
+                      ),
+                      const SizedBox(height: 6,),
                       ],
                     ),
                   ),

@@ -72,6 +72,21 @@ class _CutiPageState extends State<CutiPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    int approve = 0;
+    int waiting = 0;
+    int reject = 0;
+
+    _cutiDetail?.listCuti?.forEach((value){
+      if(value.state == 1){
+        waiting += value.day;
+      }else if(value.state == 2){
+        approve += value.day;
+      }else if(value.state == 3){
+        reject += value.day;
+      }
+    });
+
     return Scaffold(
       backgroundColor: CustomColor.background(),
       body: Stack(
@@ -151,6 +166,93 @@ class _CutiPageState extends State<CutiPage> {
                           )
                         ],
                       ),
+                      const SizedBox(height: 6,),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.6,
+                                  color: Colors.green.shade600
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                                color: Colors.white,
+                              ),
+                              child: Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text('Disetujui', style: CustomFont.headingLimaGreen(),)
+                                  ),
+                                  const SizedBox(height: 4,),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(approve.toString(), style: CustomFont.headingLimaGreen(),)
+                                  )
+                                ],
+                              ),
+                            )
+                          ),
+                          const SizedBox(width: 6,),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.6,
+                                  color: Colors.amber.shade900
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                                color: Colors.white,
+                              ),
+                              child: Column(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Text('Menunggu', style: CustomFont.headingLimaYellow(),)
+                                  ),
+                                  const SizedBox(height: 4,),
+                                  Align(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(waiting.toString() , style: CustomFont.headingLimaYellow(),)
+                                  )
+                                ],
+                              ),
+                            )
+                          ),
+                          const SizedBox(
+                            width: 6,
+                          ),
+                          Expanded(
+                            child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.6,
+                                  color: Colors.red.shade600
+                                ),
+                                borderRadius: BorderRadius.circular(6),
+                              color: Colors.white,
+                            ),
+                            child: Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: Text('Ditolak', style: CustomFont.headingLimaRed(),)
+                                ),
+                                const SizedBox(height: 4,),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Text(reject.toString(), style: CustomFont.headingLimaRed(),)
+                                ),
+                              ],
+                            ),
+                          )),
+                        ],
+                      ),
+                      const SizedBox(height: 6,),
                     ],
                   ),
                 ),
@@ -201,8 +303,8 @@ class _CutiPageState extends State<CutiPage> {
                                         data.state == 1?'Menunggu' : data.state == 2? 'Disetujui': 'Ditolak',
                                         style: 
                                         data.state == 1? CustomFont.headingEmpatWaiting():
-                                        data.state == 1? CustomFont.headingEmpatApprove():
-                                        data.state == 1? CustomFont.headingEmpatReject():CustomFont.headingEmpatReject(),
+                                        data.state == 2? CustomFont.headingEmpatApprove():
+                                        data.state == 3? CustomFont.headingEmpatReject():CustomFont.headingEmpatReject(),
                                         textAlign: TextAlign.end,
                                       ),
                                     ),

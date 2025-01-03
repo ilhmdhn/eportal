@@ -171,6 +171,16 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w500);
   }
 
+  static TextStyle headingLimaGreen() {
+    return GoogleFonts.poppins(
+        fontSize: 14, color: Colors.green.shade600, fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle headingLimaYellow() {
+    return GoogleFonts.poppins(
+        fontSize: 14, color: Colors.amber.shade900, fontWeight: FontWeight.w500);
+  }
+
   static TextStyle headingLimaBold() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w600);
   }
@@ -180,7 +190,7 @@ class CustomFont{
   }
 
   static TextStyle headingLimaRed() {
-    return GoogleFonts.poppins(fontSize: 14, color: Colors.red, fontWeight: FontWeight.w500);
+    return GoogleFonts.poppins(fontSize: 14, color: Colors.red.shade700, fontWeight: FontWeight.w500);
   }
 
   static TextStyle headingLimaColor() {
