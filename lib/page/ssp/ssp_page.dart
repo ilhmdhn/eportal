@@ -80,9 +80,7 @@ class _SspPage extends State<SspPage> {
             )
           ),
           isLoading?
-          Expanded(
-            child: ShimmerLoading.listShimmer(context)
-          ):
+          ShimmerLoading.listShimmer(context):
           Positioned(
             top: 6,
             right: 12,

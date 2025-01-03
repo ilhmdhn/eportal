@@ -7,11 +7,8 @@ import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:get_it/get_it.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
@@ -327,9 +324,7 @@ class _SchedulePageState extends State<SchedulePage> {
                       : schedule?.code.toLowerCase() == 'off'?
                       AutoSizeText('Hari Libur', style: CustomFont.headingEmpatReject(),):
                       schedule?.code.toLowerCase() == 'cuti'? 
-                      const SizedBox():
-                      schedule?.code.toLowerCase() == 'cuti'? 
-                      const SizedBox():
+                      AutoSizeText('Cuti', style: CustomFont.headingEmpatReject(),):
                       schedule?.code.toLowerCase() == 'izin'? 
                       const SizedBox():
                       const Text('aaa')
