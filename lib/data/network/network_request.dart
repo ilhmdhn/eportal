@@ -6,6 +6,7 @@ import 'package:eportal/data/network/response/attendance_list_response.dart';
 import 'package:eportal/data/network/response/cuti_response.dart';
 import 'package:eportal/data/network/response/data_response.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
+import 'package:eportal/data/network/response/jko_response.dart';
 import 'package:eportal/data/network/response/list_response.dart';
 import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
@@ -13,7 +14,6 @@ import 'package:eportal/data/network/response/overtime_response.dart';
 import 'package:eportal/data/network/response/sallary_response.dart';
 import 'package:eportal/data/network/response/ssp_response.dart';
 import 'package:eportal/data/network/response/substitution_response.dart';
-import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/dummy.dart';
@@ -534,6 +534,21 @@ class NetworkRequest{
     }catch(e){
       NavigationService.error(description: e.toString());
       return SspResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<JkoResponse> getJko(DateTime period)async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/jko?period=${DateFormat('yyyy-MM').format(period)}');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return JkoResponse.fromJson(convertedResult);
+    }catch(e){
+      return JkoResponse(
+        state: false, 
+        message: e.toString()
+      );
     }
   }
 }

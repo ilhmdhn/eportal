@@ -133,6 +133,10 @@ class CustomConverter{
     return time;
   }
 
+  static String timeToString(TimeOfDay time){
+    return '${time.hour}:${time.minute}';
+  }
+
   static String generateLink(String link){
     return Uri.parse(link).toString();
   }

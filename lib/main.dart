@@ -11,6 +11,7 @@ import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/page/sallary/sallary_page.dart';
+import 'package:eportal/page/schedule/schedule_page.dart';
 import 'package:eportal/page/ssp/ssp_page.dart';
 import 'package:eportal/provider/list_outlet_provider.dart';
 import 'package:eportal/provider/max_date.dart';
@@ -25,6 +26,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,7 +45,7 @@ void main() async{
   await SharedPreferencesData.initialize();
   await dotenv.load(fileName: ".env");
   setupLocator();
-  runApp(
+  initializeDateFormatting().then((_)=> runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(
@@ -55,7 +57,7 @@ void main() async{
       ],
       child: const MyApp(),
     )
-  );
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -92,6 +94,7 @@ class MyApp extends StatelessWidget {
           SallaryPage.nameRoute: (context) => const SallaryPage(),
           SubstitutePage.nameRoute: (context) => const SubstitutePage(),
           SspPage.nameRoute: (context) => const SspPage(),
+          SchedulePage.nameRoute: (context) => const SchedulePage()
         },
       ),
     );

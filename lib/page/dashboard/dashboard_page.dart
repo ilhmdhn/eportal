@@ -18,6 +18,7 @@ import 'package:eportal/page/dialog/view_notif_dialog.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/page/sallary/sallary_page.dart';
+import 'package:eportal/page/schedule/schedule_page.dart';
 import 'package:eportal/page/ssp/ssp_page.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
@@ -538,8 +539,13 @@ class _DashboardPageState extends State<DashboardPage> {
                                 child: AddOnButton.textImageButton(
                                     context, 'assets/icon/ssp2.png', 'SSP'),
                               ),
-                              AddOnButton.textImageButton(context,
-                                  'assets/icon/calendar.png', 'Jadwal Kerja'),
+                              InkWell(
+                                onTap: (){
+                                  NavigationService.move(SchedulePage.nameRoute);
+                                },
+                                child: AddOnButton.textImageButton(context,
+                                    'assets/icon/calendar.png', 'Jadwal Kerja'),
+                              ),
                               AddOnButton.textImageButton(context,
                                   'assets/icon/more.png', 'Lain lain'),
                             ],
