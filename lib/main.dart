@@ -28,6 +28,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -41,6 +42,7 @@ void main() async{
     createNotif(message.data['Title'], message.data['Body']);
   });
   
+
   FirebaseTools.getToken();
   await SharedPreferencesData.initialize();
   await dotenv.load(fileName: ".env");

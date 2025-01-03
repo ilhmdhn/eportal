@@ -378,7 +378,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     AutoSizeText('Pengumuman',
                                         style: CustomFont.announcement()),
                                     Expanded(
-                                        child: Padding(
+                                      child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: AutoSizeText(
                                         "Jadwal senam hari jum'at minggu ini group A. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled",
