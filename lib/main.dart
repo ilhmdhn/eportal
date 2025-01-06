@@ -18,6 +18,7 @@ import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
+import 'package:eportal/util/show_notification.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,8 @@ import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
-
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'dart:io';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,11 +37,18 @@ void main() async{
   await Firebase.initializeApp();
   configLoading();
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-  
+    if (message.data['type'] == 'NOTIFICATION') {
+      // createNotif(message.data['title'], message.data['message']);
+      print('isinyaa ${message.data}');
+      // ShowNotification.showAttendanceNotification(message.data['title'], message.data['message']);
+    }
   });
   
   FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
-    createNotif(message.data['Title'], message.data['Body']);
+    // if(message.data['type'] == 'NOTIFICATION'){
+      print('isinyaa ${message.data}');
+      // createNotif(message.data['title'], message.data['message']);
+    // }
   });
   
 
@@ -47,6 +56,7 @@ void main() async{
   await SharedPreferencesData.initialize();
   await dotenv.load(fileName: ".env");
   setupLocator();
+  await initializeNotifications();
   initializeDateFormatting().then((_)=> runApp(
     MultiProvider(
       providers: [
@@ -125,5 +135,48 @@ void createNotif(title, content) {
   final context = navigatorKey.currentContext;
   if (context != null) {
     NotificationStyle.info(context, title, content);
+  }
+}
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+Future<void> initializeNotifications() async {
+  if (Platform.isIOS || Platform.isMacOS) {
+    final DarwinInitializationSettings initializationSettingsDarwin =
+        DarwinInitializationSettings(
+      notificationCategories: [
+        DarwinNotificationCategory(
+          'demoCategory',
+          actions: <DarwinNotificationAction>[
+            DarwinNotificationAction.plain('id_1', 'Action 1'),
+            DarwinNotificationAction.plain(
+              'id_2',
+              'Action 2',
+              options: <DarwinNotificationActionOption>{
+                DarwinNotificationActionOption.destructive,
+              },
+            ),
+            DarwinNotificationAction.plain(
+              'id_3',
+              'Action 3',
+              options: <DarwinNotificationActionOption>{
+                DarwinNotificationActionOption.foreground,
+              },
+            ),
+          ],
+          options: <DarwinNotificationCategoryOption>{
+            DarwinNotificationCategoryOption.hiddenPreviewShowTitle,
+          },
+        ),
+      ],
+    );
+
+    final InitializationSettings initializationSettings =
+        InitializationSettings(
+      iOS: initializationSettingsDarwin,
+      macOS: initializationSettingsDarwin,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 }

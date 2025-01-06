@@ -134,7 +134,9 @@ class CustomConverter{
   }
 
   static String timeToString(TimeOfDay time){
-    return '${time.hour}:${time.minute}';
+    final String hour = time.hour.toString().padLeft(2, '0');
+    final String minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 
   static String generateLink(String link){

@@ -151,7 +151,10 @@ class _SchedulePageState extends State<SchedulePage> {
                         return Center(child: AutoSizeText('${day.day}', style: CustomFont.headingEmpatReject()),);
                       }else if(jko.any((holiday) => isSameDay(holiday.date, day) && holiday.code.toLowerCase() == 'cuti')){
                         return Center(child: AutoSizeText('${day.day}', style: CustomFont.headingEmpatReject()),);                        
-                      }else if(jko.any((holiday) => isSameDay(holiday.date, day) && holiday.code.toLowerCase() == 'izin')){
+                      }else if(jko.any((holiday) => isSameDay(holiday.date, day) && holiday.code.toLowerCase() == 'libur pengganti')){
+                        return Center(child: AutoSizeText('${day.day}', style: CustomFont.headingEmpatReject()),);                        
+                      }
+                      else if(jko.any((holiday) => isSameDay(holiday.date, day) && holiday.code.toLowerCase() == 'izin')){
                         return Center(child: AutoSizeText('${day.day}', style: CustomFont.headingEmpatWaiting()),);
                       }else{
                         return Center(child: AutoSizeText('${day.day}', style: CustomFont.headingEmpat()),);
@@ -309,25 +312,35 @@ class _SchedulePageState extends State<SchedulePage> {
                       ),
                       const SizedBox(height: 12),
                       AutoSizeText(CustomConverter.dateTimeToDay(_selectedDay??DateTime.now()), style: CustomFont.headingEmpatSemiBold(),),
-                      const SizedBox(height: 3,),
+                      const SizedBox(height: 2,),
                       schedule?.code.toLowerCase() == 'kerja'?
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          AutoSizeText('Hari Kerja', style: CustomFont.headingEmpatSemiBold()),
+                          AutoSizeText('Hari Kerja', style: CustomFont.headingDua()),
                           const SizedBox(height: 2,),
-                          Text('Jadwal Masuk   : ${CustomConverter.timeToString(schedule!.startTime!)}', style: CustomFont.headingLima(),),
-                          const SizedBox(height: 1,),
-                          Text('Jadwal Pulang  : ${CustomConverter.timeToString(schedule.endTime!)}',style:CustomFont.headingLima()),
+                          Row(
+                            children: [
+                              Text('Jam Kerja: ', style: CustomFont.headingEmpat(),),
+                              const SizedBox(width: 3,),
+                              Text('${CustomConverter.timeToString(schedule!.startTime!)} - ${CustomConverter.timeToString(schedule.endTime!)}', style: CustomFont.headingEmpat(),),
+                            ],
+                          ),
                         ],
                       )
                       : schedule?.code.toLowerCase() == 'off'?
-                      AutoSizeText('Hari Libur', style: CustomFont.headingEmpatReject(),):
+                      Column(
+                        children: [
+                          AutoSizeText('Hari Libur', style: CustomFont.headingDuaRed(),),
+                        ],
+                      ):
                       schedule?.code.toLowerCase() == 'cuti'? 
-                      AutoSizeText('Cuti', style: CustomFont.headingEmpatReject(),):
+                      AutoSizeText('Cuti', style: CustomFont.headingDuaRed(),):
+                      schedule?.code.toLowerCase() == 'libur pengganti'? 
+                      AutoSizeText('Libur Pengganti', style: CustomFont.headingDuaRed(),):
                       schedule?.code.toLowerCase() == 'izin'? 
-                      const SizedBox():
-                      const Text('aaa')
+                      AutoSizeText('Izin Tidak Masuk', style: CustomFont.headingDuaYellow(),):
+                      AutoSizeText('Jadwal Kerja Belum Diupload', style: CustomFont.headingEmpat(),)
                     ],
                   ),
                 )

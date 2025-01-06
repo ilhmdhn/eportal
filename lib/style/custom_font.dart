@@ -36,6 +36,17 @@ class CustomFont{
         fontSize: 19, color: Colors.black, fontWeight: FontWeight.w500);
   }
 
+  static TextStyle headingDuaRed() {
+    return GoogleFonts.poppins(
+        fontSize: 19, color: Colors.red, fontWeight: FontWeight.w500);
+  }
+
+  static TextStyle headingDuaYellow() {
+    return GoogleFonts.poppins(
+        fontSize: 19, color: Colors.amber.shade900, fontWeight: FontWeight.w500);
+  }
+
+
   static TextStyle headingDuaBold() {
     return GoogleFonts.poppins(fontSize: 20, color: CustomColor.fontStandart(), fontWeight: FontWeight.w700);
   }
