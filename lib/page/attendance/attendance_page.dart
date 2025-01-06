@@ -3,14 +3,12 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/attendance_list_response.dart';
 import 'package:eportal/page/add_on/loading.dart';
-import 'package:eportal/style/custom_container.dart';
+import 'package:eportal/page/attendance/attendance_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
-import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/time_diff.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';
 // ignore: depend_on_referenced_packages
@@ -28,16 +26,18 @@ class AttendancePage extends StatefulWidget {
 
 class _AttendancePageState extends State<AttendancePage> {
 
-  AttendanceListResponse? attendanceListResponse;
+  List<AttendanceListModel> attendanceListResponse = [];
   String monthName = '';
   bool isLoading = true;
+  DateTime selectedMonth = DateTime.now();
+  bool asc = true;
 
   void getData(String month) async{
-    attendanceListResponse = await NetworkRequest.getAttendance(month);
+    final networkResponse = await NetworkRequest.getAttendance(month);
     if(mounted){
       isLoading = false;
       setState(() {
-        attendanceListResponse;
+        attendanceListResponse = networkResponse.listAbsen;
         monthName = CustomConverter.monthCheck(month);
       });
     }
@@ -60,7 +60,7 @@ class _AttendancePageState extends State<AttendancePage> {
     int offDay = 0;
     int permit = 0;
 
-    attendanceListResponse?.listAbsen.forEach((value){
+    for (var value in attendanceListResponse) {
       if((value.jko??'').toLowerCase().contains('kerja')){
 
       }else if((value.jko??'').toLowerCase().contains('off')){
@@ -94,7 +94,7 @@ class _AttendancePageState extends State<AttendancePage> {
       if((value.leaveDescription??'').toLowerCase().contains('gps')){
         gps += 1;
       }
-    });
+    }
 
     return Scaffold(
       backgroundColor: CustomColor.background(),
@@ -139,31 +139,32 @@ class _AttendancePageState extends State<AttendancePage> {
                           InkWell(
                             onTap: ()async{
                               showMonthPicker(
-                                  context: context,
-                                  initialDate: DateTime.now(),
-                                  cancelWidget: Text('Batal', style: GoogleFonts.poppins(fontSize: 16, color: Colors.red),),
-                                  confirmWidget: Text('Confirm', style: CustomFont.headingEmpatColorful(),),
-                                  firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                                  lastDate: DateTime.now(),
-                                  monthPickerDialogSettings:MonthPickerDialogSettings(
-                                    headerSettings: PickerHeaderSettings(
-                                      headerBackgroundColor: CustomColor.primary(),
-                                    ),
-                                    buttonsSettings: PickerButtonsSettings(
-                                      monthTextStyle: CustomFont.headingLimaSemiBold(),
-                                      selectedMonthBackgroundColor: CustomColor.primary(),
-                                      unselectedMonthsTextColor: Colors.black
-                                    ),
-                                    dialogSettings: const PickerDialogSettings(
-                                      dialogBackgroundColor: Colors.white
-                                    ),
+                                context: context,
+                                initialDate: selectedMonth,
+                                cancelWidget: Text('Batal', style: GoogleFonts.poppins(fontSize: 16, color: Colors.red),),
+                                confirmWidget: Text('Confirm', style: CustomFont.headingEmpatColorful(),),
+                                firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                                lastDate: DateTime.now(),
+                                monthPickerDialogSettings:MonthPickerDialogSettings(
+                                  headerSettings: PickerHeaderSettings(
+                                    headerBackgroundColor: CustomColor.primary(),
                                   ),
-                                ).then((date) async {
-                                  if (date != null) {
-                                    String formattedDate = DateFormat('MM-yyyy').format(date);
-                                    getData(formattedDate);
-                                  }
-                                });
+                                  buttonsSettings: PickerButtonsSettings(
+                                    monthTextStyle: CustomFont.headingLimaSemiBold(),
+                                    selectedMonthBackgroundColor: CustomColor.primary(),
+                                    unselectedMonthsTextColor: Colors.black
+                                  ),
+                                  dialogSettings: const PickerDialogSettings(
+                                    dialogBackgroundColor: Colors.white
+                                  ),
+                                ),
+                              ).then((date) async {
+                                if (date != null) {
+                                  selectedMonth = date;
+                                  String formattedDate = DateFormat('MM-yyyy').format(date);
+                                  getData(formattedDate);
+                                }
+                              });
                             },
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -180,10 +181,10 @@ class _AttendancePageState extends State<AttendancePage> {
                                     borderRadius: BorderRadius.circular(11)
                                   ),
                                   child: Icon(
-                                        Icons.calendar_month,
-                                        color: CustomColor.primary(),
-                                        size: 16,
-                                      ),
+                                    Icons.calendar_month,
+                                    color: CustomColor.primary(),
+                                    size: 16,
+                                  ),
                                 ),
                                 const SizedBox(width: 3,),
                                 AutoSizeText(monthName, style: CustomFont.headingEmpatSemiBold()),
@@ -372,17 +373,27 @@ class _AttendancePageState extends State<AttendancePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     AutoSizeText('Daftar Absensi', style: CustomFont.headingEmpatSemiBold(),),
-                    const InkWell(
-                      child: Icon(Icons.sort_rounded),
+                    InkWell(
+                      onTap: (){
+                        setState(() {
+                          if(asc){
+                            attendanceListResponse.sort((a, b) => b.date!.compareTo(a.date!));
+                          }else{
+                            attendanceListResponse.sort((a, b) => a.date!.compareTo(b.date!));
+                          }
+                          asc = !asc;
+                        });
+                      },
+                      child: const Icon(Icons.sort_rounded),
                     )
                   ],
                 ),
                 Expanded(
                     child: ListView.builder(
-                      itemCount: attendanceListResponse?.listAbsen.length??0,
+                      itemCount: attendanceListResponse.length,
                       itemBuilder: (BuildContext ctxList, index){
-                        final dataAbsen = attendanceListResponse?.listAbsen[index];
-                        final date = dataAbsen?.date??'1990-01-01';
+                        final dataAbsen = attendanceListResponse[index];
+                        final date = dataAbsen.date??'1990-01-01';
                         bool isLate = false;
                         bool isEarly = false;
                         bool inGps = false;
@@ -394,16 +405,6 @@ class _AttendancePageState extends State<AttendancePage> {
                         bool arriveForget = false;
                         bool leavedForget = false;
                         
-                        if(TimeDiff.dateBeforeNow(DateTime.parse(dataAbsen!.date!))){
-                          if(isNullOrEmpty(dataAbsen.arrived)){
-                            arriveForget = true;
-                          }
-
-                          if(isNullOrEmpty(dataAbsen.leaved)){
-                            leavedForget = true;
-                          }
-                        }
-
                         if((dataAbsen.jko??'').toLowerCase().contains('kerja')){
                           workDate = true;
                         }
@@ -435,86 +436,95 @@ class _AttendancePageState extends State<AttendancePage> {
                         if((dataAbsen.leaveDescription??'').toLowerCase().contains('gps')){
                           outGps = true;
                         }
+
+                        if((dataAbsen.leaveDescription??'').toLowerCase().contains('lupa')){
+                          leavedForget = true;
+                        }
+
+                        if((dataAbsen.arrivalDescription??'').toLowerCase().contains('lupa')){
+                          arriveForget = true;
+                        }
                   
-                        return Column(
-                          children: [
-                            Container(
-                              width: double.infinity,
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                              margin: const EdgeInsets.only(bottom: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(
-                                  width: 0.3,
-                                  color: Colors.grey
-                                ),
-                                borderRadius: BorderRadius.circular(15)
+                        return InkWell(
+                          onTap: (){
+                            AttendanceDialog.detailAttendance(context, dataAbsen);
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                            margin: const EdgeInsets.only(bottom: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(
+                                width: 0.3,
+                                color: Colors.grey
                               ),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    height: 36,
-                                    width: 36,
-                                    decoration: BoxDecoration(
-                                      color: Colors.lightBlue.shade50,
-                                      borderRadius: BorderRadius.circular(18)
-                                    ),
-                                    child: Center(child: Text(date.substring(8, 10), style: CustomFont.headingTigaSemiBold(),)),
-                                  ),
-                                  const SizedBox(width: 6,),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      children: [
-                                        AutoSizeText(CustomConverter.dateToDay(date), style: CustomFont.headingLimaBold(),),
-                                        const SizedBox(height: 10,),
-                                        workDate?
-                                        Row(
-                                          children: [
-                                            Expanded(
-                                              flex: 1,
-                                              child: 
-                                                Row(
-                                                  children: [
-                                                    const Icon(Icons.login, color: Colors.green, size: 16,),
-                                                    const SizedBox(width: 4,),
-                                                    AutoSizeText('${arriveForget? 'Lupa Absen': dataAbsen.arrived ?? '?'} ${inGps ? '(GPS)' : ''}', 
-                                                    style: isLate || arriveForget? CustomFont.headingLimaWarning(): CustomFont.headingLimaSemiBold(),
-                                                  )
-                                                ],
-                                              )
-                                            ),
-                                            Expanded(
-                                              flex: 1,
-                                              child: Row(
-                                                children: [
-                                                  const Icon(Icons.logout, color: Colors.red, size: 16),
-                                                  const SizedBox(
-                                                    width: 4,
-                                                  ),
-                                                  AutoSizeText('${leavedForget ? 'Lupa Absen' : dataAbsen.leaved??'?'} ${outGps?'(GPS)':''}',style: isEarly||leavedForget? CustomFont.headingLimaWarning(): CustomFont.headingLimaSemiBold(),
-                                                  )
-                                                ]
-                                              )
-                                            ),
-                                          ],
-                                        ):
-                                        holiday?
-                                        AutoSizeText('Hari Libur', style: CustomFont.headingEmpatReject(),):
-                                        offDay?
-                                        AutoSizeText('Cuti', style: CustomFont.headingEmpatReject()):
-                                        permit?
-                                        AutoSizeText('Izin', style: CustomFont.headingEmpatWarning(),):
-                                        AutoSizeText('Tidak Ada data', style: CustomFont.headingEmpatSemiBold())
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              borderRadius: BorderRadius.circular(15)
                             ),
-                          ],
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  height: 36,
+                                  width: 36,
+                                  decoration: BoxDecoration(
+                                    color: Colors.lightBlue.shade50,
+                                    borderRadius: BorderRadius.circular(18)
+                                  ),
+                                  child: Center(child: Text(date.substring(8, 10), style: CustomFont.headingTigaSemiBold(),)),
+                                ),
+                                const SizedBox(width: 6,),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      AutoSizeText(CustomConverter.dateToDay(date), style: CustomFont.headingLimaBold(),),
+                                      const SizedBox(height: 10,),
+                                      workDate?
+                                      Row(
+                                        children: [
+                                          Expanded(
+                                            flex: 1,
+                                            child: 
+                                              Row(
+                                                children: [
+                                                  const Icon(Icons.login, color: Colors.green, size: 16,),
+                                                  const SizedBox(width: 4,),
+                                                  AutoSizeText('${arriveForget? 'Lupa Absen': dataAbsen.arrived ?? '?'} ${inGps ? '(GPS)' : ''}', 
+                                                  style: isLate || arriveForget? CustomFont.headingLimaWarning(): CustomFont.headingLimaSemiBold(),
+                                                )
+                                              ],
+                                            )
+                                          ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Row(
+                                              children: [
+                                                const Icon(Icons.logout, color: Colors.red, size: 16),
+                                                const SizedBox(
+                                                  width: 4,
+                                                ),
+                                                AutoSizeText('${leavedForget ? 'Lupa Absen' : dataAbsen.leaved??'?'} ${outGps?'(GPS)':''}',style: isEarly||leavedForget? CustomFont.headingLimaWarning(): CustomFont.headingLimaSemiBold(),
+                                                )
+                                              ]
+                                            )
+                                          ),
+                                        ],
+                                      ):
+                                      holiday?
+                                      AutoSizeText('Hari Libur', style: CustomFont.headingEmpatReject(),):
+                                      offDay?
+                                      AutoSizeText('Cuti', style: CustomFont.headingEmpatReject()):
+                                      permit?
+                                      AutoSizeText('Izin', style: CustomFont.headingEmpatWarning(),):
+                                      AutoSizeText('Tidak Ada data', style: CustomFont.headingEmpatSemiBold())
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         );
                       }),
                   

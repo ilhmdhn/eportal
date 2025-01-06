@@ -74,7 +74,6 @@ class MyApp extends StatelessWidget {
     return SafeArea(
       child: MaterialApp(
         navigatorKey: GetIt.instance<NavigationService>().navigatorKey,
-        
         title: 'ePortal',
         builder: EasyLoading.init(),
         theme: ThemeData(
