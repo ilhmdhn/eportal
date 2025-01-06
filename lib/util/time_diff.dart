@@ -11,4 +11,11 @@ class TimeDiff{
     DateTime todayWithoutTime = DateTime(today.year, today.month, today.day);
     return date.isBefore(todayWithoutTime) || date == todayWithoutTime;
   }
+
+  static bool dateBeforeNow(DateTime dateTemp) {
+    final date = DateTime(dateTemp.year, dateTemp.month, dateTemp.day);
+    DateTime today = DateTime.now();
+    DateTime todayWithoutTime = DateTime(today.year, today.month, today.day);
+    return date.isBefore(todayWithoutTime);
+  }
 }

@@ -3,9 +3,12 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/attendance_list_response.dart';
 import 'package:eportal/page/add_on/loading.dart';
+import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/time_diff.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -49,6 +52,50 @@ class _AttendancePageState extends State<AttendancePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    int onTime = 0;
+    int late = 0;
+    int early = 0;
+    int gps = 0;
+    int offDay = 0;
+    int permit = 0;
+
+    attendanceListResponse?.listAbsen.forEach((value){
+      if((value.jko??'').toLowerCase().contains('kerja')){
+
+      }else if((value.jko??'').toLowerCase().contains('off')){
+
+      }else if((value.jko??'').toLowerCase().contains('izin')){
+        permit += 1;
+      }else if((value.jko??'').toLowerCase().contains('cuti')){
+        offDay += 1;
+      }
+
+      if((value.arrivalDescription??'').toLowerCase().contains('on_time')){
+        onTime += 1;
+      }
+
+      if((value.arrivalDescription??'').toLowerCase().contains('late')){
+        late += 1;
+      }
+
+      if((value.arrivalDescription??'').toLowerCase().contains('gps')){
+        gps += 1;
+      }
+
+      if((value.leaveDescription??'').toLowerCase().contains('on_time')){
+        onTime += 1;
+      }
+
+      if((value.leaveDescription??'').toLowerCase().contains('early')){
+        early += 1;
+      }
+
+      if((value.leaveDescription??'').toLowerCase().contains('gps')){
+        gps += 1;
+      }
+    });
+
     return Scaffold(
       backgroundColor: CustomColor.background(),
       body: 
@@ -92,32 +139,31 @@ class _AttendancePageState extends State<AttendancePage> {
                           InkWell(
                             onTap: ()async{
                               showMonthPicker(
-                                    context: context,
-                                    initialDate: DateTime.now(),
-                                    cancelWidget: Text('Batal', style: GoogleFonts.poppins(fontSize: 16, color: Colors.red),),
-                                    confirmWidget: Text('Confirm', style: CustomFont.headingEmpatColorful(),),
-                                    firstDate: DateTime.now().subtract(const Duration(days: 365)),
-                                    lastDate: DateTime.now(),
-                                    monthPickerDialogSettings:
-                                        MonthPickerDialogSettings(
-                                          headerSettings: PickerHeaderSettings(
-                                            headerBackgroundColor: CustomColor.primary(),
-                                          ),
-                                          buttonsSettings: PickerButtonsSettings(
-                                            monthTextStyle: CustomFont.headingLimaSemiBold(),
-                                            selectedMonthBackgroundColor: CustomColor.primary(),
-                                            unselectedMonthsTextColor: Colors.black
-                                          ),
-                                      dialogSettings: const PickerDialogSettings(
-                                        dialogBackgroundColor: Colors.white
-                                      ),
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  cancelWidget: Text('Batal', style: GoogleFonts.poppins(fontSize: 16, color: Colors.red),),
+                                  confirmWidget: Text('Confirm', style: CustomFont.headingEmpatColorful(),),
+                                  firstDate: DateTime.now().subtract(const Duration(days: 365)),
+                                  lastDate: DateTime.now(),
+                                  monthPickerDialogSettings:MonthPickerDialogSettings(
+                                    headerSettings: PickerHeaderSettings(
+                                      headerBackgroundColor: CustomColor.primary(),
                                     ),
-                                  ).then((date) async {
-                                    if (date != null) {
-                                      String formattedDate = DateFormat('MM-yyyy').format(date);
-                                      getData(formattedDate);
-                                    }
-                                  });
+                                    buttonsSettings: PickerButtonsSettings(
+                                      monthTextStyle: CustomFont.headingLimaSemiBold(),
+                                      selectedMonthBackgroundColor: CustomColor.primary(),
+                                      unselectedMonthsTextColor: Colors.black
+                                    ),
+                                    dialogSettings: const PickerDialogSettings(
+                                      dialogBackgroundColor: Colors.white
+                                    ),
+                                  ),
+                                ).then((date) async {
+                                  if (date != null) {
+                                    String formattedDate = DateFormat('MM-yyyy').format(date);
+                                    getData(formattedDate);
+                                  }
+                                });
                             },
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -167,7 +213,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                 children: [
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                    child: AutoSizeText(onTime.toString(), style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                   
                                   ),
                                 ],
@@ -195,7 +241,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                children: [
                                  Align(
                                   alignment: Alignment.centerLeft,
-                                  child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                  child: AutoSizeText(late.toString(), style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                  
                                  ),
                                ],
@@ -223,7 +269,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                 children: [
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                    child: AutoSizeText(early.toString(), style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                   
                                   ),
                                 ],
@@ -256,7 +302,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                 children: [
                                   Align(
                                     alignment: Alignment.centerLeft,
-                                    child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                    child: AutoSizeText(gps.toString(), style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                   
                                   ),
                                 ],
@@ -284,7 +330,7 @@ class _AttendancePageState extends State<AttendancePage> {
                                children: [
                                  Align(
                                   alignment: Alignment.centerLeft,
-                                  child: AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                  child: AutoSizeText(offDay.toString(), style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                  ),
                                ],
                              )
@@ -309,7 +355,7 @@ class _AttendancePageState extends State<AttendancePage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  AutoSizeText('0', style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
+                                  AutoSizeText(permit.toString(), style: CustomFont.headingLimaSemiBold(), textAlign: TextAlign.end,),
                                 ],
                               )
                             ],
@@ -339,15 +385,56 @@ class _AttendancePageState extends State<AttendancePage> {
                         final date = dataAbsen?.date??'1990-01-01';
                         bool isLate = false;
                         bool isEarly = false;
-                  
-                        if((dataAbsen?.arrivalDescription ?? '').contains('late')){
-                          isLate = false;
+                        bool inGps = false;
+                        bool outGps = false;
+                        bool workDate = false;
+                        bool holiday = false;
+                        bool permit = false;
+                        bool offDay = false;
+                        bool arriveForget = false;
+                        bool leavedForget = false;
+                        
+                        if(TimeDiff.dateBeforeNow(DateTime.parse(dataAbsen!.date!))){
+                          if(isNullOrEmpty(dataAbsen.arrived)){
+                            arriveForget = true;
+                          }
+
+                          if(isNullOrEmpty(dataAbsen.leaved)){
+                            leavedForget = true;
+                          }
+                        }
+
+                        if((dataAbsen.jko??'').toLowerCase().contains('kerja')){
+                          workDate = true;
+                        }
+
+                        if((dataAbsen.jko??'').toLowerCase().contains('off')){
+                          holiday = true;
+                        }
+
+                        if((dataAbsen.jko??'').toLowerCase().contains('izin')){
+                          permit = true;
+                        }
+
+                        if((dataAbsen.jko??'').toLowerCase().contains('cuti')){
+                          offDay = true;
+                        }
+
+                        if((dataAbsen.arrivalDescription ?? '').toLowerCase().contains('late')){
+                          isLate = true;
+                        }
+
+                        if((dataAbsen.arrivalDescription ?? '').toLowerCase().contains('gps')){
+                          inGps = true;
                         }
                   
-                        if((dataAbsen?.leaveDescription??'').contains('early')){
+                        if((dataAbsen.leaveDescription??'').toLowerCase().contains('early')){
                           isEarly = true;
                         }
-                  
+
+                        if((dataAbsen.leaveDescription??'').toLowerCase().contains('gps')){
+                          outGps = true;
+                        }
                   
                         return Column(
                           children: [
@@ -383,60 +470,46 @@ class _AttendancePageState extends State<AttendancePage> {
                                       children: [
                                         AutoSizeText(CustomConverter.dateToDay(date), style: CustomFont.headingLimaBold(),),
                                         const SizedBox(height: 10,),
+                                        workDate?
                                         Row(
                                           children: [
-                                            Expanded(child: 
-                                              Row(
-                                                children: [
-                                                  const Icon(Icons.login, color: Colors.green, size: 16,),
-                                                  const SizedBox(width: 4,),
-                                                  AutoSizeText(dataAbsen?.arrived??'?', 
-                                                  style: isLate? CustomFont.headingLimaWarning()
-                                                    : CustomFont.headingLimaSemiBold(),
-                                                  
+                                            Expanded(
+                                              flex: 1,
+                                              child: 
+                                                Row(
+                                                  children: [
+                                                    const Icon(Icons.login, color: Colors.green, size: 16,),
+                                                    const SizedBox(width: 4,),
+                                                    AutoSizeText('${arriveForget? 'Lupa Absen': dataAbsen.arrived ?? '?'} ${inGps ? '(GPS)' : ''}', 
+                                                    style: isLate || arriveForget? CustomFont.headingLimaWarning(): CustomFont.headingLimaSemiBold(),
                                                   )
                                                 ],
                                               )
                                             ),
                                             Expanded(
+                                              flex: 1,
                                               child: Row(
                                                 children: [
                                                   const Icon(Icons.logout, color: Colors.red, size: 16),
                                                   const SizedBox(
                                                     width: 4,
                                                   ),
-                                                  AutoSizeText(
-                                                    dataAbsen?.leaved??'00:00',
-                                                    style: isEarly? CustomFont.headingLimaWarning()
-                                                    : CustomFont.headingLimaSemiBold(),
+                                                  AutoSizeText('${leavedForget ? 'Lupa Absen' : dataAbsen.leaved??'?'} ${outGps?'(GPS)':''}',style: isEarly||leavedForget? CustomFont.headingLimaWarning(): CustomFont.headingLimaSemiBold(),
                                                   )
                                                 ]
                                               )
                                             ),
                                           ],
-                                        )
+                                        ):
+                                        holiday?
+                                        AutoSizeText('Hari Libur', style: CustomFont.headingEmpatReject(),):
+                                        offDay?
+                                        AutoSizeText('Cuti', style: CustomFont.headingEmpatReject()):
+                                        permit?
+                                        AutoSizeText('Izin', style: CustomFont.headingEmpatWarning(),):
+                                        AutoSizeText('Tidak Ada data', style: CustomFont.headingEmpatSemiBold())
                                       ],
                                     ),
-                                  ),
-                                  const SizedBox(width: 6,),
-                                  Center(
-                                      child: 
-                                      dataAbsen?.jko != 'V'?
-                                      SizedBox(
-                                        child: Text('Libur', style: CustomFont.announcement(),),
-                                      ):
-                                    SizedBox(
-                                      child:  (isEarly || isLate)
-                                      ? const Icon(
-                                        Icons.warning_amber_rounded,
-                                        color:Colors.amber,
-                                        weight: 12,
-                                      ): const Icon(
-                                          Icons.check,
-                                          color:Colors.green,
-                                          weight: 12,
-                                      ),
-                                    )
                                   ),
                                 ],
                               ),
