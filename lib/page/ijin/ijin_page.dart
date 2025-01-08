@@ -76,13 +76,13 @@ class _IjinPageState extends State<IjinPage> {
 
     for (var value in izinList) {
       if(value.state == 1){
-        waiting += value.finishDate!.difference(value.startDate!).inDays + 1;
+        waiting += 1;
       }else if(value.state == 2){
-        approve += value.finishDate!.difference(value.startDate!).inDays + 1;
+        approve += 1;
       }else if(value.state == 3){
-        reject += value.finishDate!.difference(value.startDate!).inDays + 1;
+        reject += 1;
       }else if(value.state == 4){
-        cancel += value.finishDate!.difference(value.startDate!).inDays + 1;
+        cancel += 1;
       }
     }
 

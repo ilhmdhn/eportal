@@ -480,7 +480,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                     NavigationService.move(IjinPage.nameRoute);
                                   },
                                   child: AddOnButton.textImageButton(
-                                      context, 'assets/icon/ijin2.png', 'Ijin'),
+                                      context, 'assets/icon/ijin2.png', 'Izin'),
                                 ),
                               ),
                             ],

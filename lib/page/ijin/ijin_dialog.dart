@@ -51,20 +51,8 @@ class IjinDialog{
       'Izin Sakit',
       'Izin Menikah',
       'Izin Melahirkan',
-      'Izin Lainnnya',
+      'Izin Lainnya',
     ];
-
-    void updateMaxDate(){
-      String type = '0';
-      if (selectedType == 'Izin Menikah') {
-        type = '2';
-      } else if (selectedType == 'Izin Melahirkan') {
-        type = '3';
-      }
-      if(type != '0'){
-        ctx.read<MaxDateProvider>().updateDate(startDate, type);
-      }
-    }
 
     TextEditingController tfReason = TextEditingController();    
 
@@ -86,7 +74,15 @@ class IjinDialog{
       builder: (BuildContext ctx){
         return StatefulBuilder(
           builder: (BuildContext ctxStateful, StateSetter setState) {
-            
+            void updateMaxDate() {
+              if (selectedType == 'Izin Menikah') {
+                ctx.read<MaxDateProvider>().updateDate(startDate, '2');
+              } else if (selectedType == 'Izin Melahirkan') {
+                ctx.read<MaxDateProvider>().updateDate(startDate, '3');
+              } else if (selectedType == 'Izin Lainnya') {
+                ctx.read<MaxDateProvider>().hardCode(startDate.add(const Duration(days: 30)));
+              }
+            }
             Future<void> pickImage(ImageSource source) async {
               final XFile? pickedFile = await picker.pickImage(source: source);
               if (pickedFile != null) {
@@ -395,8 +391,8 @@ class IjinDialog{
                               return CustomDatePicker.primary(child!);
                             },
                             context: ctx,
-                            initialDate: endDate,
-                            firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                            initialDate: startDate,
+                            firstDate: startDate,
                             lastDate: maxDateProvider.date,
                           );
                           if (selectedDate != null) {
@@ -418,7 +414,7 @@ class IjinDialog{
                               size: 20,
                             )
                           )
-                          :Text(CustomConverter.dateToDay(DateFormat('yyyy-MM-dd').format(maxDateProvider.date)),style: CustomFont.headingEmpat(),)
+                          :Text(CustomConverter.dateToDay(DateFormat('yyyy-MM-dd').format(endDate)),style: CustomFont.headingEmpat(),)
                         ),
                       );
                     },
@@ -623,7 +619,7 @@ class IjinDialog{
                     const SizedBox(
                       height: 12,
                     ),
-                    endTimeWidget(),
+                    endDateWidget(),
                     const SizedBox(
                       height: 12,
                     ),
@@ -634,14 +630,7 @@ class IjinDialog{
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    endDateWidget(),
-                    const SizedBox(
-                      height: 12,
-                    ),
-                    reasonIzinWidget()
+                    AutoSizeText('Tipe Izin tidak diketahui', style: CustomFont.headingDuaSemiBold(),)
                   ],
                 );
               }
@@ -811,11 +800,11 @@ class IjinDialog{
                               return ShowToast.error('Dokumen hpl tidak ada');
                             }
                             networkResponse = await NetworkRequest.postIjinBukti('8', DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), file!.paths[0]!);                            
-                          } else if(selectedType == 'Izin Lainnnya'){
+                          } else if(selectedType == 'Izin Lainnya'){
                             if (isNullOrEmpty(tfReason.text)) {
                               return ShowToast.error('Alasan kosong');
                             }
-                            networkResponse = await NetworkRequest.postIzin('6',DateFormat('yyyy-MM-dd').format(startDate),DateFormat('yyyy-MM-dd').format(endDate), CustomConverter.time(startTime), CustomConverter.time(endTime), tfReason.text, '0');
+                            networkResponse = await NetworkRequest.postIzin('6',DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), CustomConverter.time(startTime), CustomConverter.time(endTime), tfReason.text, '0');
                           }
 
                           if (networkResponse.state != true) {

@@ -235,6 +235,8 @@ class NetworkRequest{
       final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/ijin');
       
+      print('type: $type, startDate: $startDate, finishDate: $finishDate, startTime: $startTime, finishTime: $finishTime, reason: $reason, isDoctorLetter: $isDoctorLetter');
+
       final apiResponse = await http.post(url,
           headers: {'Content-Type': 'application/json', 'authorization': key},
           body: json.encode({
