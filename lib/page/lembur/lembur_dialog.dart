@@ -535,33 +535,34 @@ class OvertimeDialog{
                                     horizontal: 12
                                   )
                                 )
-                              ),
-                              data.editable
-                              ? Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const SizedBox(
-                                      height: 12,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.end,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            NavigationService.back();
-                                            OvertimeDialog.editOvertimeDialog(ctx, data);
-                                          },
-                                          child: CustomButton.edit(),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                )
-                              : const SizedBox()
+                              )
                             ],
                           ):
                           const SizedBox(),
+                          data.editable
+                          ? Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(
+                                  height: 12,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.end,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        NavigationService.back();
+                                        OvertimeDialog.editOvertimeDialog(
+                                            ctx, data);
+                                      },
+                                      child: CustomButton.edit(),
+                                    )
+                                  ],
+                                )
+                              ],
+                            )
+                          : const SizedBox()
                         ],
                       ),
                     ),
@@ -827,10 +828,8 @@ class OvertimeDialog{
                               ),
                               InkWell(
                                 onTap: () async {
-                                  if (instructorSelected == 'Pilih' ||
-                                      instructorSelected == 'Lainnya' ||
-                                      isNullOrEmpty(instructorSelected)) {
-                                    ShowToast.warning('Lengkapi data');
+                                  if (instructorSelected == 'Pilih' || instructorSelected == 'Lainnya' || isNullOrEmpty(instructorSelected)) {
+                                    ShowToast.warning('Lengkapi data $instructorSelected');
                                     return;
                                   }
                                   final confirm = await ConfirmationDialog.confirmation(ctx, 'Ubah data lembur?');
