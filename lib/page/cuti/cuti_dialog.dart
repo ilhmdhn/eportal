@@ -715,22 +715,16 @@ class CutiDialog {
                                       }
                                     },
                                     child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 6, horizontal: 12),
+                                        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                                         width: double.infinity,
-                                        decoration: BoxDecoration(
-                                            border:
-                                                Border.all(width: 1, color: Colors.grey)),
+                                        decoration: BoxDecoration( border:Border.all(width: 1, color: Colors.grey)),
                                         child: maxDateProvider.isLoading
                                             ? Center(
                                                 child: LoadingAnimationWidget.waveDots(
                                                 color: CustomColor.primary(),
                                                 size: 20,
                                               ))
-                                            : Text(
-                                                CustomConverter.dateToDay(
-                                                    DateFormat('yyyy-MM-dd')
-                                                        .format(maxDateProvider.date)),
+                                            : Text(CustomConverter.dateToDay(DateFormat('yyyy-MM-dd').format(endDate)),
                                                 style: CustomFont.headingEmpat(),
                                               )),
                                   );
