@@ -295,7 +295,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   const SizedBox(
                                     height: 6,
                                   ),
-                                  Expanded(
+                                  /*Expanded(
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
                                       width: double.maxFinite,
@@ -346,7 +346,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         ],
                                       ),
                                     ),
-                                  ),
+                                  ),*/
                                   SizedBox(height: ScreenSize.setHeightPercent(context, 3),)
                                 ],
                               ),

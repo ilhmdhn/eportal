@@ -11,10 +11,8 @@ Future<void> subscribeToTopic() async {
       return;
     }
     await FirebaseMessaging.instance.subscribeToTopic(Profile.getProfile().department);
-    await FirebaseMessaging.instance.subscribeToTopic(Profile.getProfile().outlet);
+    await FirebaseMessaging.instance.subscribeToTopic(Profile.getProfile().outlet.split(' ')[0]);
   } catch (e) {
     ShowToast.warning('Gagal subscribe ke topic ${e.toString()}');
-    // ignore: avoid_print
-    print('Gagal subscribe ke topic ${e.toString()}');
   }
 }
