@@ -119,34 +119,42 @@ class OvertimePageState extends State<OvertimePage> {
                           AutoSizeText('Data Lembur', style: CustomFont.headingTigaSemiBold(),),
                           Expanded(
                             flex: 1,
-                            child: Container(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                    decoration: BoxDecoration(
-                                      border: Border.all(width: 0.3, color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(3)
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 3),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                          width: 0.3, color: Colors.grey),
+                                      borderRadius:
+                                          BorderRadius.circular(3)),
+                                  child: InkWell(
+                                    onTap: () async {
+                                      final refresh = await OvertimeDialog
+                                          .showOvertimeDialog(context);
+                                      if (refresh) {
+                                        refreshData();
+                                      }
+                                    },
+                                    child: Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.add,
+                                          size: 16,
+                                        ),
+                                        AutoSizeText(
+                                          'Ajukan',
+                                          style:
+                                              CustomFont.standartFont(),
+                                        )
+                                      ],
                                     ),
-                                    child: InkWell(
-                                      onTap: ()async{
-                                        final refresh = await OvertimeDialog.showOvertimeDialog(context);
-                                        if(refresh){
-                                          refreshData();
-                                        }
-                                      },
-                                      child: Row(
-                                        children: [
-                                          const Icon(Icons.add, size: 16, ),
-                                          AutoSizeText('Ajukan', style: CustomFont.standartFont(),)
-                                        ],
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                                  ),
+                                )
+                              ],
                             ),
                           )
                         ],

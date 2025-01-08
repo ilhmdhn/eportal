@@ -24,8 +24,10 @@ import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -512,8 +514,14 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                               Flexible(
                                 flex: 1,
-                                child: AddOnButton.textImageButton(
-                                    context, 'assets/icon/opd.png', 'OPD'),
+                                child: InkWell(
+                                  onTap: ()async{
+                                    final fcmToken = await FirebaseMessaging.instance.getToken();
+                                    await Clipboard.setData(ClipboardData(text: fcmToken??''));
+                                  },
+                                  child: AddOnButton.textImageButton(
+                                      context, 'assets/icon/opd.png', 'OPD'),
+                                ),
                               ),
                               Flexible(
                                 flex: 1,

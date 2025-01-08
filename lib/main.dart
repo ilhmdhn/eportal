@@ -36,22 +36,14 @@ void main() async{
 
   await Firebase.initializeApp();
   configLoading();
+  
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     if (message.data['type'] == 'NOTIFICATION') {
-      // createNotif(message.data['title'], message.data['message']);
-      print('isinyaa ${message.data}');
-      // ShowNotification.showAttendanceNotification(message.data['title'], message.data['message']);
+      ShowNotification.showAttendanceNotification(message.data['title'], message.data['message']);
     }
   });
   
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message){
-    // if(message.data['type'] == 'NOTIFICATION'){
-      print('isinyaa ${message.data}');
-      // createNotif(message.data['title'], message.data['message']);
-    // }
-  });
-  
-
   FirebaseTools.getToken();
   await SharedPreferencesData.initialize();
   await dotenv.load(fileName: ".env");
@@ -112,6 +104,15 @@ class MyApp extends StatelessWidget {
   }
 }
 
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage msg) async {
+  await Firebase.initializeApp();
+  if (msg.data['type'] == 'NOTIFICATION') {
+    msg.data['title'] = 'PZ';
+    ShowNotification.filterNotif(msg);
+  }
+}
+
 void configLoading() {
   EasyLoading.instance
     ..displayDuration = const Duration(milliseconds: 2000)
@@ -119,7 +120,6 @@ void configLoading() {
     ..loadingStyle = EasyLoadingStyle.custom
 
     ..progressColor = CustomColor.primary()
-    // ..backgroundColor = Colors.green
     ..backgroundColor = Colors.transparent
     ..indicatorColor = CustomColor.primary()
     ..indicatorSize = 56
@@ -141,6 +141,8 @@ void createNotif(title, content) {
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> initializeNotifications() async {
+  final InitializationSettings initializationSettings;
+
   if (Platform.isIOS || Platform.isMacOS) {
     final DarwinInitializationSettings initializationSettingsDarwin =
         DarwinInitializationSettings(
@@ -171,12 +173,10 @@ Future<void> initializeNotifications() async {
       ],
     );
 
-    final InitializationSettings initializationSettings =
-        InitializationSettings(
+    initializationSettings = InitializationSettings(
       iOS: initializationSettingsDarwin,
       macOS: initializationSettingsDarwin,
     );
-
     await flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 }
