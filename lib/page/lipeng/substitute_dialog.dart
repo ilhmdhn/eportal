@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/substitution_response.dart';
+import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/lipeng/substitute_page.dart';
 import 'package:eportal/style/custom_button.dart';
 import 'package:eportal/style/custom_container.dart';
@@ -132,7 +133,7 @@ class SubstituteDialog{
                               
                                   if (selectedDate != null) {
                                     setState(() {
-                                      date = selectedDate;
+                                      dateDest = selectedDate;
                                     });
                                   }
                                 },
@@ -143,7 +144,7 @@ class SubstituteDialog{
                                     decoration: BoxDecoration(
                                         border: Border.all(width: 1, color: Colors.grey)),
                                     child: Text(
-                                      CustomConverter.dateTimeToDay(date),
+                                      CustomConverter.dateTimeToDay(dateDest),
                                       style: CustomFont.headingEmpat(),
                                     )),
                               ),
@@ -669,6 +670,13 @@ class SubstituteDialog{
                               ),
                               InkWell(
                                 onTap: () async {
+
+                                  final confirmation = await ConfirmationDialog.confirmation(ctx, 'Ubah Libur Pengganti?');
+
+                                  if(!confirmation){
+                                    return;
+                                  }
+
                                   if (date == dateDest) {
                                     ShowToast.warning('Tanggal tidak boleh sama');
                                     return;
