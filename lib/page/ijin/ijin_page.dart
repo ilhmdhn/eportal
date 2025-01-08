@@ -3,9 +3,7 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/izin_response.dart';
 import 'package:eportal/page/add_on/loading.dart';
-import 'package:eportal/page/cuti/cuti_dialog.dart';
 import 'package:eportal/page/ijin/ijin_dialog.dart';
-import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
@@ -131,8 +129,7 @@ class _IjinPageState extends State<IjinPage> {
                             ),
                             Expanded(
                               flex: 1,
-                              child: Container(
-                                child: Row(
+                              child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.end,
                                   mainAxisSize: MainAxisSize.min,
@@ -169,8 +166,7 @@ class _IjinPageState extends State<IjinPage> {
                                     )
                                   ],
                                 ),
-                              ),
-                            )
+                              )
                           ],
                         ),
                         const SizedBox(height: 6,),

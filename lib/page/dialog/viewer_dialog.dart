@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
@@ -10,6 +11,10 @@ class CustomViewer{
   static pdfFile(BuildContext ctx, File pdfFile) async{
     final noScreenshot = NoScreenshot.instance;
     await noScreenshot.screenshotOff();
+    if(!ctx.mounted){
+      ShowToast.warning('Membuka dokumen dibatalkan');
+      return;
+    }
     showDialog(
       context: ctx,
       builder: (BuildContext ctx) {
@@ -49,6 +54,10 @@ class CustomViewer{
   static pdfNetwork(BuildContext ctx, String url) async {
     final noScreenshot = NoScreenshot.instance;
     await noScreenshot.screenshotOff();
+    if(!ctx.mounted){
+      ShowToast.warning('Lihat dokumen dibatalkan');
+      return;
+    }
     showDialog(
       context: ctx,
       builder: (BuildContext ctx) {

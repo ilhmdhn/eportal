@@ -14,6 +14,11 @@ class SharedPreferencesData{
     await _prefs?.setString('KEY', key);
   }
 
+  Future<String?> updatedKey()async{
+    final sp = await SharedPreferences.getInstance();
+    return sp.getString('KEY');
+  }
+
   static String? getKey(){
     final String? key = _prefs?.getString('KEY');
     return key;

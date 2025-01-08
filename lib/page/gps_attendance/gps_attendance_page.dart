@@ -65,7 +65,6 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
   }
 
   void initLocation()async{
-    print('DEBUGGING INIT LOCATION');
     PermissionStatus permissionGranted = await _location.hasPermission();
 
     if(permissionGranted == PermissionStatus.denied){
@@ -503,7 +502,6 @@ class _GpsAttendancePageState extends State<GpsAttendancePage> {
                                 ShowToast.error('Jarak ke outlet harus dibawah 50 meter');
                                 return;
                               }
-                              print('DEBUGGING Jaraknyaaa ${nearest.distance}');
                               CameraDialog.showCameraDialog(context, nearest.distance, nearest.name);
                               
                             }, child: Container(

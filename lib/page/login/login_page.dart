@@ -11,6 +11,7 @@ import 'package:eportal/util/biometric.dart';
 import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/subsribe.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -33,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   void keyChecker(){
     if(key != null){
       try {
+        subscribeToTopic();
         getIt<NavigationService>().pushNamedAndRemoveUntil(DashboardPage.nameRoute);
       } catch (e) {
         ShowToast.warning('Gagal beripindah ke halaman dashboard');

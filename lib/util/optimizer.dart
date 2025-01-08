@@ -1,3 +1,4 @@
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/services.dart';
 
 class Optimizer{
@@ -7,7 +8,7 @@ class Optimizer{
       try {
         await platform.invokeMethod('requestIgnoreBatteryOptimization');
       } catch (e) {
-        print("Error: $e");
+        ShowToast.error("Error: $e");
       }
   }
 }

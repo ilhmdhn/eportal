@@ -109,8 +109,7 @@ class _SspPage extends State<SspPage> {
                       AutoSizeText('Data SSP', style: CustomFont.headingTigaSemiBold(),),
                       Expanded(
                         flex: 1,
-                        child: Container(
-                          child: Row(
+                        child:Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -134,8 +133,7 @@ class _SspPage extends State<SspPage> {
                               )
                             ],
                           ),
-                        ),
-                      )
+                        )
                     ],
                   ),
                 ),
@@ -162,10 +160,13 @@ class _SspPage extends State<SspPage> {
                           onTap: ()async{
                             final result = await SspDialog.detailSsp(context, data);
                             if(result){
+                              if(context.mounted){
                               final refresh = await SspDialog.editSsp(context, data);
-                              if(refresh){
-                                refreshData();
+                                if (refresh) {
+                                  refreshData();
+                                }
                               }
+
                             }
                           },
                           child: Column(

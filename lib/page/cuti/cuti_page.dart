@@ -134,8 +134,7 @@ class _CutiPageState extends State<CutiPage> {
                           AutoSizeText('Data Cuti', style: CustomFont.headingTigaSemiBold(),),
                           Expanded(
                             flex: 1,
-                            child: Container(
-                              child: Row(
+                            child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -162,8 +161,7 @@ class _CutiPageState extends State<CutiPage> {
                                   )
                                 ],
                               ),
-                            ),
-                          )
+                            )
                         ],
                       ),
                       const SizedBox(height: 6,),

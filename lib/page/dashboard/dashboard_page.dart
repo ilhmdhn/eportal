@@ -8,7 +8,6 @@ import 'package:eportal/page/add_on/button.dart';
 import 'package:eportal/page/attendance/attendance_page.dart';
 import 'package:eportal/page/cuti/cuti_page.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
-import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/page/ijin/ijin_page.dart';
 import 'package:eportal/page/lembur/lembur_page.dart';
 import 'package:eportal/page/lipeng/substitute_page.dart';
@@ -324,7 +323,6 @@ class _DashboardPageState extends State<DashboardPage> {
                                                           'Datang: 07:53'),
                                                     ],
                                                     onTap: () {
-                                                      print("Tap Event");
                                                     },
                                                   ),
                                                 ),

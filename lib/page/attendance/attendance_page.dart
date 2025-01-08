@@ -7,7 +7,6 @@ import 'package:eportal/page/attendance/attendance_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:eportal/util/time_diff.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:month_picker_dialog/month_picker_dialog.dart';

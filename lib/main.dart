@@ -27,6 +27,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+// ignore: depend_on_referenced_packages
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:io';
@@ -36,11 +37,17 @@ void main() async{
 
   await Firebase.initializeApp();
   configLoading();
-  
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+  
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
     if (message.data['type'] == 'NOTIFICATION') {
-      ShowNotification.showAttendanceNotification(message.data['title'], message.data['message']);
+      final state = message.data['state'] ?? '2';
+      if(state == '1'){
+        // NotificationStyle.info(navigatorKey.currentContext!, message.data['title'], message.data['message']);
+      }else if(state == '2'){
+        NotificationStyle.info(navigatorKey.currentContext!, message.data['title'], message.data['message']);
+      }
+      // ShowNotification.filterNotif(message);
     }
   });
   
@@ -108,8 +115,7 @@ class MyApp extends StatelessWidget {
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage msg) async {
   await Firebase.initializeApp();
   if (msg.data['type'] == 'NOTIFICATION') {
-    msg.data['title'] = 'PZ';
-    ShowNotification.filterNotif(msg);
+      ShowNotification.filterNotif(msg);
   }
 }
 

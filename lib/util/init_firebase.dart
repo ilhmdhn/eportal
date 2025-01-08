@@ -1,14 +1,16 @@
+import 'package:eportal/util/toast.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
 class FirebaseTools{
   static getToken()async{
-    final fcmToken = await FirebaseMessaging.instance.getToken();
+    String? fcmToken = await FirebaseMessaging.instance.getToken();
 
-  FirebaseMessaging.instance.onTokenRefresh.listen((fcmToken) {
-      print('TOKEN REFRESH $fcmToken');
+    FirebaseMessaging.instance.onTokenRefresh.listen((refreshToken) {
+      fcmToken = refreshToken;
     }).onError((err) {
-      print('FAIL GENERATE NEW TOKEN'+err);
+      ShowToast.warning('Generate refresh token failed $err');
     });
-    print('TOKEN new $fcmToken');
+    // ignore: avoid_print
+    print('NEW TOKEN $fcmToken');
   }
 }
