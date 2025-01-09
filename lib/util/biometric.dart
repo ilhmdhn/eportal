@@ -6,8 +6,7 @@ class BiometricAuth {
     try {
       final LocalAuthentication auth = LocalAuthentication();
       final bool canAuthenticateWithBiometrics = await auth.canCheckBiometrics;
-      final bool canAuthenticate =
-          canAuthenticateWithBiometrics || await auth.isDeviceSupported();
+      final bool canAuthenticate = canAuthenticateWithBiometrics || await auth.isDeviceSupported();
       // final List<BiometricType> availableBiometrics = await auth.getAvailableBiometrics();
 
       if (!canAuthenticateWithBiometrics || !canAuthenticate) {

@@ -94,7 +94,7 @@ class PermissionPage extends StatefulWidget {
             child: Column(
               children: [
                 AutoSizeText('Permission', style: CustomFont.headingEmpatBold(),),
-                Text('Permission untuk mengaktifkan interaksi aplikasi dengan perangkat smartphone. Jika permission tidak diberikan, aplikasi akan tetap menjalankan fitur yang ada', style: CustomFont.headingLima(), textAlign: TextAlign.justify,),
+                Text('Permission untuk mengaktifkan interaksi aplikasi dengan perangkat smartphone. Jika permission tidak diberikan, aplikasi tidak dapat menjalankan fitur yang ada', style: CustomFont.headingLima(), textAlign: TextAlign.justify,),
                 SingleChildScrollView(
                   child: Column(
                     children: [
@@ -327,7 +327,7 @@ class PermissionPage extends StatefulWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      AutoSizeText('Nonaktifkan Hemat Baterai', style: CustomFont.headingEmpatBold(), minFontSize: 6, maxLines: 1,),
+                                      AutoSizeText('Optimalkan penggunaan aplikasi', style: CustomFont.headingEmpatBold(), minFontSize: 6, maxLines: 1,),
                                       AutoSizeText(
                                         "Agar E-Portal tidak terhenti dan kamu tidak mendapatkan pemberitahuan, maka pastikan E-Portal sudah diaktifkan di menu ini ya!",
                                         style: CustomFont.headingLima(),

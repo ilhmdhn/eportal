@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class NotificationDialog {
   OverlayEntry? _overlayEntry;
 
-  void showNotificationOverlay(BuildContext context) {
+void showNotificationOverlay(BuildContext context) {
     if (_overlayEntry != null) {
       _overlayEntry?.remove();
       _overlayEntry = null;
@@ -15,75 +15,93 @@ class NotificationDialog {
     }
 
     _overlayEntry = OverlayEntry(
-      builder: (context) => Positioned(
-        top: 50.0,
-        right: 20.0,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            width: 250,
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-              boxShadow: const [
-                BoxShadow(
-                  color: Colors.black26,
-                  blurRadius: 10,
-                  offset: Offset(0, 5),
-                ),
-              ],
+      builder: (context) => Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              closeOverlay();
+            },
+            child: Container(
+              color: Colors.black.withOpacity(0.2),
+              width: double.infinity,
+              height: double.infinity,
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  children: [
-                    Icon(Icons.notifications, color: CustomColor.primary()),
-                    const SizedBox(width: 8),
-                    const Text(
-                      "Notifikasi",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        _overlayEntry?.remove();
-                        _overlayEntry = null;
-                      },
-                      child: const Icon(Icons.close, color: Colors.grey),
+          ),
+
+          Positioned(
+            top: 25.0,
+            right: 20.0,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                width: 250,
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.0),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(0, 5),
                     ),
                   ],
                 ),
-                const SizedBox(height: 6,),
-                Container(
-                  height: 1,
-                  width: double.maxFinite,
-                  color: Colors.grey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.notifications, color: CustomColor.primary()),
+                        const SizedBox(width: 8),
+                        const Text(
+                          "Notifikasi",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        GestureDetector(
+                          onTap: () {
+                            closeOverlay();
+                          },
+                          child: const Icon(Icons.close, color: Colors.grey),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      height: 1,
+                      width: double.maxFinite,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: ScreenSize.setHeightPercent(context, 30),
+                      child: ListView.builder(
+                        itemCount: 10,
+                        itemBuilder: (context, index) {
+                          return _buildNotificationItem(
+                            'Persetujuan Cuti',
+                            'Cuti tanggal 13 telah disetujui',
+                            '14/11',
+                          );
+                        },
+                      ),
+                    )
+                  ],
                 ),
-                SizedBox(
-                  height: ScreenSize.setHeightPercent(context, 30),
-                  child: ListView.builder(
-                    itemCount: 10,
-                    itemBuilder: (context, index){
-                      return _buildNotificationItem('Persetujuan Cuti', 'Cuti tanggal 13 telah disetujui', '14/11');
-                    },
-                  ),
-                )
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
 
     Overlay.of(context).insert(_overlayEntry!);
   }
-
+  
   Widget _buildNotificationItem(String title, String room, String time) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -116,7 +134,6 @@ class NotificationDialog {
     );
   }
 
-  // Fungsi untuk menutup overlay secara manual
   void closeOverlay() {
     _overlayEntry?.remove();
     _overlayEntry = null;

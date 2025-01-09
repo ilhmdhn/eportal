@@ -5,6 +5,7 @@ import 'package:eportal/data/network/response/sallary_response.dart';
 import 'package:eportal/page/add_on/loading.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/biometric.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class SallaryPage extends StatefulWidget {
 class _SallaryPageState extends State<SallaryPage> {
 
   bool isLoading = true;
-
+  bool isLocked = true;
   List<SallaryModel> sallaryList = [];
 
   void getData()async{
@@ -73,6 +74,19 @@ class _SallaryPageState extends State<SallaryPage> {
                     
                         return InkWell(
                           onTap: ()async{
+
+                            if(isLocked){
+                              final auth = await BiometricAuth().requestFingerprintAuth();
+
+                              if(!auth){
+                                return;
+                              }else{
+                                setState(() {
+                                  isLocked = false;  
+                                });
+                              }
+                            }
+
                             EasyLoading.show();
                             final linkResponse = await NetworkRequest.getSallaryPdf(data.period);
                             EasyLoading.dismiss();
@@ -108,7 +122,18 @@ class _SallaryPageState extends State<SallaryPage> {
                                   children: [
                                     Text(data.grade, style: CustomFont.headingLimaSemiBold(),),
                                     InkWell(
-                                      onTap: (){
+                                      onTap: ()async{
+                                        if(isLocked){
+                                          final auth = await BiometricAuth().requestFingerprintAuth();
+
+                                          if(!auth){
+                                            return;
+                                          }else{
+                                            setState(() {
+                                              isLocked = false;  
+                                            });
+                                          }
+                                        }
                                         setState(() {
                                         data.show = !data.show;
                                         });
