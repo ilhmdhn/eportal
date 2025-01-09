@@ -6,12 +6,12 @@ class FirebaseTools{
   static getToken()async{
     String? fcmToken = await FirebaseMessaging.instance.getToken();
 
-    // FirebaseMessaging.instance.onTokenRefresh.listen((refreshToken) {
-    //   fcmToken = refreshToken;
-    // }).onError((err) {
-    //   ShowToast.warning('Generate refresh token failed $err');
-    // });
-    print('tokeennnn $fcmToken');
+    FirebaseMessaging.instance.onTokenRefresh.listen((refreshToken) {
+      fcmToken = refreshToken;
+    }).onError((err) {
+      ShowToast.warning('Generate refresh token failed $err');
+    });
+    
     NetworkRequest.postToken(fcmToken??'');
   }
 }

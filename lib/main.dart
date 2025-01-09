@@ -16,7 +16,6 @@ import 'package:eportal/page/schedule/schedule_page.dart';
 import 'package:eportal/page/ssp/ssp_page.dart';
 import 'package:eportal/provider/list_outlet_provider.dart';
 import 'package:eportal/provider/max_date.dart';
-import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/show_notification.dart';

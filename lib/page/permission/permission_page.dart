@@ -28,7 +28,6 @@ class PermissionPage extends StatefulWidget {
     bool getPermissionState = false;
 
     void permissionChecker() async{
-      getPermissionState = true;
       if(await Permission.notification.isGranted == true){
         notificationPermissionState = PermissionState.granted;
       }else if(await Permission.notification.isDenied == true || await Permission.notification.isPermanentlyDenied == true){
@@ -71,6 +70,7 @@ class PermissionPage extends StatefulWidget {
   @override
   Widget build(BuildContext context) {
     if(getPermissionState == false){
+      getPermissionState = true;
       permissionChecker();
     }
     return Scaffold(
@@ -108,31 +108,18 @@ class PermissionPage extends StatefulWidget {
                             await openAppSettings();
                           }
 
-                          Permission.notification.onDeniedCallback(() {
-                            // Your code
+                          await Permission.notification.onDeniedCallback(() {
                           }).onGrantedCallback(() {
-                            // Your code
                           }).onPermanentlyDeniedCallback(() {
-                            // Your code
+                            ShowToast.error('Gagal diaktifkan');
                           }).onRestrictedCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).onLimitedCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).onProvisionalCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).request();
-
-                          if(await Permission.notification.isGranted == true){
-                            notificationPermissionState = PermissionState.granted;
-                          }else if(await Permission.notification.isDenied == true || await Permission.notification.isPermanentlyDenied == true){
-                            notificationPermissionState = PermissionState.denied;
-                          }else if(await Permission.notification.isLimited == true || await Permission.notification.isProvisional || await Permission.notification.isRestricted){
-                            notificationPermissionState = PermissionState.limited;
-                          }
-                          
-                          setState(() {
-                            notificationPermissionState;
-                          });
+                          permissionChecker();
                         },
                         child: Column(
                           children: [
@@ -144,28 +131,32 @@ class PermissionPage extends StatefulWidget {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text('Notifikasi', style: CustomFont.headingEmpatBold()),
-                                      AutoSizeText("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s", style: CustomFont.headingEmpat(),
+                                      AutoSizeText("Pastikan kamu sudah mengaktifkan lokasi ini agar tidak ketinggalan info penting dari E-Portal.", style: CustomFont.headingLima(),
                                         minFontSize: 13, maxLines: 3, overflow: TextOverflow.ellipsis, textAlign: TextAlign.justify,),
                                     ],
                                   ),
                                 ),
                                 const SizedBox(width: 19,),
-                                SizedBox(
+                                Container(
                                   width: 26,
                                   height: 26,
-                                  child: Transform.scale(
-                                    scale: 1.3,
-                                    child: Checkbox(
-                                      value: notificationPermissionState == PermissionState.granted?true: false,
-                                      
-                                      activeColor: CustomColor.primary(),
-                                      checkColor: Colors.white,
-                                      onChanged: ((value){
-                                    
-                                      }),
+                                  decoration: BoxDecoration(
+                                    color: notificationPermissionState == PermissionState.granted ? Colors.white : Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: notificationPermissionState == PermissionState.granted ? Colors.green : Colors.grey,
+                                      width: 2,
                                     ),
                                   ),
-                                )                            ],
+                                  child: Center(
+                                    child: Icon(
+                                      notificationPermissionState == PermissionState.granted ? Icons.check : Icons.close,
+                                      color: notificationPermissionState == PermissionState.granted ? Colors.green : Colors.red,
+                                      size: 19,
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ],
                         ),
@@ -177,24 +168,24 @@ class PermissionPage extends StatefulWidget {
                       ),
                       InkWell(
                         onTap: () async {
-                          if (locationPermissionState ==
-                              PermissionState.granted) {
+                          if (locationPermissionState ==PermissionState.granted) {
                             ShowToast.warning('Sudah disetujui');
                             return;
                           }
-                          Permission.location.onDeniedCallback(() {
-                            // Your code
-                          }).onGrantedCallback(() {
-                            // Your code
+                          await Permission.location.onDeniedCallback(() {
+                           }).onGrantedCallback(() {
                           }).onPermanentlyDeniedCallback(() {
-                            // Your code
+                            ShowToast.error('Gagal diaktifkan');
                           }).onRestrictedCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).onLimitedCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).onProvisionalCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).request();
+                          
+                          permissionChecker();
+
                         },
                         child: Column(
                           children: [
@@ -208,12 +199,11 @@ class PermissionPage extends StatefulWidget {
                                       Text('Location',
                                           style: CustomFont.headingEmpatBold()),
                                       AutoSizeText(
-                                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-                                        style: CustomFont.headingEmpat(),
+                                        "Akses lokasi dibutuhkan agar kamu dapat absen menggunakan GPS, pastikan sudah tercentang ya!",
+                                        style: CustomFont.headingLima(),
                                         minFontSize: 13,
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.justify,
                                       ),
                                     ],
                                   ),
@@ -221,16 +211,22 @@ class PermissionPage extends StatefulWidget {
                                 const SizedBox(
                                   width: 19,
                                 ),
-                                SizedBox(
+                                Container(
                                   width: 26,
                                   height: 26,
-                                  child: Transform.scale(
-                                    scale: 1.3,
-                                    child: Checkbox(
-                                      value: locationPermissionState == PermissionState.granted? true: false,
-                                      activeColor: CustomColor.primary(),
-                                      checkColor: Colors.white,
-                                      onChanged: ((value) {}),
+                                  decoration: BoxDecoration(
+                                    color: locationPermissionState == PermissionState.granted ? Colors.white : Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: locationPermissionState == PermissionState.granted ? Colors.green : Colors.grey,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      locationPermissionState == PermissionState.granted ? Icons.check : Icons.close,
+                                      color: locationPermissionState == PermissionState.granted ? Colors.green : Colors.red,
+                                      size: 19,
                                     ),
                                   ),
                                 )
@@ -251,19 +247,19 @@ class PermissionPage extends StatefulWidget {
                             ShowToast.warning('Sudah disetujui');
                             return;
                           }
-                          Permission.camera.onDeniedCallback(() {
-                            // Your code
+                          await Permission.camera.onDeniedCallback(() {
                           }).onGrantedCallback(() {
-                            // Your code
                           }).onPermanentlyDeniedCallback(() {
-                            // Your code
+                            ShowToast.error('Gagal diaktifkan');
                           }).onRestrictedCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).onLimitedCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).onProvisionalCallback(() {
-                            // Your code
+                            ShowToast.warning('Akses Terbatas');
                           }).request();
+
+                          permissionChecker();
                         },
                         child: Column(
                           children: [
@@ -274,15 +270,13 @@ class PermissionPage extends StatefulWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Text('Kamera',
-                                          style: CustomFont.headingEmpatBold()),
+                                      Text('Kamera', style: CustomFont.headingEmpatBold()),
                                       AutoSizeText(
-                                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-                                        style: CustomFont.headingEmpat(),
+                                        'Beberapa fitur E-Portal membutuhkan akses kamera, pastikan akses kamera sudah aktif agar dapat digunakan.',
+                                        style: CustomFont.headingLima(),
                                         minFontSize: 13,
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.justify,
                                       ),
                                     ],
                                   ),
@@ -290,16 +284,22 @@ class PermissionPage extends StatefulWidget {
                                 const SizedBox(
                                   width: 19,
                                 ),
-                                SizedBox(
+                                Container(
                                   width: 26,
                                   height: 26,
-                                  child: Transform.scale(
-                                    scale: 1.3,
-                                    child: Checkbox(
-                                      value: cameraPermissionState == PermissionState.granted? true: false,
-                                      activeColor: CustomColor.primary(),
-                                      checkColor: Colors.white,
-                                      onChanged: ((value) {}),
+                                  decoration: BoxDecoration(
+                                    color: cameraPermissionState == PermissionState.granted ? Colors.white : Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: cameraPermissionState == PermissionState.granted ? Colors.green : Colors.grey,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      cameraPermissionState == PermissionState.granted ? Icons.check : Icons.close,
+                                      color: cameraPermissionState == PermissionState.granted ? Colors.green : Colors.red,
+                                      size: 19,
                                     ),
                                   ),
                                 )
@@ -327,11 +327,10 @@ class PermissionPage extends StatefulWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      AutoSizeText('Optimalkan Penggunaan Baterai',
-                                          style: CustomFont.headingEmpatBold(), minFontSize: 6, maxLines: 1,),
+                                      AutoSizeText('Nonaktifkan Hemat Baterai', style: CustomFont.headingEmpatBold(), minFontSize: 6, maxLines: 1,),
                                       AutoSizeText(
-                                        "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s",
-                                        style: CustomFont.headingEmpat(),
+                                        "Agar E-Portal tidak terhenti dan kamu tidak mendapatkan pemberitahuan, maka pastikan E-Portal sudah diaktifkan di menu ini ya!",
+                                        style: CustomFont.headingLima(),
                                         minFontSize: 13,
                                         maxLines: 3,
                                         overflow: TextOverflow.ellipsis,

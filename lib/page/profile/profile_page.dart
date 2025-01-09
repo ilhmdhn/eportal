@@ -171,7 +171,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       alignment: Alignment.centerLeft,
                       child: InkWell(
                         onTap: (){
-                          CustomViewer.networkPhoto(context, CustomConverter.generateLink(Profile.getProfile().signature));
+                          CustomViewer.networkPhotoBgWhite(context, CustomConverter.generateLink(Profile.getProfile().signature));
                         },
                         child: AutoSizeText('Digital Signature', style: CustomFont.headingLimaColorUnderlined())))
                   ],

@@ -106,7 +106,41 @@ class CustomViewer{
                 color: Colors.transparent,
                 width: MediaQuery.of(ctx).size.width,
                 height: MediaQuery.of(ctx).size.height,
-                child: PhotoView(imageProvider: NetworkImage(imageUrl)),
+                child: PhotoView(
+                  backgroundDecoration: const BoxDecoration(
+                    color: Colors.transparent
+                  ),
+                  imageProvider: NetworkImage(imageUrl)),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static networkPhotoBgWhite(BuildContext ctx, String imageUrl) async {
+    showDialog(
+      context: ctx,
+      builder: (BuildContext ctx) {
+        return PopScope(
+          canPop: true,
+          onPopInvokedWithResult: (didPop, result) {},
+          child: Theme(
+            data: ThemeData.dark().copyWith(
+              scaffoldBackgroundColor: Colors.transparent,
+              dialogBackgroundColor: Colors.transparent,
+            ),
+            child: Dialog(
+              insetPadding: EdgeInsets.zero,
+              child: Container(
+                color: Colors.transparent,
+                width: MediaQuery.of(ctx).size.width,
+                child: PhotoView(
+                  backgroundDecoration: const BoxDecoration(
+                    color: Colors.white
+                  ),
+                  imageProvider: NetworkImage(imageUrl)),
               ),
             ),
           ),

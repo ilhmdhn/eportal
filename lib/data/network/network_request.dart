@@ -558,7 +558,6 @@ class NetworkRequest{
     try {
       final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/user_key');
-      print('AAAA' +token);
       final apiResponse = await http.post(url,
         headers: {'authorization': key},
         body: jsonEncode({
@@ -566,7 +565,6 @@ class NetworkRequest{
         })
       );
       final convertedResult = json.decode(apiResponse.body);
-      print(convertedResult);
       return BaseResponse.fromJson(convertedResult);
     } catch (e) {
       return BaseResponse(state: false, message: e.toString());
