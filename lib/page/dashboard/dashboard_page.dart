@@ -16,11 +16,13 @@ import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/view_notif_dialog.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
+import 'package:eportal/page/profile/profile_page.dart';
 import 'package:eportal/page/sallary/sallary_page.dart';
 import 'package:eportal/page/schedule/schedule_page.dart';
 import 'package:eportal/page/ssp/ssp_page.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
+import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -88,10 +90,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                   overflow: TextOverflow.clip,
                                   maxLines: 2,
                                 ),
-                                AutoSizeText(
-                                  'View Profile',
-                                  style: CustomFont.drawerViewProfile(),
-                                  overflow: TextOverflow.clip,
+                                InkWell(
+                                  onTap: (){
+                                    NavigationService.move(ProfilePage.nameRoute);
+                                  },
+                                  child: AutoSizeText(
+                                    'View Profile',
+                                    style: CustomFont.drawerViewProfile(),
+                                    overflow: TextOverflow.clip,
+                                  ),
                                 ),
                               ],
                             ),
@@ -514,8 +521,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: ()async{
-                                    final fcmToken = await FirebaseMessaging.instance.getToken();
-                                    await Clipboard.setData(ClipboardData(text: fcmToken??''));
+                                    // final fcmToken = await FirebaseMessaging.instance.getToken();
+                                    // await Clipboard.setData(ClipboardData(text: fcmToken??''));
+                                    FirebaseTools.getToken();
                                   },
                                   child: AddOnButton.textImageButton(
                                       context, 'assets/icon/opd.png', 'OPD'),

@@ -575,10 +575,16 @@ class CutiDialog {
 
     DateTime startDate = data.startCuti;
     DateTime endDate = data.endCuti;
-    int pickedCount = 1;
+    int pickedCount = data.day;
     final cutiPicked = data.day;
     TextEditingController tfReason = TextEditingController();
     tfReason.text = data.cutiReason;
+
+    void updateMaxDate(DateTime date) {
+      ctx.read<MaxDateProvider>().updateDate(date, '1');
+    }
+
+    updateMaxDate(data.startCuti);
 
     final result = await showDialog(
       context: ctx, 
@@ -658,16 +664,15 @@ class CutiDialog {
                                     },
                                     context: ctx,
                                     initialDate: startDate,
-                                    firstDate:
-                                        DateTime.now().subtract(const Duration(days: 30)),
-                                    lastDate:
-                                        DateTime.now().add(const Duration(days: 365)),
+                                    firstDate: DateTime.now().subtract(const Duration(days: 30)),
+                                    lastDate: DateTime.now().add(const Duration(days: 365)),
                                   );
                               
                                   if (selectedDate != null) {
                                     setState(() {
                                       startDate = selectedDate;
                                       endDate = selectedDate;
+                                      updateMaxDate(selectedDate);
                                       pickedCount = calculateDaysBetween(
                                           startDate.toString(), endDate.toString());
                                     });

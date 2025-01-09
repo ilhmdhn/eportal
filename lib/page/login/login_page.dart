@@ -9,6 +9,7 @@ import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/biometric.dart';
 import 'package:eportal/util/checker.dart';
+import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:eportal/util/subsribe.dart';
@@ -34,6 +35,7 @@ class _LoginPageState extends State<LoginPage> {
   void keyChecker(){
     if(key != null){
       try {
+        FirebaseTools.getToken();
         subscribeToTopic();
         getIt<NavigationService>().pushNamedAndRemoveUntil(DashboardPage.nameRoute);
       } catch (e) {

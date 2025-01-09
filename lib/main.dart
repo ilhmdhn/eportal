@@ -10,6 +10,7 @@ import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
 import 'package:eportal/page/permission/permission_page.dart';
+import 'package:eportal/page/profile/profile_page.dart';
 import 'package:eportal/page/sallary/sallary_page.dart';
 import 'package:eportal/page/schedule/schedule_page.dart';
 import 'package:eportal/page/ssp/ssp_page.dart';
@@ -51,7 +52,6 @@ void main() async{
     }
   });
   
-  FirebaseTools.getToken();
   await SharedPreferencesData.initialize();
   await dotenv.load(fileName: ".env");
   setupLocator();
@@ -104,6 +104,7 @@ class MyApp extends StatelessWidget {
           SallaryPage.nameRoute: (context) => const SallaryPage(),
           SubstitutePage.nameRoute: (context) => const SubstitutePage(),
           SspPage.nameRoute: (context) => const SspPage(),
+          ProfilePage.nameRoute: (context) => const ProfilePage(),
           SchedulePage.nameRoute: (context) => const SchedulePage()
         },
       ),

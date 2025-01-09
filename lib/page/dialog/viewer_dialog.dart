@@ -28,7 +28,7 @@ class CustomViewer{
             child: Dialog(
               insetPadding: EdgeInsets.zero,
               child: Container(
-                color: Colors.amber,
+                color: Colors.transparent,
                 width: MediaQuery.of(ctx).size.width,
                 height: MediaQuery.of(ctx).size.height,
                 child: SfPdfViewer.file(
@@ -73,7 +73,7 @@ class CustomViewer{
             child: Dialog(
               insetPadding: EdgeInsets.zero,
               child: Container(
-                color: Colors.amber,
+                color: Colors.transparent,
                 width: MediaQuery.of(ctx).size.width,
                 height: MediaQuery.of(ctx).size.height,
                 child: SfPdfViewer.network(
@@ -103,7 +103,7 @@ class CustomViewer{
             child: Dialog(
               insetPadding: EdgeInsets.zero,
               child: Container(
-                color: Colors.amber,
+                color: Colors.transparent,
                 width: MediaQuery.of(ctx).size.width,
                 height: MediaQuery.of(ctx).size.height,
                 child: PhotoView(imageProvider: NetworkImage(imageUrl)),
@@ -133,7 +133,7 @@ class CustomViewer{
             child: Dialog(
               insetPadding: EdgeInsets.zero,
               child: Container(
-                color: Colors.amber,
+                color: Colors.transparent,
                 width: MediaQuery.of(ctx).size.width,
                 height: MediaQuery.of(ctx).size.height,
                 child: PhotoView(

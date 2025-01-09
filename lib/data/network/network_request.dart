@@ -233,9 +233,7 @@ class NetworkRequest{
   static Future<BaseResponse> postIzin(String type, String startDate, String finishDate, String startTime, String finishTime, String reason, String isDoctorLetter)async{
     try{
       final key = SharedPreferencesData.getKey() ?? '';
-      final url = Uri.parse('$baseUrl/Api/ijin');
-      
-      print('type: $type, startDate: $startDate, finishDate: $finishDate, startTime: $startTime, finishTime: $finishTime, reason: $reason, isDoctorLetter: $isDoctorLetter');
+      final url = Uri.parse('$baseUrl/Api/ijin');      
 
       final apiResponse = await http.post(url,
           headers: {'Content-Type': 'application/json', 'authorization': key},
@@ -553,6 +551,25 @@ class NetworkRequest{
         state: false, 
         message: e.toString()
       );
+    }
+  }
+
+  static Future<BaseResponse> postToken(String token) async {
+    try {
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/user_key');
+      print('AAAA' +token);
+      final apiResponse = await http.post(url,
+        headers: {'authorization': key},
+        body: jsonEncode({
+          'key': token
+        })
+      );
+      final convertedResult = json.decode(apiResponse.body);
+      print(convertedResult);
+      return BaseResponse.fromJson(convertedResult);
+    } catch (e) {
+      return BaseResponse(state: false, message: e.toString());
     }
   }
 }
