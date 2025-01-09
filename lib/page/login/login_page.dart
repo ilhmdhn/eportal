@@ -16,6 +16,8 @@ import 'package:eportal/util/subsribe.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class LoginPage extends StatefulWidget {
   static const nameRoute = '/login';
@@ -234,9 +236,16 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
-                  AutoSizeText(
-                    'Lupa Password',
-                    style: CustomFont.forgotPassword(),
+                  InkWell(
+                    onTap: ()async{
+                        if (!await launchUrlString('https://eportal.happypuppy.id/Login/Forget')) {
+                          ShowToast.error('Gagal membuka link lupa password');
+                        }
+                    },
+                    child: AutoSizeText(
+                      'Lupa Password',
+                      style: CustomFont.forgotPassword(),
+                    ),
                   ),
                 ],
               ),

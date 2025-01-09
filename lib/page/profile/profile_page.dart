@@ -3,7 +3,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/model/profile.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
-import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/screen.dart';
