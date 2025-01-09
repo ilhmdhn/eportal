@@ -136,7 +136,7 @@ class PermissionPage extends StatefulWidget {
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 19,),
+                                const SizedBox(width: 6,),
                                 Container(
                                   width: 26,
                                   height: 26,
@@ -209,7 +209,7 @@ class PermissionPage extends StatefulWidget {
                                   ),
                                 ),
                                 const SizedBox(
-                                  width: 19,
+                                  width: 6,
                                 ),
                                 Container(
                                   width: 26,
@@ -282,7 +282,7 @@ class PermissionPage extends StatefulWidget {
                                   ),
                                 ),
                                 const SizedBox(
-                                  width: 19,
+                                  width: 6,
                                 ),
                                 Container(
                                   width: 26,

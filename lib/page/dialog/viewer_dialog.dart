@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
@@ -97,20 +98,34 @@ class CustomViewer{
           onPopInvokedWithResult: (didPop, result) {},
           child: Theme(
             data: ThemeData.dark().copyWith(
-              scaffoldBackgroundColor: Colors.black,
-              dialogBackgroundColor: Colors.black,
+              scaffoldBackgroundColor: Colors.transparent,
+              dialogBackgroundColor: Colors.transparent,
             ),
             child: Dialog(
               insetPadding: EdgeInsets.zero,
-              child: Container(
-                color: Colors.transparent,
-                width: MediaQuery.of(ctx).size.width,
-                height: MediaQuery.of(ctx).size.height,
-                child: PhotoView(
-                  backgroundDecoration: const BoxDecoration(
-                    color: Colors.transparent
+              child: Stack(
+                children: [
+                  Container(
+                    color: Colors.transparent,
+                    width: MediaQuery.of(ctx).size.width,
+                    height: MediaQuery.of(ctx).size.height,
+                    child: PhotoView(
+                      backgroundDecoration: const BoxDecoration(
+                        color: Colors.transparent
+                      ),
+                      imageProvider: NetworkImage(imageUrl)),
                   ),
-                  imageProvider: NetworkImage(imageUrl)),
+                  Positioned(
+                    top: 6,
+                    right: 6,
+                    child: InkWell(
+                      onTap: () {
+                        NavigationService.back();
+                      },
+                      child: const Icon(Icons.close),
+                    )
+                  ),
+                ],
               ),
             ),
           ),

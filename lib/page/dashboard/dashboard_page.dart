@@ -1,4 +1,3 @@
-import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eportal/assets/color/custom_color.dart';
@@ -25,11 +24,10 @@ import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+// ignore: unnecessary_import
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DashboardPage extends StatefulWidget {

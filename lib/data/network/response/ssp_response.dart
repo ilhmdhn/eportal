@@ -1,11 +1,13 @@
 class SspResponse {
   bool state;
   String message;
+  SspValue? value;
   List<SspModel>? data;
 
   SspResponse({
     required this.state,
     required this.message,
+    this.value,
     this.data
   });
 
@@ -13,9 +15,33 @@ class SspResponse {
     return SspResponse(
       state: json['state'], 
       message: json['message'],
+      value: SspValue.fromJson(json['donation']),
       data: List<SspModel>.from(
         (json['data'] as List).map((x) => SspModel.fromJson(x))
       )
+    );
+  }
+}
+
+class SspValue{
+  num typeSatu;
+  num typeDua;
+  num typeTiga;
+  num typeEmpat;
+
+  SspValue({
+    required this.typeSatu,
+    required this.typeDua,
+    required this.typeTiga,
+    required this.typeEmpat,
+  });
+
+  factory SspValue.fromJson(Map<String, dynamic>json){
+    return SspValue(
+      typeSatu: json['type1'], 
+      typeDua: json['type2'], 
+      typeTiga: json['type3'], 
+      typeEmpat: json['type4']
     );
   }
 }
