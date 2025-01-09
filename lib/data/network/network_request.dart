@@ -23,6 +23,7 @@ import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'dart:convert';
@@ -46,7 +47,7 @@ class NetworkRequest{
         SharedPreferencesData.saveAccount(user, pass);
       }
       return response;
-    }catch(e){
+    }catch(e, stackTrace){
       return LoginResponse(
         state: false,
         message: e.toString()
@@ -102,7 +103,7 @@ class NetworkRequest{
 
       final convertedResult = json.decode(apiResponse.body);
       return AttendanceListResponse.fromJson(convertedResult);
-    }catch(e){
+    }catch(e, stackTrace){
       NavigationService.error(description: e.toString());
       return AttendanceListResponse(
         state: false, 
@@ -119,7 +120,7 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       final response = CutiResponse.fromJson(convertedResult);
       return response;
-    }catch(e){
+    }catch(e, stackTrace){
       return CutiResponse(
         state: false,
         message: e.toString(),
@@ -151,7 +152,7 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       final response = BaseResponse.fromJson(convertedResult);
       return response;
-    }catch(e){
+    }catch(e, stackTrace){
       return BaseResponse(
         state: false,
         message: e.toString()
@@ -179,7 +180,7 @@ class NetworkRequest{
       );
       final convertedResult = json.decode(apiResponse.body);
       return BaseResponse.fromJson(convertedResult);
-    }catch(e){
+    }catch(e, stackTrace){
       return BaseResponse(
         state: false,
         message: e.toString()
@@ -222,7 +223,7 @@ class NetworkRequest{
 
       return responseResult;
       
-    }catch(e){
+    }catch(e, stackTrace){
       return BaseResponse(
         state: false,
         message: e.toString()
@@ -250,7 +251,7 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       final response = BaseResponse.fromJson(convertedResult);
       return response;
-    }catch(e){
+    }catch(e, stackTrace){
       return BaseResponse(state: false, message: e.toString());
     }
   }
@@ -263,7 +264,7 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       final response = IzinResponse.fromJson(convertedResult);
       return response;      
-    }catch(e){
+    }catch(e, stackTrace){
       NavigationService.error(description: e.toString());
       return IzinResponse(
         state: false,
@@ -280,7 +281,7 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       final response = BaseResponse.fromJson(convertedResult);
       return response;  
-    }catch(e){
+    }catch(e, stackTrace){
       ShowToast.error(e.toString());
       return BaseResponse(
         state: false,
@@ -349,7 +350,7 @@ class NetworkRequest{
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       return DataResponse.fromJson(convertedResult);
-    }catch(e){
+    }catch(e, stackTrace){
       ShowToast.error(e.toString());
       return DataResponse(state: false, message: e.toString());
     }
@@ -362,7 +363,7 @@ class NetworkRequest{
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       return OutletResponse.fromJson(convertedResult);
-    }catch(e){
+    }catch(e, stackTrace){
       ShowToast.error('ERROR ');
       return OutletResponse(
         state: false, 
@@ -378,7 +379,7 @@ class NetworkRequest{
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       return SallaryResponse.fromJson(convertedResult);
-    }catch(e){
+    }catch(e, stackTrace){
       NavigationService.error(description: e.toString());
       return SallaryResponse(state: false, message: e.toString());
     }
@@ -405,7 +406,7 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       final response = OvertimeResponse.fromJson(convertedResult);
       return response;
-    }catch(e){
+    }catch(e, stackTrace){
       NavigationService.error(description: e.toString());
       return OvertimeResponse(
         state: false, 
@@ -435,7 +436,7 @@ class NetworkRequest{
 
       final convertedResult = json.decode(apiResponse.body);
       return  BaseResponse.fromJson(convertedResult);      
-    }catch(e){
+    }catch(e, stackTrace){
       return BaseResponse(
         state: false,
         message: e.toString()
@@ -475,7 +476,7 @@ class NetworkRequest{
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       return SubstitutionResponse.fromJson(convertedResult);
-    }catch(e){
+    }catch(e, stackTrace){
       NavigationService.error(description: e.toString());
       return SubstitutionResponse(
         state: false, 
@@ -533,7 +534,8 @@ class NetworkRequest{
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       return SspResponse.fromJson(convertedResult);
-    }catch(e){
+    }catch(e, stackTrace){
+            print('LINE $stackTrace');
       NavigationService.error(description: e.toString());
       return SspResponse(state: false, message: e.toString());
     }
@@ -546,7 +548,7 @@ class NetworkRequest{
       final apiResponse = await http.get(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       return JkoResponse.fromJson(convertedResult);
-    }catch(e){
+    }catch(e, stackTrace){
       return JkoResponse(
         state: false, 
         message: e.toString()
@@ -568,6 +570,83 @@ class NetworkRequest{
       return BaseResponse.fromJson(convertedResult);
     } catch (e) {
       return BaseResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<BaseResponse> postSsp(
+    int type,
+    String? weddingBookPath, 
+    String? aktaLahirPath, 
+    String? suratKeteranganMeninggalPath, 
+    String? familyCardPath, 
+    String? partnerName, 
+    String? babyName, 
+    String? jk, 
+    String? numberChild, 
+    String? hubunganKeluarga,
+    String? namaAlmarhum,
+    DateTime? tanggalMeninggal,
+    String? otherReason,
+  )async{
+    EasyLoading.show();
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/ssp');
+      final request = http.MultipartRequest('POST', url);
+
+      Map<String, String> headers = {
+        'Content-Type': 'multipart/form-data',
+        'authorization': key
+      };
+      request.headers.addAll(headers);
+      request.fields['type'] = type.toString();
+
+      if(type == 1){
+        request.fields['pasangan'] = partnerName!;
+        request.files.add(await http.MultipartFile.fromPath('marriage_book', weddingBookPath!));
+        request.fields['notes'] = otherReason!;
+      }else if(type == 2){
+        request.fields['child_name'] = babyName!;
+        request.fields['sex'] = jk!;
+        request.fields['child_order'] = numberChild!;
+        request.files.add(await http.MultipartFile.fromPath('birth_certificate', aktaLahirPath!));
+        request.files.add(await http.MultipartFile.fromPath('marriage_book', weddingBookPath!));
+
+        request.fields['notes'] = otherReason!;
+      }else if(type == 3){
+        request.fields['relationship'] = hubunganKeluarga!;
+        request.fields['alm_name'] = namaAlmarhum!;
+        request.fields['passed_date'] = DateFormat('yyyy-MM-dd').format(tanggalMeninggal!);
+        request.files.add(await http.MultipartFile.fromPath('marriage_book', weddingBookPath!));
+        request.files.add(await http.MultipartFile.fromPath('death_certificate', suratKeteranganMeninggalPath!));
+        request.files.add(await http.MultipartFile.fromPath('family_card', familyCardPath!));
+
+        request.fields['notes'] = otherReason!;
+      }else if(type == 4){
+        request.fields['relationship'] = hubunganKeluarga!;
+        request.fields['alm_name'] = namaAlmarhum!;
+        request.fields['passed_date'] = DateFormat('yyyy-MM-dd').format(tanggalMeninggal!);
+        request.files.add(await http.MultipartFile.fromPath('death_certificate', suratKeteranganMeninggalPath!));
+      }else{
+        EasyLoading.dismiss();
+        return BaseResponse(
+          state: false,
+          message: 'Tipe tidak valid' 
+        );
+      }
+
+      final response = await request.send();
+      final responseBody = await response.stream.bytesToString();
+      final convertedResult = json.decode(responseBody);
+        EasyLoading.dismiss();
+      
+      return BaseResponse.fromJson(convertedResult);
+      
+    }catch(e, stackTrace){
+      return BaseResponse(
+        state: false,
+        message: e.toString()
+      );
     }
   }
 }

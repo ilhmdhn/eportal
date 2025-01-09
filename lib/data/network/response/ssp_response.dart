@@ -64,7 +64,7 @@ class SspModel{
   String note;
   int state;
   DateTime releaseDate;
-  DateTime confirmDate;
+  DateTime? confirmDate;
   String confirmer;
   int type;
   num sumbangan;
@@ -112,22 +112,21 @@ class SspModel{
       kartuKeluarga: json['kartu_keluarga']??'', 
       namaPasangan: json['marital_name']??'', 
       namaAnak: json['child_name']??'', 
-      genderAnak: json['jenis_kelamin'], 
-      urutanAnak: json['child_queue'], 
+      genderAnak: json['jenis_kelamin']??0,
+      urutanAnak: json['child_queue']??1, 
       hubunganKeluarga: json['hubungan']??'', 
       namaAlmarhum: json['alm_name']??'', 
-      tanggalMeninggal: DateTime.parse(json['passed_date']), 
+      tanggalMeninggal: json['passed_date'] != null?DateTime.parse(json['passed_date']): DateTime.now(), 
       note: json['notes']??'',
       state: json['status'],
       type: json['type'],
-      sumbangan: json['sumbangan'],
+      sumbangan: json['sumbangan']??0,
       pdf: json['pdf']??'',
       rejectComment: json['reject_comment']??'', 
-      releaseDate: DateTime.parse(json['release_date']), 
-      confirmDate: DateTime.parse(json['confirm_date']), 
-      confirmer: json['confirm_by'], 
-      // editable: json['editable'], 
-      editable: true, 
+      releaseDate: json['release_date'] != null?DateTime.parse(json['release_date']): DateTime.now(), 
+      confirmDate: json['confirm_date'] != null?DateTime.parse(json['confirm_date']): DateTime.now(), 
+      confirmer: json['confirm_by']??'',
+      editable: json['editable'], 
       cancelable: json['cancellable']
     );
   }

@@ -1,5 +1,23 @@
 class NotificationResponse{
+  bool state;
+  String message;
+  List<NotificationModel>? data;
 
+  NotificationResponse({
+    required this.state,
+    required this.message,
+    this.data
+  });
+
+  factory NotificationResponse.fromJson(Map<String, dynamic>json){
+    return NotificationResponse(
+      state: json['state'], 
+      message: json['message'],
+      data: List<NotificationModel>.from(
+        (json['data'] as List).map((x)=>NotificationModel.fromJson(x))
+      )
+    );
+  }
 }
 
 class NotificationModel{

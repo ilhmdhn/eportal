@@ -22,6 +22,7 @@ class SspPage extends StatefulWidget {
 class _SspPage extends State<SspPage> {
 
   List<SspModel> listData = [];
+  SspValue? value;
   bool isLoading = true;
 
   void getData()async{
@@ -39,6 +40,7 @@ class _SspPage extends State<SspPage> {
     
     if(isNotNullOrEmptyList(networkResponse.data)){
       setState(() {
+        value = networkResponse.value;
         listData = networkResponse.data??[];
       });
     }
@@ -110,30 +112,33 @@ class _SspPage extends State<SspPage> {
                       Expanded(
                         flex: 1,
                         child:Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                decoration: BoxDecoration(
-                                  border: Border.all(width: 0.3, color: Colors.grey),
-                                  borderRadius: BorderRadius.circular(3)
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                              decoration: BoxDecoration(
+                                border: Border.all(width: 0.3, color: Colors.grey),
+                                borderRadius: BorderRadius.circular(3)
+                              ),
+                              child: InkWell(
+                                onTap: ()async{
+                                  final isRefresh = await SspDialog.addSsp(context, value);
+                                  if(isRefresh){
+                                    refreshData();
+                                  }
+                                },
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.add, size: 16, ),
+                                    AutoSizeText('Ajukan', style: CustomFont.standartFont(),)
+                                  ],
                                 ),
-                                child: InkWell(
-                                  onTap: (){
-                                    SspDialog.addSsp(context);
-                                  },
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.add, size: 16, ),
-                                      AutoSizeText('Ajukan', style: CustomFont.standartFont(),)
-                                    ],
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        )
+                              ),
+                            )
+                          ],
+                        ),
+                      )
                     ],
                   ),
                 ),

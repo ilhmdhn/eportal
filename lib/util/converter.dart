@@ -143,4 +143,9 @@ class CustomConverter{
   static String generateLink(String link){
     return Uri.parse(link).toString();
   }
+
+  static String numToRp(num value) {
+    final formatter = NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 0);
+    return formatter.format(value);
+  }
 }

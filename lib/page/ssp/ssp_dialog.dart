@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/network/network_request.dart';
+import 'package:eportal/data/network/response/base_response.dart';
 import 'package:eportal/data/network/response/ssp_response.dart';
 import 'package:eportal/page/dialog/confirmation_dialog.dart';
 import 'package:eportal/page/dialog/viewer_dialog.dart';
@@ -14,6 +16,7 @@ import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -21,7 +24,7 @@ class SspDialog{
 
   static List<String> sspType = DummyData.typeSsp();
 
-  static Future<bool> addSsp(BuildContext ctx)async{
+  static Future<bool> addSsp(BuildContext ctx, SspValue? value)async{
     String selectedType = sspType.first;
     TextEditingController tfNote = TextEditingController();
 
@@ -31,12 +34,11 @@ class SspDialog{
     TextEditingController tfFamilyHubName = TextEditingController();
     TextEditingController tfTheLateName = TextEditingController();
     DateTime dieDate = DateTime.now();
-    
     String marriageBookPath = '';
     String birthCertificatePath = '';
     String deathCertificatePath = '';
     String familyCardPath = '';
-
+    num sspValue = 0;
     String babyGender = 'Laki-Laki';
 
     final ImagePicker picker = ImagePicker();
@@ -47,7 +49,15 @@ class SspDialog{
       builder: (BuildContext ctx){
         return StatefulBuilder(
           builder: (BuildContext ctxStateful, StateSetter setState){
-
+            if(selectedType == 'Pernikahan'){
+              sspValue = value?.typeSatu??0;
+            }else if(selectedType == 'Kelahiran'){
+              sspValue = value?.typeDua??0;
+            }else if(selectedType == 'Kematian Keluarga'){
+              sspValue = value?.typeTiga??0;
+            }else if(selectedType == 'Kematian Orang Tua'){
+              sspValue = value?.typeEmpat??0;
+            }
             Widget marriageBookUpload(){
               return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -536,7 +546,7 @@ class SspDialog{
                                               ctx, File(deathCertificatePath));
                                         },
                                         child: AutoSizeText(
-                                          'kk.jpg',
+                                          'skm.jpg',
                                           minFontSize: 14,
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
@@ -1068,6 +1078,19 @@ class SspDialog{
                               }).toList(),
                             ),
                             const SizedBox(height: 12,),
+                            AutoSizeText(
+                              'Jumlah Sumbangan',
+                              style: CustomFont.headingEmpatSemiBold(),
+                              maxLines: 1,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                              width: double.infinity,
+                              decoration: BoxDecoration(border: Border.all(width: 1, color: Colors.grey), borderRadius: BorderRadius.circular(6)),
+                              child: Text(CustomConverter.numToRp(sspValue) ,style: CustomFont.headingEmpat()
+                              )
+                            ),
+                            const SizedBox(height: 12,),
                             selectedType == 'Pernikahan'?
                             marriage():
                             selectedType == 'Kelahiran'?
@@ -1080,12 +1103,124 @@ class SspDialog{
                             const SizedBox(height: 12),
                             InkWell(
                               onTap: () async {
-                                NavigationService.backWithData(true);
+                                final isConfirmed = await ConfirmationDialog.confirmation(ctx, 'Ajukan SSP');
+                                if(!isConfirmed){
+                                  return;
+                                }
+                                
+                                int type = 0;
+                                if(selectedType == 'Pernikahan'){
+                                  type = 1;
+                                }else if(selectedType == 'Kelahiran'){
+                                  type = 2;
+                                } else if (selectedType == 'Kematian Keluarga') {
+                                  type = 3;
+                                } else if (selectedType == 'Kematian Orang Tua') {
+                                  type = 4;
+                                }
+                                
+                                BaseResponse response;
+                                
+                                if(type == 1){
+                                  if(isNullOrEmpty(tfPartnerName.text)){
+                                    ShowToast.warning('Nama Pasangan Kosong');
+                                    return;
+                                  }
+                                  if (!isFileExist(marriageBookPath)) {
+                                    ShowToast.warning('Buku nikah tidak ada');
+                                    return;
+                                  }
+                                  response = await NetworkRequest.postSsp(type, marriageBookPath, birthCertificatePath, deathCertificatePath, familyCardPath, tfPartnerName.text, tfBabyName.text, '1', tfNumberBaby.text, tfFamilyHubName.text, tfTheLateName.text, dieDate, tfNote.text);
+                                }else if(type ==2){
+                                  String jkCode = '1';
+                                  if(babyGender == 'Laki-Laki'){
+                                    jkCode = '1';
+                                  }else if(babyGender == 'Perempuan'){
+                                    jkCode = '2';
+                                  }
+
+                                  if (isNullOrEmpty(tfBabyName.text)) {
+                                    ShowToast.warning('Nama Anak Kosong');
+                                    return;
+                                  }
+
+                                  if (isNullOrEmpty(tfNumberBaby.text) || tfNumberBaby.text == '0') {
+                                    ShowToast.warning('Urutan anak tidak valid');
+                                    return;
+                                  }
+
+                                  if(!isFileExist(birthCertificatePath)){
+                                    ShowToast.warning('Akta lahir tidak ada');
+                                    return;
+                                  }
+
+                                  if (!isFileExist(marriageBookPath)) {
+                                    ShowToast.warning('Buku Nikah tidak ada');
+                                    return;
+                                  }
+
+                                  response = await NetworkRequest.postSsp(type, marriageBookPath, birthCertificatePath, deathCertificatePath, familyCardPath, tfPartnerName.text, tfBabyName.text, jkCode, tfNumberBaby.text, tfFamilyHubName.text, tfTheLateName.text, dieDate, tfNote.text);
+                                }else if(type == 3){
+                                  if (isNullOrEmpty(tfFamilyHubName.text)) {
+                                    ShowToast.warning('Hubungan Keluarga belum diisi');
+                                    return;
+                                  }
+
+                                  if (isNullOrEmpty(tfTheLateName.text)) {
+                                    ShowToast.warning('Nama Almarhum belum diisi');
+                                    return;
+                                  }
+
+                                  if (!isFileExist(marriageBookPath)) {
+                                    ShowToast.warning('Buku Nikah tidak ada');
+                                    return;
+                                  }
+
+                                  if (!isFileExist(deathCertificatePath)) {
+                                    ShowToast.warning('Surat Keratangan Meninggal tidak ada');
+                                    return;
+                                  }
+
+                                  if (!isFileExist(familyCardPath)) {
+                                    ShowToast.warning('Kartu Keluarga tidak ada');
+                                    return;
+                                  }
+
+                                  response = await NetworkRequest.postSsp(type, marriageBookPath, birthCertificatePath, deathCertificatePath, familyCardPath, tfPartnerName.text, tfBabyName.text, '1', tfNumberBaby.text, tfFamilyHubName.text, tfTheLateName.text, dieDate, tfNote.text);
+                                }else if(type == 4 ){
+                                  if (isNullOrEmpty(tfFamilyHubName.text)) {
+                                    ShowToast.warning('Hubungan Keluarga belum diisi');
+                                    return;
+                                  }
+
+                                  if (isNullOrEmpty(tfTheLateName.text)) {
+                                    ShowToast.warning('Nama Almarhum belum diisi');
+                                    return;
+                                  }
+
+                                  if (!isFileExist(deathCertificatePath)) {
+                                    ShowToast.warning('Surat Keratangan Meninggal tidak ada');
+                                    return;
+                                  }
+                                  response = await NetworkRequest.postSsp(type, marriageBookPath, birthCertificatePath, deathCertificatePath, familyCardPath, tfPartnerName.text, tfBabyName.text, '1', tfNumberBaby.text, tfFamilyHubName.text, tfTheLateName.text, dieDate, tfNote.text);
+                                }else{
+                                  response = BaseResponse(
+                                    state: false,
+                                    message: 'Tipe tidak ditemukan'
+                                  );
+                                  ShowToast.warning('Tipe tidak ditemukan');
+                                  return;
+                                }
+
+                                if(response.state != true){
+                                  ShowToast.error(response.message??'Gagal');
+                                }else{
+                                  NavigationService.backWithData(true);
+                                }
                               },
                               child: Container(
                                 width: double.infinity,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                                 decoration: CustomContainer.buttonGreen(),
                                 child: Center(
                                   child: Text(
@@ -1603,6 +1738,24 @@ class SspDialog{
                               )
                             ),
                           child: Text(data.id, style: CustomFont.headingEmpat(),)),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          AutoSizeText(
+                            'Jumlah Sumbangan',
+                            style: CustomFont.headingEmpatSemiBold(),
+                            maxLines: 1,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 6, horizontal: 12),
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                                border: Border.all(
+                                    width: 1, color: Colors.grey),
+                                borderRadius: BorderRadius.circular(6)),
+                            child: Text(CustomConverter.numToRp(data.sumbangan), style: CustomFont.headingEmpat())
+                          ),
                           const SizedBox(
                             height: 12,
                           ),
