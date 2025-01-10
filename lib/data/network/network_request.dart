@@ -663,4 +663,16 @@ class NetworkRequest{
       return NotificationResponse(state: false, message: e.toString());
     }
   }
+
+  static Future<BaseResponse> readedNotif(id) async {
+    try {
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/notification/$id');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return BaseResponse.fromJson(convertedResult);
+    } catch (e, stackTrace) {
+      return BaseResponse(state: false, message: e.toString());
+    }
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/notification_response.dart';
 import 'package:eportal/page/add_on/background.dart';
 import 'package:eportal/style/custom_font.dart';
@@ -12,6 +13,7 @@ class NotificationDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = ModalRoute.of(context)!.settings.arguments as NotificationModel;
+    NetworkRequest.readedNotif(data.id);
     return Scaffold(
       body: backgroundPage(
         Padding(
