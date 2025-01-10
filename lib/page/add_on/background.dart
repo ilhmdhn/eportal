@@ -17,7 +17,7 @@ Widget backgroundPage(Widget body){
         )),
       Positioned(
         bottom: 0,
-        left: 0,
+        right: 0,
         child: SizedBox(
           width: ScreenSize.setWidthPercent(navigatorKey.currentContext!, 50),
           child: Image.asset('assets/image/joe.png'),

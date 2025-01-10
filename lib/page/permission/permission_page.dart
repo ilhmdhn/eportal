@@ -104,14 +104,12 @@ class PermissionPage extends StatefulWidget {
                           if(notificationPermissionState == PermissionState.granted){
                             ShowToast.warning('Sudah disetujui');
                             return;
-                          }else if(notificationPermissionState == PermissionState.denied){
-                            await openAppSettings();
                           }
 
                           await Permission.notification.onDeniedCallback(() {
                           }).onGrantedCallback(() {
-                          }).onPermanentlyDeniedCallback(() {
-                            ShowToast.error('Gagal diaktifkan');
+                          }).onPermanentlyDeniedCallback(() async{
+                            await openAppSettings();
                           }).onRestrictedCallback(() {
                             ShowToast.warning('Akses Terbatas');
                           }).onLimitedCallback(() {
@@ -174,8 +172,8 @@ class PermissionPage extends StatefulWidget {
                           }
                           await Permission.location.onDeniedCallback(() {
                            }).onGrantedCallback(() {
-                          }).onPermanentlyDeniedCallback(() {
-                            ShowToast.error('Gagal diaktifkan');
+                          }).onPermanentlyDeniedCallback(() async{
+                            await openAppSettings();
                           }).onRestrictedCallback(() {
                             ShowToast.warning('Akses Terbatas');
                           }).onLimitedCallback(() {
@@ -242,15 +240,14 @@ class PermissionPage extends StatefulWidget {
                       ),
                       InkWell(
                         onTap: () async {
-                          if (cameraPermissionState ==
-                              PermissionState.granted) {
+                          if (cameraPermissionState == PermissionState.granted) {
                             ShowToast.warning('Sudah disetujui');
                             return;
                           }
                           await Permission.camera.onDeniedCallback(() {
                           }).onGrantedCallback(() {
-                          }).onPermanentlyDeniedCallback(() {
-                            ShowToast.error('Gagal diaktifkan');
+                          }).onPermanentlyDeniedCallback(() async{
+                            await openAppSettings();
                           }).onRestrictedCallback(() {
                             ShowToast.warning('Akses Terbatas');
                           }).onLimitedCallback(() {

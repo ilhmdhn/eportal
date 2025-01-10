@@ -3,24 +3,18 @@ import 'package:eportal/assets/color/custom_color.dart';
 import 'package:eportal/data/local/shared_preferences.dart';
 import 'package:eportal/data/model/user.dart';
 import 'package:eportal/data/network/network_request.dart';
-import 'package:eportal/main.dart';
 import 'package:eportal/page/add_on/loading.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/style/custom_container.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/biometric.dart';
 import 'package:eportal/util/checker.dart';
-import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
-import 'package:eportal/util/subsribe.dart';
 import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:eportal/provider/notification_provider.dart';
-import 'package:provider/provider.dart';
-
 class LoginPage extends StatefulWidget {
   static const nameRoute = '/login';
   const LoginPage({super.key});
@@ -39,9 +33,6 @@ class _LoginPageState extends State<LoginPage> {
   void keyChecker(){
     if(key != null){
       try {
-        FirebaseTools.getToken();
-        subscribeToTopic();
-        context.read<NotificationProvider>().getList();
         getIt<NavigationService>().pushNamedAndRemoveUntil(DashboardPage.nameRoute);
       } catch (e) {
         ShowToast.warning('Gagal beripindah ke halaman dashboard');

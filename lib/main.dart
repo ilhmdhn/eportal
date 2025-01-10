@@ -14,9 +14,11 @@ import 'package:eportal/page/profile/profile_page.dart';
 import 'package:eportal/page/sallary/sallary_page.dart';
 import 'package:eportal/page/schedule/schedule_page.dart';
 import 'package:eportal/page/ssp/ssp_page.dart';
+import 'package:eportal/page/notification/notification_list_page.dart';
 import 'package:eportal/provider/list_outlet_provider.dart';
 import 'package:eportal/provider/max_date.dart';
 import 'package:eportal/provider/notification_provider.dart';
+import 'package:eportal/util/checker.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/notification.dart';
 import 'package:eportal/util/show_notification.dart';
@@ -41,7 +43,13 @@ void main() async{
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    final key = SharedPreferencesData().updatedKey();
+    if(isNullOrEmpty(key)){
+      return;
+    }
+
     if (message.data['type'] == 'NOTIFICATION') {
+      navigatorKey.currentContext!.read<NotificationProvider>().getList();
       final state = message.data['state'] ?? '2';
       if(state == '1'){
         NotificationStyle.info(navigatorKey.currentContext!, message.data['title'], message.data['message']);
@@ -110,7 +118,8 @@ class MyApp extends StatelessWidget {
           SubstitutePage.nameRoute: (context) => const SubstitutePage(),
           SspPage.nameRoute: (context) => const SspPage(),
           ProfilePage.nameRoute: (context) => const ProfilePage(),
-          SchedulePage.nameRoute: (context) => const SchedulePage()
+          SchedulePage.nameRoute: (context) => const SchedulePage(),
+          NotificationListPage.nameRoute: (context) => const NotificationListPage(),
         },
       ),
     );

@@ -196,8 +196,18 @@ class CustomFont{
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black, fontWeight: FontWeight.w600);
   }
 
+  static TextStyle headingLimaBoldGrey() {
+    return GoogleFonts.poppins(
+        fontSize: 14, color: Colors.grey.shade700, fontWeight: FontWeight.w600);
+  }
+
   static TextStyle headingLimaWarning() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.red, fontWeight: FontWeight.w500);
+  }
+  
+  static TextStyle headingLimaGrey() {
+    return GoogleFonts.poppins(
+        fontSize: 14, color: Colors.grey.shade700);
   }
 
   static TextStyle headingLimaRed() {

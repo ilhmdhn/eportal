@@ -19,16 +19,21 @@ import 'package:eportal/page/profile/profile_page.dart';
 import 'package:eportal/page/sallary/sallary_page.dart';
 import 'package:eportal/page/schedule/schedule_page.dart';
 import 'package:eportal/page/ssp/ssp_page.dart';
+import 'package:eportal/provider/notification_provider.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/dummy.dart';
 import 'package:eportal/util/init_firebase.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
+import 'package:eportal/util/subsribe.dart';
+import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 // ignore: unnecessary_import
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 
 class DashboardPage extends StatefulWidget {
   static const nameRoute = '/dashboard';
@@ -39,6 +44,31 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<NotificationProvider>().getList();
+    FirebaseTools.getToken();
+    subscribeToTopic();
+    permissionRequest();
+  }
+
+  void permissionRequest()async{
+    if(await Permission.notification.isGranted == false){
+      await Permission.notification.onDeniedCallback(() {
+      }).onGrantedCallback(() {
+      }).onPermanentlyDeniedCallback(() async{
+        ShowToast.error('Notifikasi Tidak Diizinkan');
+      }).onRestrictedCallback(() {
+        ShowToast.warning('Akses Terbatas');
+      }).onLimitedCallback(() {
+        ShowToast.warning('Akses Terbatas');
+      }).onProvisionalCallback(() {
+        ShowToast.warning('Akses Terbatas');
+      }).request();
+    }
+  }
 
   final notificationDialog = NotificationDialog();
   bool darkMode = false;
@@ -520,9 +550,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: ()async{
-                                    // final fcmToken = await FirebaseMessaging.instance.getToken();
-                                    // await Clipboard.setData(ClipboardData(text: fcmToken??''));
-                                    FirebaseTools.getToken();
+                                    context.read<NotificationProvider>().getList();
                                   },
                                   child: AddOnButton.textImageButton(
                                       context, 'assets/icon/opd.png', 'OPD'),
@@ -655,9 +683,14 @@ class _DashboardPageState extends State<DashboardPage> {
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Badge.count(
-                          count: 3,
-                          child: const Icon(Icons.notifications, color: Colors.white)),
+                      child: Consumer<NotificationProvider>(
+                        builder: (context, notif, child) {
+                          return Badge.count(
+                              count: notif.unreaded,
+                              isLabelVisible: notif.unreaded < 1? false: true,
+                              child: const Icon(Icons.notifications, color: Colors.white));
+                        }
+                      ),
                     ),
                   )
                 ],

@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/page/notification/notification_list_page.dart';
 import 'package:eportal/provider/notification_provider.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -91,6 +93,8 @@ void showNotificationOverlay(BuildContext context) {
                             itemBuilder: (context, indexNotif) {
                               final data = notif.data[indexNotif];
                               return _buildNotificationItem(
+                                context,
+                                data.id,
                                 data.type,
                                 data.isViewed,
                                 data.title,
@@ -104,7 +108,12 @@ void showNotificationOverlay(BuildContext context) {
                     ),
                     Align(
                       alignment: Alignment.center,
-                      child: AutoSizeText('view more', style: CustomFont.headingLimaColorUnderlined(),)),
+                      child: InkWell(
+                        onTap: (){
+                          NavigationService.move(NotificationListPage.nameRoute);
+                          closeOverlay();
+                        },
+                        child: AutoSizeText('view more', style: CustomFont.headingLimaColorUnderlined(),))),
                   ],
                 ),
               ),
@@ -117,10 +126,10 @@ void showNotificationOverlay(BuildContext context) {
     Overlay.of(context).insert(_overlayEntry!);
   }
   
-  Widget _buildNotificationItem(String type, bool isViewed, String title, String message, String time) {
+  Widget _buildNotificationItem(BuildContext ctx,int id, String type, bool isViewed, String title, String message, String time) {
     return InkWell(
       onTap: (){
-        
+        ctx.read<NotificationProvider>().updateIsViewed(id);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -145,11 +154,11 @@ void showNotificationOverlay(BuildContext context) {
                     children: [
                       Text(
                         title,
-                        style: CustomFont.headingLimaBold(),
+                        style: isViewed? CustomFont.headingLimaBoldGrey(): CustomFont.headingLimaBold(),
                       ),
                       Text(
                         message,
-                        style: CustomFont.headingLima(),
+                        style: isViewed? CustomFont.headingLimaGrey(): CustomFont.headingLima(),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),

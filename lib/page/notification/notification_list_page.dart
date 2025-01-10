@@ -17,7 +17,7 @@ class _NotificationListPageState extends State<NotificationListPage> {
           padding: EdgeInsets.symmetric(horizontal: 12),
           child: Column(
             children: [
-              
+              Text('aaaa')
             ],
           ),
         )
