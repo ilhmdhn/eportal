@@ -21,14 +21,16 @@ class NotificationResponse{
 }
 
 class NotificationModel{
-  DateTime date;
+  int id;
+  String time;
   String title;
   String content;
   bool isViewed;
   String type;
 
   NotificationModel({
-    required this.date,
+    required this.id,
+    required this.time,
     required this.title,
     required this.content,
     required this.isViewed,
@@ -37,7 +39,8 @@ class NotificationModel{
 
   factory NotificationModel.fromJson(Map<String, dynamic>json){
     return NotificationModel(
-      date: json['date'], 
+      id: json['id'], 
+      time: json['time'], 
       title: json['title'], 
       content: json['content'], 
       isViewed: json['isViewed'] == '1'? true: false, 

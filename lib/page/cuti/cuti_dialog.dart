@@ -249,12 +249,12 @@ class CutiDialog {
                                 final response = await NetworkRequest.postCuti(DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
                                 if(response.state != true){
                                   if(ctx.mounted){
-                                    NotificationStyle.warning(ctx, 'Gagal mengajukan cuti', response.message);
+                                    NotificationStyle.error(ctx, 'Gagal mengajukan cuti', response.message);
                                   }
                                   return;
                                 }
                                 if(ctx.mounted){
-                                  NotificationStyle.info(ctx, 'Berhasil', response.message);
+                                  NotificationStyle.success(ctx, 'Berhasil', response.message);
                                 }  
                                 NavigationService.backWithData(true);
                               },
@@ -785,12 +785,12 @@ class CutiDialog {
                                   final response = await NetworkRequest.putCuti(data.id, DateFormat('yyyy-MM-dd').format(startDate), DateFormat('yyyy-MM-dd').format(endDate), tfReason.text);
                                   if (response.state != true) {
                                     if (ctx.mounted) {
-                                      NotificationStyle.warning(ctx, 'Gagal mengajukan ulang cuti', response.message);
+                                      NotificationStyle.error(ctx, 'Gagal mengajukan ulang cuti', response.message);
                                     }
                                     return;
                                   }
                                   if (ctx.mounted) {
-                                    NotificationStyle.info(ctx, 'Berhasil', response.message);
+                                    NotificationStyle.success(ctx, 'Berhasil', response.message);
                                   }
                                   NavigationService.back();
                                   NavigationService.replacePage(CutiPage.nameRoute);

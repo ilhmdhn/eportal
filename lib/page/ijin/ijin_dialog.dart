@@ -809,13 +809,13 @@ class IjinDialog{
 
                           if (networkResponse.state != true) {
                             if(ctx.mounted){
-                              NotificationStyle.warning(ctx, 'Gagal', networkResponse.message);
+                              NotificationStyle.error(ctx, 'Gagal', networkResponse.message);
                             }
                             return;
                           }
 
                           if(ctx.mounted){
-                            NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
+                            NotificationStyle.success(ctx, 'Berhasil', networkResponse.message);
                           }
                           NavigationService.backWithData(true);
                         },
@@ -1200,12 +1200,12 @@ class IjinDialog{
                                    final cancelResponse = await NetworkRequest.cancelIzin(data.id??'');
                                    if(cancelResponse.state == true){
                                      if(ctx.mounted){
-                                       NotificationStyle.info(ctx, 'Berhasil', 'Izin dibatalkan');
+                                       NotificationStyle.success(ctx, 'Berhasil', 'Izin dibatalkan');
                                      }
                                      NavigationService.backWithData(true);
                                    }else{
                                      if (ctx.mounted) {
-                                       NotificationStyle.info(ctx, 'Gagal', 'Gagal membatalkan izin');
+                                       NotificationStyle.error(ctx, 'Gagal', 'Gagal membatalkan izin');
                                      }
                                    }
                                  }
@@ -2170,10 +2170,10 @@ class IjinDialog{
 
                           if (ctx.mounted) {
                             if (networkResponse.state != true) {
-                              NotificationStyle.warning(ctx, 'Gagal', networkResponse.message);
+                              NotificationStyle.error(ctx, 'Gagal', networkResponse.message);
                               return;
                             }
-                            NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
+                            NotificationStyle.success(ctx, 'Berhasil', networkResponse.message);
                           }
                           NavigationService.back();
                           NavigationService.replacePage(IjinPage.nameRoute);

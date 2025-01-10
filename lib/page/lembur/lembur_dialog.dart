@@ -306,12 +306,12 @@ class OvertimeDialog{
                               
                                     if(networkResponse.state != true){
                                       if(ctx.mounted){
-                                        NotificationStyle.warning(ctx, "Gagal", networkResponse.message);
+                                        NotificationStyle.error(ctx, "Gagal", networkResponse.message);
                                       }
                                       return;
                                     }else{
                                       if(ctx.mounted){
-                                        NotificationStyle.info(ctx, "Berhasil", 'Lembur Diajukan');
+                                        NotificationStyle.success(ctx, "Berhasil", 'Lembur Diajukan');
                                       }
                                       NavigationService.backWithData(true);
                                     }  
@@ -847,12 +847,12 @@ class OvertimeDialog{
                               
                                   if (networkResponse.state != true) {
                                     if (ctx.mounted) {
-                                      NotificationStyle.warning(ctx, "Gagal", networkResponse.message);
+                                      NotificationStyle.error(ctx, "Gagal", networkResponse.message);
                                     }
                                     return;
                                   } else {
                                     if (ctx.mounted) {
-                                      NotificationStyle.info(
+                                      NotificationStyle.success(
                                           ctx, "Berhasil", networkResponse.message);
                                     }
                                     NavigationService.back();

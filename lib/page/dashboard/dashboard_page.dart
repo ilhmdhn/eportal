@@ -39,6 +39,7 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+
   final notificationDialog = NotificationDialog();
   bool darkMode = false;
   List<String> getPhotos = DummyData.getImage();

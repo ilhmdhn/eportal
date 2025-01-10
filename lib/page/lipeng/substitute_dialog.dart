@@ -219,11 +219,11 @@ class SubstituteDialog{
                                   final networkResponse = await NetworkRequest.postLipeng(date, dateDest, tfReason.text, isOvertime);
                                   if(networkResponse.state != true){
                                     if(ctx.mounted){
-                                      NotificationStyle.warning(ctx, 'Gagal', networkResponse.message);
+                                      NotificationStyle.error(ctx, 'Gagal', networkResponse.message);
                                     }
                                   }else{
                                     if(ctx.mounted){
-                                      NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
+                                      NotificationStyle.success(ctx, 'Berhasil', networkResponse.message);
                                     }
                                     return NavigationService.backWithData(true);
                                   }
@@ -688,12 +688,11 @@ class SubstituteDialog{
                                   final networkResponse = await NetworkRequest.putLipeng(data.id ,date, dateDest, tfReason.text, isOvertime);
                                   if (networkResponse.state != true) {
                                     if (ctx.mounted) {
-                                      NotificationStyle.warning(
-                                          ctx, 'Gagal', networkResponse.message);
+                                      NotificationStyle.error(ctx, 'Gagal', networkResponse.message);
                                     }
                                   } else {
                                     if (ctx.mounted) {
-                                      NotificationStyle.info(ctx, 'Berhasil', networkResponse.message);
+                                      NotificationStyle.success(ctx, 'Berhasil', networkResponse.message);
                                     }
                                     NavigationService.back();
                                     NavigationService.replacePage(SubstitutePage.nameRoute);

@@ -4,7 +4,7 @@ import 'package:eportal/style/custom_font.dart';
 import 'package:flutter/material.dart';
 
 class NotificationStyle{
-  static void info(BuildContext ctx, title, body){
+  static void success(BuildContext ctx, title, body){
     ElegantNotification.success(
       title: AutoSizeText(title, style: CustomFont.headingDua(), maxLines: 1),
       description: AutoSizeText(body, style: CustomFont.headingLima(), minFontSize: 12),
@@ -16,8 +16,21 @@ class NotificationStyle{
     ).show(ctx);
   }
 
-  static void warning(BuildContext ctx, title, body) {
+  static void error(BuildContext ctx, title, body) {
     ElegantNotification.error(
+      title: AutoSizeText(title, style: CustomFont.headingDua(), maxLines: 1),
+      description:
+          AutoSizeText(body, style: CustomFont.headingLima(), minFontSize: 12),
+      // icon: Icon(
+      //   Icons.check,
+      //   color: CustomColor.primary(),
+      // ),
+      toastDuration: const Duration(seconds: 3),
+    ).show(ctx);
+  }
+
+  static void info(BuildContext ctx, title, body) {
+    ElegantNotification.info(
       title: AutoSizeText(title, style: CustomFont.headingDua(), maxLines: 1),
       description:
           AutoSizeText(body, style: CustomFont.headingLima(), minFontSize: 12),

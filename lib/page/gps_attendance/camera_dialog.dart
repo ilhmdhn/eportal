@@ -199,7 +199,7 @@ class CameraDialog {
                                 EasyLoading.dismiss();
                                 if(attendanceResponse.state == true){
                                   if(context.mounted){
-                                    NotificationStyle.info(context, 'Success', 'Absensi berhasil');
+                                    NotificationStyle.success(context, 'Success', 'Absensi berhasil');
                                   }
                                   NavigationService.moveRemoveUntil(DashboardPage.nameRoute);
                                 }

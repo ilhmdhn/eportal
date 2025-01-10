@@ -44,9 +44,11 @@ void main() async{
     if (message.data['type'] == 'NOTIFICATION') {
       final state = message.data['state'] ?? '2';
       if(state == '1'){
-        // NotificationStyle.info(navigatorKey.currentContext!, message.data['title'], message.data['message']);
-      }else if(state == '2'){
         NotificationStyle.info(navigatorKey.currentContext!, message.data['title'], message.data['message']);
+      }else if(state == '2'){
+        NotificationStyle.success(navigatorKey.currentContext!, message.data['title'], message.data['message']);
+      }else if(state == '3'){
+        NotificationStyle.error(navigatorKey.currentContext!, message.data['title'], message.data['message']);
       }
       // ShowNotification.filterNotif(message);
     }
@@ -144,7 +146,7 @@ void configLoading() {
 void createNotif(title, content) {
   final context = navigatorKey.currentContext;
   if (context != null) {
-    NotificationStyle.info(context, title, content);
+    NotificationStyle.success(context, title, content);
   }
 }
 

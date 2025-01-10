@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/provider/notification_provider.dart';
 import 'package:eportal/style/custom_font.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class NotificationDialog {
   OverlayEntry? _overlayEntry;
@@ -13,6 +15,7 @@ void showNotificationOverlay(BuildContext context) {
       _overlayEntry = null;
       return;
     }
+
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Stack(
@@ -27,15 +30,18 @@ void showNotificationOverlay(BuildContext context) {
               height: double.infinity,
             ),
           ),
-
           Positioned(
             top: 25.0,
             right: 20.0,
             child: Material(
               color: Colors.transparent,
               child: Container(
-                width: 250,
-                padding: const EdgeInsets.all(16.0),
+                width: ScreenSize.setWidthPercent(context, 70),
+                padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8),
+                constraints: BoxConstraints(
+                  maxHeight: ScreenSize.setHeightPercent(context, 35),
+                  minHeight: ScreenSize.setHeightPercent(context, 10),
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(8.0),
@@ -77,19 +83,28 @@ void showNotificationOverlay(BuildContext context) {
                       width: double.maxFinite,
                       color: Colors.grey,
                     ),
-                    SizedBox(
-                      height: ScreenSize.setHeightPercent(context, 30),
-                      child: ListView.builder(
-                        itemCount: 10,
-                        itemBuilder: (context, index) {
-                          return _buildNotificationItem(
-                            'Persetujuan Cuti',
-                            'Cuti tanggal 13 telah disetujui',
-                            '14/11',
+                    Expanded(
+                      child: Consumer<NotificationProvider>(
+                        builder: (ctxConsumer, notif, child) {
+                          return ListView.builder(
+                            itemCount: notif.length,
+                            itemBuilder: (context, indexNotif) {
+                              final data = notif.data[indexNotif];
+                              return _buildNotificationItem(
+                                data.type,
+                                data.isViewed,
+                                data.title,
+                                data.content,
+                                data.time
+                              );
+                            },
                           );
-                        },
+                        }
                       ),
-                    )
+                    ),
+                    Align(
+                      alignment: Alignment.center,
+                      child: AutoSizeText('view more', style: CustomFont.headingLimaColorUnderlined(),)),
                   ],
                 ),
               ),
@@ -102,34 +117,58 @@ void showNotificationOverlay(BuildContext context) {
     Overlay.of(context).insert(_overlayEntry!);
   }
   
-  Widget _buildNotificationItem(String title, String room, String time) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.check_circle, color: CustomColor.primary(), size: 20),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Column(
+  Widget _buildNotificationItem(String type, bool isViewed, String title, String message, String time) {
+    return InkWell(
+      onTap: (){
+        
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        child: Column(
+          children: [
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                Column(
+                  children: [
+                    const SizedBox(height: 2,),
+                    type == '1'? const Icon(Icons.info, color: Colors.green, size: 16):
+                    type == '2'? Icon(Icons.check_circle, color: CustomColor.primary(), size: 16):
+                    type == '3'? Container(width: 14, height: 14, decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(7)),child: const Icon(Icons.close_rounded, color: Colors.white, size: 12)): const SizedBox(),
+                  ],
                 ),
-                AutoSizeText(
-                  room,
-                  style: CustomFont.notifDetail(),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: CustomFont.headingLimaBold(),
+                      ),
+                      Text(
+                        message,
+                        style: CustomFont.headingLima(),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+                Text(
+                  time,
+                  style: const TextStyle(color: Colors.grey),
                 ),
               ],
             ),
-          ),
-          Text(
-            time,
-            style: const TextStyle(color: Colors.grey),
-          ),
-        ],
+            // Container(
+            //   width: double.infinity,
+            //   height: 0.7,
+            //   color: Colors.grey,
+            // )
+          ],
+        ),
       ),
     );
   }
