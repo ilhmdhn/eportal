@@ -22,12 +22,7 @@ class NavigationService {
   }
 
   Future<dynamic> errorPage(String description){
-    final observer = GetIt.I<CustomNavigatorObserver>();
-    final previousRoute = observer.getPreviousRouteName();
-    ShowToast.warning('Previous route namez: $previousRoute');
-    // var route = ModalRoute.of(context);
-
-    return navigatorKey.currentState!.pushReplacementNamed(ErrorPage.nameRoute, arguments: {'namePage': previousRoute, 'desc': description} 
+    return navigatorKey.currentState!.pushReplacementNamed(ErrorPage.nameRoute, arguments: {'namePage': '', 'desc': description} 
     );
   }
   Future<dynamic> pushReplacementNamed(String routeName){

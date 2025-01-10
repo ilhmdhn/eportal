@@ -48,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    context.read<NotificationProvider>().getList();
+    // context.read<NotificationProvider>().getList();
     FirebaseTools.getToken();
     subscribeToTopic();
     permissionRequest();
@@ -550,7 +550,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 flex: 1,
                                 child: InkWell(
                                   onTap: ()async{
-                                    context.read<NotificationProvider>().getList();
+                                    // context.read<NotificationProvider>().getList();
                                   },
                                   child: AddOnButton.textImageButton(
                                       context, 'assets/icon/opd.png', 'OPD'),

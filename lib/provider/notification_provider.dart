@@ -10,6 +10,9 @@ class NotificationProvider with ChangeNotifier{
   List<NotificationModel> get data => _list;
   int get length => _list.length;
 
+  NotificationProvider(){
+    getList();
+  }
 
   Future<void> init()async{
     await getList();
@@ -28,9 +31,9 @@ class NotificationProvider with ChangeNotifier{
   }
 
   Future<void> getList()async{
-    _list.clear();
     final networkResponse = await NetworkRequest.getNotifThumb();
     if(networkResponse.state){
+      _list.clear();
       _list.addAll(networkResponse.data??[]);
       updateUnreaded();
       WidgetsBinding.instance.addPostFrameCallback((_) {

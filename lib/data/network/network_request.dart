@@ -668,7 +668,7 @@ class NetworkRequest{
     try {
       final key = SharedPreferencesData.getKey() ?? '';
       final url = Uri.parse('$baseUrl/Api/notification/$id');
-      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final apiResponse = await http.put(url, headers: {'authorization': key});
       final convertedResult = json.decode(apiResponse.body);
       return BaseResponse.fromJson(convertedResult);
     } catch (e, stackTrace) {
