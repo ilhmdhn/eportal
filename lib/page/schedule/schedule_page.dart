@@ -340,7 +340,7 @@ class _SchedulePageState extends State<SchedulePage> {
                       AutoSizeText('Cuti', style: CustomFont.headingDuaRed(),):
                       schedule?.code.toLowerCase() == 'libur pengganti'? 
                       AutoSizeText('Libur Pengganti', style: CustomFont.headingDuaRed(),):
-                      schedule?.code.toLowerCase() == 'izin'? 
+                      schedule?.code.toLowerCase() == 'izin' || schedule?.code.toLowerCase() == 'ijin tidak masuk kerja'? 
                       AutoSizeText('Izin Tidak Masuk', style: CustomFont.headingDuaYellow(),):
                       AutoSizeText('Jadwal Kerja Belum Diupload', style: CustomFont.headingEmpat(),)
                     ],

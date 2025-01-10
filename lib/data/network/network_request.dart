@@ -12,6 +12,7 @@ import 'package:eportal/data/network/response/jko_response.dart';
 import 'package:eportal/data/network/response/list_response.dart';
 import 'package:eportal/data/network/response/login_response.dart';
 import 'package:eportal/data/network/response/base_response.dart';
+import 'package:eportal/data/network/response/notification_response.dart';
 import 'package:eportal/data/network/response/overtime_response.dart';
 import 'package:eportal/data/network/response/sallary_response.dart';
 import 'package:eportal/data/network/response/ssp_response.dart';
@@ -647,6 +648,19 @@ class NetworkRequest{
         state: false,
         message: e.toString()
       );
+    }
+  }
+
+  static Future<NotificationResponse> getNotifThumb()async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/dashboard_notif');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return NotificationResponse.fromJson(convertedResult);
+    }catch(e, stackTrace){
+      ShowToast.warning('Gagal mendapatkan notifikasi');
+      return NotificationResponse(state: false, message: e.toString());
     }
   }
 }

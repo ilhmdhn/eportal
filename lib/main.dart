@@ -9,6 +9,7 @@ import 'package:eportal/page/lipeng/substitute_page.dart';
 import 'package:eportal/page/login/login_page.dart';
 import 'package:eportal/page/dashboard/dashboard_page.dart';
 import 'package:eportal/page/gps_attendance/gps_attendance_page.dart';
+import 'package:eportal/page/notification/notification_detail.dart';
 import 'package:eportal/page/permission/permission_page.dart';
 import 'package:eportal/page/profile/profile_page.dart';
 import 'package:eportal/page/sallary/sallary_page.dart';
@@ -120,6 +121,7 @@ class MyApp extends StatelessWidget {
           ProfilePage.nameRoute: (context) => const ProfilePage(),
           SchedulePage.nameRoute: (context) => const SchedulePage(),
           NotificationListPage.nameRoute: (context) => const NotificationListPage(),
+          NotificationDetailPage.nameRoute: (context) => const NotificationDetailPage()
         },
       ),
     );

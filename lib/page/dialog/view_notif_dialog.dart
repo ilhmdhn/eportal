@@ -1,8 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:eportal/assets/color/custom_color.dart';
+import 'package:eportal/data/network/response/notification_response.dart';
+import 'package:eportal/page/notification/notification_detail.dart';
 import 'package:eportal/page/notification/notification_list_page.dart';
 import 'package:eportal/provider/notification_provider.dart';
 import 'package:eportal/style/custom_font.dart';
+import 'package:eportal/util/converter.dart';
 import 'package:eportal/util/navigation_service.dart';
 import 'package:eportal/util/screen.dart';
 import 'package:flutter/material.dart';
@@ -94,12 +97,7 @@ void showNotificationOverlay(BuildContext context) {
                               final data = notif.data[indexNotif];
                               return _buildNotificationItem(
                                 context,
-                                data.id,
-                                data.type,
-                                data.isViewed,
-                                data.title,
-                                data.content,
-                                data.time
+                                data
                               );
                             },
                           );
@@ -126,10 +124,12 @@ void showNotificationOverlay(BuildContext context) {
     Overlay.of(context).insert(_overlayEntry!);
   }
   
-  Widget _buildNotificationItem(BuildContext ctx,int id, String type, bool isViewed, String title, String message, String time) {
+  Widget _buildNotificationItem(BuildContext ctx, NotificationModel data) {
     return InkWell(
       onTap: (){
-        ctx.read<NotificationProvider>().updateIsViewed(id);
+        ctx.read<NotificationProvider>().updateIsViewed(data.id);
+        closeOverlay();
+        NavigationService.moveWithData(NotificationDetailPage.nameRoute ,data);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -141,9 +141,9 @@ void showNotificationOverlay(BuildContext context) {
                 Column(
                   children: [
                     const SizedBox(height: 2,),
-                    type == '1'? const Icon(Icons.info, color: Colors.green, size: 16):
-                    type == '2'? Icon(Icons.check_circle, color: CustomColor.primary(), size: 16):
-                    type == '3'? Container(width: 14, height: 14, decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(7)),child: const Icon(Icons.close_rounded, color: Colors.white, size: 12)): const SizedBox(),
+                    data.type == '1'? const Icon(Icons.info, color: Colors.green, size: 16):
+                    data.type == '2'? Icon(Icons.check_circle, color: CustomColor.primary(), size: 16):
+                    data.type == '3'? Container(width: 14, height: 14, decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(7)),child: const Icon(Icons.close_rounded, color: Colors.white, size: 12)): const SizedBox(),
                   ],
                 ),
                 const SizedBox(width: 4),
@@ -153,12 +153,12 @@ void showNotificationOverlay(BuildContext context) {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        title,
-                        style: isViewed? CustomFont.headingLimaBoldGrey(): CustomFont.headingLimaBold(),
+                        data.title,
+                        style: data.isViewed? CustomFont.headingLimaBoldGrey(): CustomFont.headingLimaBold(),
                       ),
                       Text(
-                        message,
-                        style: isViewed? CustomFont.headingLimaGrey(): CustomFont.headingLima(),
+                        data.content,
+                        style: data.isViewed? CustomFont.headingLimaGrey(): CustomFont.headingLima(),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -166,7 +166,7 @@ void showNotificationOverlay(BuildContext context) {
                   ),
                 ),
                 Text(
-                  time,
+                  CustomConverter.ago(data.time),
                   style: const TextStyle(color: Colors.grey),
                 ),
               ],

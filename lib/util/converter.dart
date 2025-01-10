@@ -148,4 +148,31 @@ class CustomConverter{
     final formatter = NumberFormat.currency(locale: 'id_ID', symbol: '', decimalDigits: 0);
     return formatter.format(value);
   }
+
+  static String ago(DateTime dateTime) {
+    DateTime now = DateTime.now();
+
+    final timeFormatter = DateFormat('HH:mm');
+    final dateFormatter = DateFormat('dd/MM');
+    final yearFormatter = DateFormat('yyyy');
+
+    DateTime startOfToday = DateTime(now.year, now.month, now.day);
+
+    int weekDayOffset = now.weekday - DateTime.monday;
+    DateTime startOfWeek = startOfToday.subtract(Duration(days: weekDayOffset));
+
+    if (dateTime.isAfter(startOfToday)) {
+      return timeFormatter.format(dateTime);
+    }
+
+    if (dateTime.isAfter(startOfWeek)) {
+      return DateFormat.EEEE()
+          .format(dateTime);
+    }
+
+    if (dateTime.year == now.year) {
+      return dateFormatter.format(dateTime);    }
+
+    return yearFormatter.format(dateTime);
+  }
 }

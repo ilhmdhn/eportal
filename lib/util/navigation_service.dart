@@ -43,6 +43,10 @@ class NavigationService {
     getIt<NavigationService>().pushNamed(routeName);
   }
 
+  static void moveWithData(routeName, data) {
+    getIt<NavigationService>().goMoveWithData(routeName, data);
+  }
+
   static void error({String description = ''}){
     
     getIt<NavigationService>().errorPage(description);
@@ -61,6 +65,8 @@ class NavigationService {
   static void replacePage(String routeName) => getIt<NavigationService>().pushReplacementNamed(routeName);
 
   void goBackWithData(data) => navigatorKey.currentState!.pop(data);
+
+  void goMoveWithData(routeName, data) => navigatorKey.currentState!.pushNamed(routeName, arguments: data);
 }
 
 
