@@ -166,6 +166,11 @@ class CustomFont{
         fontSize: 16, color: Colors.red, fontWeight: FontWeight.w500);
   }
 
+  static TextStyle headingEmpatSemiBoldGrey() {
+    return GoogleFonts.poppins(
+        fontSize: 16, color: Colors.grey, fontWeight: FontWeight.w500);
+  }
+
   static TextStyle headingLima() {
     return GoogleFonts.poppins(fontSize: 14, color: Colors.black);
   }

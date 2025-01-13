@@ -536,7 +536,6 @@ class NetworkRequest{
       final convertedResult = json.decode(apiResponse.body);
       return SspResponse.fromJson(convertedResult);
     }catch(e, stackTrace){
-            print('LINE $stackTrace');
       NavigationService.error(description: e.toString());
       return SspResponse(state: false, message: e.toString());
     }
@@ -673,6 +672,19 @@ class NetworkRequest{
       return BaseResponse.fromJson(convertedResult);
     } catch (e, stackTrace) {
       return BaseResponse(state: false, message: e.toString());
+    }
+  }
+
+  static Future<NotificationResponse> getNotifPaging(int page)async{
+    try{
+      final key = SharedPreferencesData.getKey() ?? '';
+      final url = Uri.parse('$baseUrl/Api/notification?page=$page');
+      final apiResponse = await http.get(url, headers: {'authorization': key});
+      final convertedResult = json.decode(apiResponse.body);
+      return NotificationResponse.fromJson(convertedResult);
+    }catch(e, stackTrace){
+      NavigationService.error(description: e.toString());
+      return NotificationResponse(state: false, message: e.toString());
     }
   }
 }

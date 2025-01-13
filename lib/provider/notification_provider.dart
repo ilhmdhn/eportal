@@ -1,6 +1,7 @@
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/notification_response.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 
 class NotificationProvider with ChangeNotifier{

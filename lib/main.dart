@@ -167,8 +167,7 @@ Future<void> initializeNotifications() async {
   final InitializationSettings initializationSettings;
 
   if (Platform.isIOS || Platform.isMacOS) {
-    final DarwinInitializationSettings initializationSettingsDarwin =
-        DarwinInitializationSettings(
+    final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
       notificationCategories: [
         DarwinNotificationCategory(
           'demoCategory',
