@@ -1,7 +1,7 @@
   import 'dart:io';
 
 bool isNullOrEmpty(value){
-    return value == null || value.trim().isEmpty;
+    return value == null || (value??'').trim().isEmpty;
   }
 
   bool isNotNullOrEmpty(value) {

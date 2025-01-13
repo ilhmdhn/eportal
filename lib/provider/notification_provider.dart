@@ -1,6 +1,5 @@
 import 'package:eportal/data/network/network_request.dart';
 import 'package:eportal/data/network/response/notification_response.dart';
-import 'package:eportal/page/schedule/schedule_page.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
@@ -10,9 +9,9 @@ class NotificationProvider with ChangeNotifier{
   List<NotificationModel> get data => _list;
   int get length => _list.length;
 
-  NotificationProvider(){
-    getList();
-  }
+  // NotificationProvider(){
+    // getList();
+  // }
 
   Future<void> init()async{
     await getList();
