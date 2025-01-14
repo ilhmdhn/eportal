@@ -1,6 +1,5 @@
 import 'package:eportal/page/error/error_page.dart';
 import 'package:eportal/util/navigation_observer.dart';
-import 'package:eportal/util/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
