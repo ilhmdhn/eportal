@@ -393,38 +393,33 @@ class _DashboardPageState extends State<DashboardPage> {
                               left: 0,
                               right: 0,
                               child: Container(
-                                padding: const EdgeInsets.only(
-                                    left: 8, right: 8, bottom: 8, top: 4),
-                                height:
-                                    ScreenSize.setHeightPercent(context, 23),
+                                padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 4),
                                 margin: const EdgeInsets.symmetric(horizontal: 20),
                                 width: double.maxFinite,
                                 decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                          blurRadius: 0.5,
-                                          color: Colors.grey.shade400)
-                                    ],
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(20)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      blurRadius: 0.5,
+                                      color: Colors.grey.shade400)
+                                  ],
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20)),
                                 child: Column(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    AutoSizeText('Pengumuman',
-                                        style: CustomFont.announcement()),
-                                    Expanded(
-                                      child: Padding(
+                                    AutoSizeText('Pengumuman', style: CustomFont.announcement()),
+                                    Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: AutoSizeText(
                                         "Jadwal senam hari jum'at minggu ini group A. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled",
-                                        style: CustomFont.headingEmpat(),
+                                        style: CustomFont.headingLima(),
                                         minFontSize: 14,
                                         textAlign: TextAlign.justify,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 3,
                                       ),
-                                    )),
+                                    ),
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
@@ -618,34 +613,35 @@ class _DashboardPageState extends State<DashboardPage> {
                                 'Gallery Activities',
                                 style: CustomFont.activityTitle(),
                               ),
-                              // Text(
-                              //   'View More',
-                              //   style: CustomFont.activityTitle(),
-                              // ),
+                              Text(
+                                'view more',
+                                style: CustomFont.headingLimaColorUnderlined(),
+                              ),
                             ],
                           ),
-                          const SizedBox(height: 8,),
-                          CarouselSlider.builder(
-                          itemCount: getPhotos.length,
-                          options: CarouselOptions(
-                            initialPage: 0,
-                            // enlargeCenterPage: true,
-                            height: ScreenSize.setHeightPercent(context, 20),
-                            enlargeFactor: 0.3,
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            autoPlay: true,
-                            aspectRatio: 16/9,
+                          const SizedBox(height: 3,),
+                          Stack(
+                            children: [
+                              CarouselSlider.builder(
+                                itemCount: getPhotos.length,
+                                options: CarouselOptions(
+                                  initialPage: 0,
+                                  enlargeCenterPage: true,
+                                  enlargeStrategy: CenterPageEnlargeStrategy.height,
+                                  // enlargeFactor: 0.3,
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  autoPlay: true,
+                              
+                                ),
+                                itemBuilder: (BuildContext ctxCarousel, int index,int pvIndex) {
+                                  return SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    child: CachedNetworkImage(imageUrl: getPhotos[index],));
+                                },
+                              ),
+                            ],
                           ),
-                          itemBuilder: (BuildContext ctxCarousel, int index,int pvIndex) {
-                          return ClipRRect(
-                              borderRadius: BorderRadius.circular(9),                                
-                            // child: Image.network(getPhotos[index]),
-                            child: Container(color: Colors.white,),
-                          );
-                          },),
-                                                    const SizedBox(
-                            height: 12,
-                          ),
+                          const SizedBox(height: 12,),
                         ],
                       ),
                     ),
