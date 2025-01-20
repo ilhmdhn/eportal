@@ -75,6 +75,7 @@ class _DashboardPageState extends State<DashboardPage> {
   List<String> getPhotos = DummyData.getImage();
   static final baseUrl = dotenv.env['SERVER_URL'];
   Uri photoUrl = Uri.parse('$baseUrl/uploads/ProfilePicture/${Profile.getProfile().nip}.jpg');
+  num height = 0;
   @override
   Widget build(BuildContext context) {
     bool biometricState = SharedPreferencesData.getBiometric();
@@ -247,18 +248,21 @@ class _DashboardPageState extends State<DashboardPage> {
         body: Stack(
           children: [
             Positioned(
-                bottom: 0,
-                right: 0,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    SizedBox(
-                        width: ScreenSize.setWidthPercent(context, 50),
-                        child: AspectRatio(
-                            aspectRatio: 1 / 1,
-                            child: Image.asset('assets/image/joe.png')))
-                  ],
-                )),
+              bottom: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(
+                    width: ScreenSize.setWidthPercent(context, 50),
+                    child: AspectRatio(
+                      aspectRatio: 1 / 1,
+                      child: Image.asset('assets/image/joe.png')
+                    )
+                  )
+                ],
+              )
+            ),
             Positioned(
               top: 0,
               left: 0,
@@ -267,71 +271,211 @@ class _DashboardPageState extends State<DashboardPage> {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    SizedBox(
-                      height: ScreenSize.setHeightPercent(context, 45),
+                    Container(
+                      color: Colors.amber,
+                      height: height.toDouble(),
                       child: Stack(
+                        clipBehavior: Clip.none,
                         children: [
-                          Container(
-                            height: ScreenSize.setHeightPercent(context, 25),
-                            width: ScreenSize.setWidthPercent(context, 100),
-                            decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.only(
-                                    bottomRight: Radius.elliptical(30, 20),
-                                    bottomLeft: Radius.elliptical(30, 20)),
-                                color: CustomColor.primary()),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 20),
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 41,
-                                  ),
-                                  Row( crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      InkWell(
-                                        onTap: (){
-                                          CustomViewer.detectImageOrPdf(context, photoUrl.toString());
-                                        },
-                                        child: ClipOval(
-                                          child: SizedBox.fromSize(
-                                            size: const Size.fromRadius(31),
-                                            child: CachedNetworkImage(
-                                              imageUrl: photoUrl.toString(),
-                                              placeholder: (context, url) => CircularProgressIndicator(color: CustomColor.primary()),
-                                              fit: BoxFit.cover,
-                                              errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red,),
-                                            ),
+                          Positioned(
+                            top: 0,
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                height += constraints.maxHeight;
+                                return Align(
+                                  alignment: Alignment.topCenter,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                                    height: ScreenSize.setHeightPercent(context, 23),
+                                    width: ScreenSize.setWidthPercent(context, 100),
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(
+                                        bottomRight: Radius.elliptical(30, 20),
+                                        bottomLeft: Radius.elliptical(30, 20)),
+                                      color: CustomColor.primary()),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 0),
+                                      child: Column(
+                                        children: [
+                                          const SizedBox(
+                                            height: 41,
                                           ),
-                                        ),
+                                          Row( crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              InkWell(
+                                                onTap: (){
+                                                  CustomViewer.detectImageOrPdf(context, photoUrl.toString());
+                                                },
+                                                child: ClipOval(
+                                                  child: SizedBox.fromSize(
+                                                    size: const Size.fromRadius(31),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: photoUrl.toString(),
+                                                      placeholder: (context, url) => CircularProgressIndicator(color: CustomColor.primary()),
+                                                      fit: BoxFit.cover,
+                                                      errorWidget: (context, url, error) => const Icon(Icons.error, color: Colors.red,),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(
+                                                width: 6,
+                                              ),
+                                              Flexible(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    AutoSizeText(
+                                                      Profile.getProfile().name,
+                                                      style: CustomFont.dashboardName(),
+                                                      overflow: TextOverflow.clip,
+                                                    ),
+                                                    AutoSizeText(
+                                                      Profile.getProfile().jabatan,
+                                                      style: CustomFont.dashboardPosition(),
+                                                      overflow: TextOverflow.clip,
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                          const SizedBox(
+                                            height: 6,
+                                          ),
+                                          SizedBox(height: ScreenSize.setHeightPercent(context, 3),),
+                                        ],
                                       ),
-                                      const SizedBox(
-                                        width: 6,
+                                    ),
+                                  ),
+                                );
+                              }
+                            ),
+                          ),
+                          Positioned(
+                            top: ScreenSize.setHeightPercent(context, 20),
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              height: ScreenSize.setHeightPercent(context, 20),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    blurRadius: 0.5,
+                                    color: Colors.grey.shade400)
+                                ],
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(20)
+                              ),
+                              child: LayoutBuilder(builder: (context, constraint) {
+                                final heightTemp = constraint.biggest.height + height;
+                                print('DEBUGGING HEIGHT' + heightTemp.toString());
+                                if (height != heightTemp) {
+                                  setState(() {
+                                    height += heightTemp;
+                                  });
+                                }
+                                return Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    AutoSizeText('Pengumuman', style: CustomFont.announcement()),
+                                    Container(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: AutoSizeText(
+                                        "Jadwal senam hari jum'at minggu ini group A. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambledJadwal senam hari jum'at minggu ini group A. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled",
+                                        style: CustomFont.headingLima(),
+                                        minFontSize: 14,
+                                        textAlign: TextAlign.justify,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 3,
                                       ),
-                                      Flexible(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            AutoSizeText(
-                                              Profile.getProfile().name,
-                                              style: CustomFont.dashboardName(),
-                                              overflow: TextOverflow.clip,
-                                            ),
-                                            AutoSizeText(
-                                              Profile.getProfile().jabatan,
-                                              style: CustomFont.dashboardPosition(),
-                                              overflow: TextOverflow.clip,
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 6,
-                                  ),
-                                  /*Expanded(
+                                    ),
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        SizedBox(
+                                            height: 61,
+                                            width: 61,
+                                            child: Image.asset(
+                                                'assets/icon/announcement.png')),
+                                        AutoSizeText(
+                                          '12 November 2024',
+                                          style: CustomFont.announcementDate(),
+                                        )
+                                      ],
+                                    )
+                                  ],
+                                );
+                              }),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    //taruh sini
+                    
+                    const SizedBox(
+                      height: 21,
+                    ),
+                    SizedBox(
+                      width: ScreenSize.setWidthPercent(context, 50),
+                      child: Image.asset('assets/image/hp_group.png')),
+                    const SizedBox(height: 20,)
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Builder(builder: (ctxDrawer) {
+                    return IconButton(
+                        onPressed: () {
+                          Scaffold.of(ctxDrawer).openDrawer();
+                        },
+                        icon: const Icon(
+                          Icons.menu,
+                          color: Colors.white,
+                        ));
+                  }),
+                  InkWell(
+                    onTap: (){
+                      notificationDialog.showNotificationOverlay(context);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Consumer<NotificationProvider>(
+                        builder: (context, notif, child) {
+                          return Badge.count(
+                              count: notif.unreaded,
+                              isLabelVisible: notif.unreaded < 1? false: true,
+                              child: const Icon(Icons.notifications, color: Colors.white));
+                        }
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/*Expanded(
                                     child: Container(
                                       padding: const EdgeInsets.all(8),
                                       width: double.maxFinite,
@@ -383,69 +527,8 @@ class _DashboardPageState extends State<DashboardPage> {
                                       ),
                                     ),
                                   ),*/
-                                  SizedBox(height: ScreenSize.setHeightPercent(context, 3),)
-                                ],
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                              top: ScreenSize.setHeightPercent(context, 21),
-                              left: 0,
-                              right: 0,
-                              child: Container(
-                                padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8, top: 4),
-                                margin: const EdgeInsets.symmetric(horizontal: 20),
-                                width: double.maxFinite,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      blurRadius: 0.5,
-                                      color: Colors.grey.shade400)
-                                  ],
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20)),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    AutoSizeText('Pengumuman', style: CustomFont.announcement()),
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: AutoSizeText(
-                                        "Jadwal senam hari jum'at minggu ini group A. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled",
-                                        style: CustomFont.headingLima(),
-                                        minFontSize: 14,
-                                        textAlign: TextAlign.justify,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 3,
-                                      ),
-                                    ),
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(
-                                            height: 61,
-                                            width: 61,
-                                            child: Image.asset(
-                                                'assets/icon/announcement.png')),
-                                        AutoSizeText(
-                                          '12 November 2024',
-                                          style: CustomFont.announcementDate(),
-                                        )
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              )),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 12,
-                    ),
+
+                                  /*
                     Container(
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       height: ScreenSize.setHeightPercent(context, 36),
@@ -460,15 +543,6 @@ class _DashboardPageState extends State<DashboardPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          // Padding( padding: const EdgeInsets.only(left: 20),
-                          //   child: Align(
-                          //     alignment: Alignment.centerLeft,
-                          //     child: AutoSizeText(
-                          //       'Employee Menu',
-                          //       style: CustomFont.menuTitle(),
-                          //     ),
-                          //   ),
-                          // ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -594,7 +668,6 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     Container(
                       width: double.maxFinite,
-
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
@@ -647,54 +720,4 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                     const SizedBox(
                       height: 12,
-                    ),
-                    SizedBox(
-                      width: ScreenSize.setWidthPercent(context, 50),
-                      child: Image.asset('assets/image/hp_group.png')),
-                    const SizedBox(height: 20,)
-                  ],
-                ),
-              ),
-            ),
-            Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Builder(builder: (ctxDrawer) {
-                    return IconButton(
-                        onPressed: () {
-                          Scaffold.of(ctxDrawer).openDrawer();
-                        },
-                        icon: const Icon(
-                          Icons.menu,
-                          color: Colors.white,
-                        ));
-                  }),
-                  InkWell(
-                    onTap: (){
-                      notificationDialog.showNotificationOverlay(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Consumer<NotificationProvider>(
-                        builder: (context, notif, child) {
-                          return Badge.count(
-                              count: notif.unreaded,
-                              isLabelVisible: notif.unreaded < 1? false: true,
-                              child: const Icon(Icons.notifications, color: Colors.white));
-                        }
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
+                    ),*/
